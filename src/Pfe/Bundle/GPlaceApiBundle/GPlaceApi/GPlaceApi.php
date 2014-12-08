@@ -17,7 +17,27 @@ class GPlaceApi {
 
         $response = json_decode($this->buzz->getLastResponse()->getContent());
 
-        return $response;
+        $status = $response->status; //TODO: check status
+
+        $gplaces = $response->results;
+
+        return $gplaces;
+    }
+
+    public function searchState($state) {
+
+        $query = urlencode($state);
+        $types = 'country';
+
+        $this->buzz->get($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key, array('Content-type: application/json'));
+
+        $response = json_decode($this->buzz->getLastResponse()->getContent());
+
+        $status = $response->status; //TODO: check status
+
+        $gplaces = $response->results;
+
+        return $gplaces;
     }
 
     public function setConfig($config) {

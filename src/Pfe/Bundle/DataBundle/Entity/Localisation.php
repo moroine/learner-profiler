@@ -36,8 +36,7 @@ class Localisation implements \JsonSerializable {
     /**
      * @var string
      *
-     * @ORM\Column(name="city", type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="city", type="string", length=255, nullable=true)
      */
     private $city;
 
@@ -81,9 +80,9 @@ class Localisation implements \JsonSerializable {
      * @param type $longitude
      * @param type $g_place_id
      */
-    public function __construct($state, $city, $latitude = null, $longitude = null, $g_place_id = null, $g_address = null) {
+    public function __construct($state, $city = null, $latitude = null, $longitude = null, $g_place_id = null, $g_address = null) {
         $this->state = $state;
-        $this->city = $city;
+        $this->city = empty($city) ? null : $city;
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->g_place_id = $g_place_id;

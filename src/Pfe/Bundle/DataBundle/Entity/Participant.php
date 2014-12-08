@@ -58,7 +58,7 @@ class Participant implements \JsonSerializable {
      *
      * @var string
      *
-     * @ORM\Column("name="lang", type="string", length=255)
+     * @ORM\Column(name="lang", type="string", length=255)
      */
     private $lang;
 
@@ -159,7 +159,7 @@ class Participant implements \JsonSerializable {
      * @param Localisation $home
      * @return Participant
      */
-    function setHome(Localisation $home) {
+    function setHome(Localisation $home = null) {
         $this->home = $home;
         return $this;
     }

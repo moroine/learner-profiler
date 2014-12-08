@@ -3,10 +3,9 @@
 use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-class AppKernel extends Kernel
-{
-    public function registerBundles()
-    {
+class AppKernel extends Kernel {
+
+    public function registerBundles() {
         $bundles = array(
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
@@ -19,10 +18,12 @@ class AppKernel extends Kernel
             new Pfe\Bundle\DataBundle\PfeDataBundle(),
             new Pfe\Bundle\MoocLoginBundle\PfeMoocLoginBundle(),
             new Pfe\Bundle\GPlaceApiBundle\PfeGPlaceApiBundle(),
-			new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
-			new JMS\SerializerBundle\JMSSerializerBundle(),
-			new FOS\RestBundle\FOSRestBundle(),
+            new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+            new FOS\RestBundle\FOSRestBundle(),
             new Pfe\Bundle\CollectorBundle\PfeCollectorBundle(),
+            new Pfe\Bundle\CoreBundle\PfeCoreBundle(),
+            new Pfe\Bundle\ProviderBundle\PfeProviderBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
@@ -34,13 +35,12 @@ class AppKernel extends Kernel
         return $bundles;
     }
 
-    public function registerContainerConfiguration(LoaderInterface $loader)
-    {
-        $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
+    public function registerContainerConfiguration(LoaderInterface $loader) {
+        $loader->load(__DIR__ . '/config/config_' . $this->getEnvironment() . '.yml');
     }
-	
-	public function getCharset()
-	{
-		return 'UTF-8';
-	}
+
+    public function getCharset() {
+        return 'UTF-8';
+    }
+
 }

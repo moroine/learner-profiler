@@ -34,21 +34,19 @@ class MoocExtractor {
         return $this->connection->isConnected();
     }
 
-    public function mysqlImportCmd($output, $path) {
+    public function importSqlDb($output, $path) {
         $username = " -u " . $this->connection->getUsername();
         $password = empty($this->connection->getPassword()) ? "" : " -p " . $this->connection->getPassword();
 
         $cmd = "mysql" . $username . $password . " " . $this->connection->getDatabase() . " < " . $path;
 
-        $output->writeln("Executing mysql import...");
         exec($cmd);
-        $output->writeln("Mysql import done");
 
         return;
     }
 
-    public function extract($output, $course_id) {
-        $this->statement = $this->connection->prepare($this->getQuery('course_id'));
+    public function extractParticipantData($output, $course_id) {
+        $this->statement = $this->connection->prepare($this->getParticipantDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
         if (!$this->statement->execute()) {
@@ -56,7 +54,7 @@ class MoocExtractor {
         }
     }
 
-    private function getQuery($course_label) {
+    private function getParticipantDataQuery($course_label) {
         $query = <<<EOT
             SELECT u.id, u.auth, u.username, u.firstname, u.lastname, u.email, u.city, u.country, u.lang, e.enrol, r.shortname, ul.timeaccess
             FROM mdl_user u
@@ -66,6 +64,7 @@ class MoocExtractor {
             LEFT JOIN mdl_role_assignments ra ON  ra.userid=u.id AND ra.contextid=c.id
             LEFT JOIN mdl_role r ON ra.roleid=r.id
             LEFT JOIN mdl_user_lastaccess ul ON ul.userid=u.id AND ul.courseid=:{$course_label}
+            GROUP BY u.email
 EOT;
         return $query;
     }
