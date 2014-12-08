@@ -1,0 +1,5 @@
+{% extends "::base.json.twig" %}
+
+{% block content %}
+    {{ localisation|json_encode(constant('JSON_PRETTY_PRINT'))|raw }}
+{% endblock %}

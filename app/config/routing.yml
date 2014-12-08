@@ -1,0 +1,8 @@
+pfe_g_api:
+    resource: "@PfeGPlaceApiBundle/Controller"
+    prefix:   /gplace
+
+pfe_data:
+    resource: "@PfeDataBundle/Controller"
+    prefix:   /data
+

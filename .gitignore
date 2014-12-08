@@ -1,0 +1,14 @@
+/nbproject/
+/web/bundles/
+!/web/bundles/common
+/app/bootstrap*
+/app/cache/*
+/app/logs/*
+/vendor/
+/app/config/parameters.yml
+/app/Resources/dump/*
+<<<<<<< HEAD
+!.gitkeep
+=======
+!.gitkeep
+>>>>>>> github/master

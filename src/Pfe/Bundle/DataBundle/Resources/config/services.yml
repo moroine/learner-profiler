@@ -1,0 +1,4 @@
+services:
+#    pfe_data.example:
+#        class: Pfe\Bundle\DataBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
