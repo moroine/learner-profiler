@@ -24,6 +24,7 @@ class AppKernel extends Kernel {
             new Pfe\Bundle\CollectorBundle\PfeCollectorBundle(),
             new Pfe\Bundle\CoreBundle\PfeCoreBundle(),
             new Pfe\Bundle\ProviderBundle\PfeProviderBundle(),
+            new Pfe\Bundle\GeonamesApiBundle\PfeGeonamesApiBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

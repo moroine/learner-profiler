@@ -23,4 +23,7 @@ parameters:
 
 	#Your ecampus login
     ecampus_username: ~ #Your Ecampus username
-    ecampus_password: ~  #Your Ecampus password
+    ecampus_password: ~ #Your Ecampus password
+
+    gplace_api_key: ~
+    geonames_api_username: ~

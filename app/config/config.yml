@@ -96,7 +96,11 @@ pfe_mooc_login:
 
 pfe_g_place_api:
     endpoint: "https://maps.googleapis.com/maps/api/place/textsearch"
-    key: "AIzaSyAzTJXaXLAiyaAfQ9bQBkTpnDbVyJ8AJfI"
+    key: "%gplace_api_key%"
+
+pfe_geonames_api:
+    endpoint: "http://api.geonames.org/countryInfoJSON?"
+    username: "%geonames_api_username%"
 
 fos_rest:
     routing_loader:

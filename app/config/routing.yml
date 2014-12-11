@@ -2,6 +2,10 @@ pfe_g_api:
     resource: "@PfeGPlaceApiBundle/Controller"
     prefix:   /gplace
 
+pfe_geonames:
+    resource: "@PfeGeonamesApiBundle/Controller"
+    prefix:   /geonames
+
 pfe_data:
     resource: "@PfeDataBundle/Controller"
     prefix:   /data

@@ -55,7 +55,8 @@ class MoocCollector {
         $output->writeln("<info>Collecting Participant data ...</info>");
         $this->extractor->extractParticipantData($output, $course_id);
 
-        // TODO: MoocTransform with BUILDER LOCALISATION && Just Participant
+        // TODO: Do not remove participants
+        // TODO: Get country, ISO-CODE, Continent, Population & Localisation ManyToMany (http://www.geonames.org/countries/)
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
             $this->builder->buildParticipant($output, $data);

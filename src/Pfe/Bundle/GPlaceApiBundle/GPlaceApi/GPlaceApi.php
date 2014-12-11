@@ -11,33 +11,36 @@ class GPlaceApi {
     public function searchLocality($city, $state) {
 
         $query = urlencode($city) . '+' . urlencode($state);
-        $types = 'locality';
+        $types = 'political';
 
-        $this->buzz->get($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key, array('Content-type: application/json'));
+        $gplaces = $this->request($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key);
 
-        $response = json_decode($this->buzz->getLastResponse()->getContent());
-
-        $status = $response->status; //TODO: check status
-
-        $gplaces = $response->results;
+        if (count($gplaces) === 0) {
+            $types = 'postal_code';
+            $gplaces = $this->request($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key);
+        }
 
         return $gplaces;
     }
 
     public function searchState($state) {
-
         $query = urlencode($state);
         $types = 'country';
 
-        $this->buzz->get($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key, array('Content-type: application/json'));
+        $gplaces = $this->request($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key);
+
+
+        return $gplaces;
+    }
+
+    private function request($url) {
+        $this->buzz->get($url, array('Content-type: application/json'));
 
         $response = json_decode($this->buzz->getLastResponse()->getContent());
 
         $status = $response->status; //TODO: check status
 
-        $gplaces = $response->results;
-
-        return $gplaces;
+        return $response->results;
     }
 
     public function setConfig($config) {

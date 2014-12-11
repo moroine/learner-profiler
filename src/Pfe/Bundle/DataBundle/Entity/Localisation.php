@@ -60,6 +60,30 @@ class Localisation implements \JsonSerializable {
      *
      * @var string
      *
+     * @ORM\Column(name="iso3", type="string", nullable=true)
+     */
+    private $isoAlpha3;
+
+    /**
+     *
+     * @var string
+     *
+     * @ORM\Column(name="iso2", type="string", nullable=true)
+     */
+    private $isoAlpha2;
+
+    /**
+     *
+     * @var string
+     *
+     * @ORM\Column(name="fips", type="string", nullable=true)
+     */
+    private $fips;
+
+    /**
+     *
+     * @var string
+     *
      * @ORM\Column(name="g_place_id", type="string", nullable=true)
      */
     private $g_place_id;
@@ -173,6 +197,33 @@ class Localisation implements \JsonSerializable {
 
     public function setG_address($g_address) {
         $this->g_address = $g_address;
+        return $this;
+    }
+
+    function getIsoAlpha3() {
+        return $this->isoAlpha3;
+    }
+
+    function getIsoAlpha2() {
+        return $this->isoAlpha2;
+    }
+
+    function getFips() {
+        return $this->fips;
+    }
+
+    function setIsoAlpha3($isoAlpha3) {
+        $this->isoAlpha3 = $isoAlpha3;
+        return $this;
+    }
+
+    function setIsoAlpha2($isoAlpha2) {
+        $this->isoAlpha2 = $isoAlpha2;
+        return $this;
+    }
+
+    function setFips($fips) {
+        $this->fips = $fips;
         return $this;
     }
 
