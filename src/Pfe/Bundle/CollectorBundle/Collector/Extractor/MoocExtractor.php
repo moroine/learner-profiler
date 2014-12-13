@@ -2,6 +2,8 @@
 
 namespace Pfe\Bundle\CollectorBundle\Collector\Extractor;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
  * Description of MoocExtractor
  *
@@ -34,7 +36,7 @@ class MoocExtractor {
         return $this->connection->isConnected();
     }
 
-    public function importSqlDb($output, $path) {
+    public function importSqlDb(OutputInterface $output, $path) {
         $username = " -u " . $this->connection->getUsername();
         $password = empty($this->connection->getPassword()) ? "" : " -p " . $this->connection->getPassword();
 
@@ -45,7 +47,7 @@ class MoocExtractor {
         return;
     }
 
-    public function extractParticipantData($output, $course_id) {
+    public function extractParticipantData(OutputInterface $output, $course_id) {
         $this->statement = $this->connection->prepare($this->getParticipantDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 

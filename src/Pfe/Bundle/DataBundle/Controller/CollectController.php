@@ -5,7 +5,6 @@ namespace Pfe\Bundle\DataBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Goutte\Client;
 use Pfe\Bundle\DataBundle\Entity\Participant;
 
 /**
@@ -18,7 +17,6 @@ class CollectController extends Controller {
      * @Template()
      */
     public function participantAction($count) {
-        ini_set('max_execution_time', 300);
 
         $client = $this->container->get('pfe_services.mooc_login')->login();
 
@@ -93,8 +91,9 @@ class CollectController extends Controller {
 
             $response = $gplace_api->searchLocality($city, $state);
 
-            if (empty($response))
-                die('No response for ' . $city . ' - ' . $state);
+            if (empty($response)) {
+                return null;
+            }
 
             $status = $response->status; //TODO: check status
 

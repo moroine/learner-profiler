@@ -67,8 +67,6 @@ class MoocLogin {
         $crawler = $client->request('GET', $this->mooc['base_url']);
         $client->getCookieJar()->updateFromResponse($client->getResponse(), $this->mooc['domain']);
 
-        $link = $crawler->selectLink("Connexion fédérée IMT");
-
         $crawler = $client->request('GET', $this->mooc['url']);
         $client->getCookieJar()->updateFromResponse($client->getResponse(), $this->mooc['domain']);
 

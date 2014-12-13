@@ -106,7 +106,7 @@ class MoocBuilder {
         return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations";
     }
 
-    private function getLocalisation($countryInfos, $city, $output) {
+    private function getLocalisation($countryInfos, $city, OutputInterface $output) {
         $countryName = (empty($countryInfos)) ? null : $countryInfos->countryName;
 
         $repo = $this->doctrine->getRepository("PfeDataBundle:Localisation");
@@ -163,7 +163,7 @@ class MoocBuilder {
         return $localisation;
     }
 
-    private function getCountryInformation($output, $countryCode) {
+    private function getCountryInformation(OutputInterface $output, $countryCode) {
         $results = $this->geonames_api->searchByCountryCode($countryCode);
 
         if (count($results) === 0) {

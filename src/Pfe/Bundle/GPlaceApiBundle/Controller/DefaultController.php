@@ -17,9 +17,6 @@ class DefaultController extends Controller {
 
         $result = $gp->searchLocality($city, $state);
 
-        var_dump($result);
-        die();
-
         return array('result' => $result);
     }
 

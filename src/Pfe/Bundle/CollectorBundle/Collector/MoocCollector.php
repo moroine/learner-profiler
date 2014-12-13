@@ -31,7 +31,7 @@ class MoocCollector {
     public function collect(OutputInterface $output, $sqlFile, $course_id) {
         $path = $this->getFilePath($output, $sqlFile);
 
-        if ($path == null) {
+        if ($path === null) {
             return 0;
         }
 
@@ -68,7 +68,7 @@ class MoocCollector {
         $output->writeln($this->builder->getStats(), \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
     }
 
-    private function getFilePath($output, $path) {
+    private function getFilePath(OutputInterface $output, $path) {
         /**
          * @var \Symfony\Component\Filesystem\Filesystem
          */
