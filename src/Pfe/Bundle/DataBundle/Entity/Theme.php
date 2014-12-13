@@ -26,9 +26,15 @@ class Theme {
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank()
      */
     private $name;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="moodle_course_id", type="integer")
+     */
+    private $course_id;
 
     /**
      * Get id
@@ -58,6 +64,24 @@ class Theme {
      */
     public function getName() {
         return $this->name;
+    }
+
+    /**
+     *
+     * @return integer
+     */
+    function getCourseId() {
+        return $this->course_id;
+    }
+
+    /**
+     *
+     * @param integer $course_id
+     * @return \Pfe\Bundle\DataBundle\Entity\Theme
+     */
+    function setCourseId($course_id) {
+        $this->course_id = $course_id;
+        return $this;
     }
 
 }

@@ -47,16 +47,44 @@ class MoocCollector {
             return 0;
         }
 
+        $this->importSqlDb($output, $path);
+        $this->collectCourseData($output, $course_id);
+        $this->collectParticipantData($output, $course_id);
+
+        $output->writeln($this->builder->getStats(), \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
+    }
+
+    private function importSqlDb(OutputInterface $output, $path) {
         $output->writeln("<info>Importig sql database ....</info>");
         $output->writeln("<info>This could take a while, please wait ...</info>");
-        // $this->extractor->importSqlDb($output, $path);
+        $this->extractor->importSqlDb($output, $path);
         $output->writeln("<info>Sql Database succefully imported</info>");
+    }
+
+    private function collectCourseData(OutputInterface $output, $course_id) {
+        $output->writeln("<info>Collecting course data,...</info>");
+        $this->extractor->extractThemeData($output, $course_id);
+        $data = $this->extractor->nextRow($output);
+        $theme = $this->builder->buildTheme($output, $data);
+
+        $this->extractor->extractSectionData($output, $course_id);
+        $data = $this->extractor->nextRow($output);
+        while ($data !== null) {
+            $this->builder->buildSection($output, $theme, $data);
+
+            $data = $this->extractor->nextRow($output);
+        }
+
+        $this->builder->saveChanges();
+    }
+
+    private function collectParticipantData(OutputInterface $output, $course_id) {
+
 
         $output->writeln("<info>Collecting Participant data ...</info>");
         $this->extractor->extractParticipantData($output, $course_id);
 
         // TODO: Do not remove participants
-        // TODO: Get country, ISO-CODE, Continent, Population & Localisation ManyToMany (http://www.geonames.org/countries/)
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
             $this->builder->buildParticipant($output, $data);
@@ -65,7 +93,6 @@ class MoocCollector {
         }
 
         $this->builder->saveChanges();
-        $output->writeln($this->builder->getStats(), \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
     }
 
     private function getFilePath(OutputInterface $output, $path) {

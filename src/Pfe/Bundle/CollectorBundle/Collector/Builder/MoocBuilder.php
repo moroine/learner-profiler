@@ -28,6 +28,11 @@ class MoocBuilder {
      * @var \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi
      */
     private $geonames_api;
+
+    /**
+     *
+     * @var array
+     */
     private $stats;
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine, \Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi $gplace_api, \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi $geoname_api) {
@@ -42,6 +47,66 @@ class MoocBuilder {
         $this->stats['staffs'] = 0;
         $this->stats['apprenants'] = 0;
         $this->stats['localisations'] = 0;
+        $this->stats['theme'] = 0;
+        $this->stats['section'] = 0;
+    }
+
+    /**
+     *
+     * @param type $data
+     * @return \Pfe\Bundle\DataBundle\Entity\Theme
+     */
+    public function buildTheme(OutputInterface $output, $data) {
+        $id = intval($data['id']);
+        $name = trim($data['fullname']);
+
+        $theme = new \Pfe\Bundle\DataBundle\Entity\Theme();
+
+        $theme->setName($name);
+        $theme->setCourseId($id);
+
+        $this->doctrine->getManager()->persist($theme);
+        $this->stats['theme'] ++;
+
+        return $theme;
+    }
+
+    /**
+     *
+     * @param type $data
+     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     */
+    public function buildSection(OutputInterface $output, \Pfe\Bundle\DataBundle\Entity\Theme $theme, $data) {
+        $name = trim($data['name']);
+        $order = intval($data['section']);
+        // $sequence = trim($data['sequence']);
+
+        $section = new \Pfe\Bundle\DataBundle\Entity\Section($name, $order, 7, $theme);
+
+        $this->stats['section'] ++;
+
+        $this->doctrine->getManager()->persist($section);
+
+        return $section;
+    }
+
+    /**
+     *
+     * @param type $data
+     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     */
+    public function buildRessource(OutputInterface $output, \Pfe\Bundle\DataBundle\Entity\Theme $theme, $data) {
+        $name = trim($data['name']);
+        $order = intval($data['section']);
+        // $sequence = trim($data['sequence']);
+
+        $section = new \Pfe\Bundle\DataBundle\Entity\Section($name, $order, 7, $theme);
+
+        $this->stats['section'] ++;
+
+        $this->doctrine->getManager()->persist($section);
+
+        return $section;
     }
 
     /**
@@ -103,7 +168,7 @@ class MoocBuilder {
     }
 
     public function getStats() {
-        return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations";
+        return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations\n" . $this->stats['theme'] . " theme + " . $this->stats['section'] . ' sections';
     }
 
     private function getLocalisation($countryInfos, $city, OutputInterface $output) {

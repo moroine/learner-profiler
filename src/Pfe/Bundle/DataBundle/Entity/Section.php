@@ -31,12 +31,18 @@ class Section {
     private $name;
 
     /**
-     * @var Periode
+     * @var integer
      *
-     * @ORM\OneToOne(targetEntity="Periode")
-     * @Assert\Valid()
+     * @ORM\Column(name="section_order", type="integer")
      */
-    private $periode;
+    private $order;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="duration_days", type="integer")
+     */
+    private $duration_days;
 
     /**
      * @var Theme
@@ -46,9 +52,10 @@ class Section {
      */
     private $theme;
 
-    function __construct($name, Periode $periode, Theme $theme) {
+    function __construct($name, $order, $duration_days, Theme $theme) {
         $this->name = $name;
-        $this->periode = $periode;
+        $this->duration_days = $duration_days;
+        $this->order = $order;
         $this->theme = $theme;
     }
 
@@ -84,19 +91,37 @@ class Section {
 
     /**
      *
-     * @return Periode
+     * @return integer
      */
-    function getPeriode() {
-        return $this->periode;
+    function getOrder() {
+        return $this->order;
     }
 
     /**
      *
-     * @param Periode $periode
-     * @return Section
+     * @return integer
      */
-    function setPeriode(Periode $periode) {
-        $this->periode = $periode;
+    function getDuration_days() {
+        return $this->duration_days;
+    }
+
+    /**
+     *
+     * @param integer $order
+     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     */
+    function setOrder($order) {
+        $this->order = $order;
+        return $this;
+    }
+
+    /**
+     *
+     * @param integer $duration_days
+     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     */
+    function setDuration_days($duration_days) {
+        $this->duration_days = $duration_days;
         return $this;
     }
 
