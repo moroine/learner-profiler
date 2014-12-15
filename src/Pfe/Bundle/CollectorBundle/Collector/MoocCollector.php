@@ -47,9 +47,11 @@ class MoocCollector {
             return 0;
         }
 
-        $this->importSqlDb($output, $path);
-        $this->collectCourseData($output, $course_id);
-        $this->collectParticipantData($output, $course_id);
+//        $this->importSqlDb($output, $path);
+        $modules = $this->collectCourseData($output, $course_id);
+        $participants = $this->collectParticipantData($output, $course_id);
+
+        $this->collectActionData($output, $course_id, $modules, $participants);
 
         $output->writeln($this->builder->getStats(), \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
     }
@@ -68,26 +70,63 @@ class MoocCollector {
         $theme = $this->builder->buildTheme($output, $data);
 
         $this->extractor->extractSectionData($output, $course_id);
+        $sections = [];
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
-            $this->builder->buildSection($output, $theme, $data);
+            $section = $this->builder->buildSection($output, $theme, $data);
+            $sections[$section->getMooc_id()] = $section;
+
+            $data = $this->extractor->nextRow($output);
+        }
+
+        $this->extractor->extractModuleData($output, $course_id);
+        $modules = [];
+        $data = $this->extractor->nextRow($output);
+        while ($data !== null) {
+            $module = $this->builder->buildModule($output, $sections, $data);
+            $modules[$module->getMoocId()] = $module;
 
             $data = $this->extractor->nextRow($output);
         }
 
         $this->builder->saveChanges();
+
+        return $modules;
     }
 
     private function collectParticipantData(OutputInterface $output, $course_id) {
-
-
         $output->writeln("<info>Collecting Participant data ...</info>");
         $this->extractor->extractParticipantData($output, $course_id);
 
         // TODO: Do not remove participants
         $data = $this->extractor->nextRow($output);
+        $participants = [];
         while ($data !== null) {
-            $this->builder->buildParticipant($output, $data);
+            $participant = $this->builder->buildParticipant($output, $data);
+            $participants[$participant->getMoocId()] = $participant;
+
+            $data = $this->extractor->nextRow($output);
+        }
+
+        $this->builder->saveChanges();
+
+        return $participants;
+    }
+
+    /**
+     *
+     * @param OutputInterface $output
+     * @param integer $course_id
+     * @param \Pfe\Bundle\DataBundle\Entity\Module[] $modules
+     * @param \Pfe\Bundle\DataBundle\Entity\Participant[] $participants
+     */
+    private function collectActionData(OutputInterface $output, $course_id, $modules, $participants) {
+        $output->writeln("<info>Collecting Action data ...</info>");
+        $this->extractor->extractActionData($output, $course_id);
+
+        $data = $this->extractor->nextRow($output);
+        while ($data !== null) {
+            $this->builder->buildAction($output, $modules, $participants, $data);
 
             $data = $this->extractor->nextRow($output);
         }

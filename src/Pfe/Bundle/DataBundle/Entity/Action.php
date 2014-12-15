@@ -40,6 +40,13 @@ class Action {
     private $ip;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="action_type", type="string", length=255)
+     */
+    private $type;
+
+    /**
      * @var Participant
      *
      * @ORM\ManyToOne(targetEntity="Participant")
@@ -56,20 +63,20 @@ class Action {
     private $localisation;
 
     /**
-     * @var Ressource
+     * @var Module
      *
-     * @ORM\ManyToOne(targetEntity="Ressource")
+     * @ORM\ManyToOne(targetEntity="Module")
      * @Assert\Valid
      */
-    private $ressource;
+    private $module;
 
-    function __construct(\DateTime $datetime, Participant $participant, Ressource $ressource = null, $ip = null) {
+    function __construct(\DateTime $datetime, Participant $participant = null, Module $module = null, $ip = null) {
         $this->datetime = $datetime;
         $this->ip = $ip;
         $this->participant = $participant;
         // TODO: Get Localisation from ip
         // $this->localisation = $localisation;
-        $this->ressource = $ressource;
+        $this->module = $module;
     }
 
     /**
@@ -123,6 +130,15 @@ class Action {
         return $this->ip;
     }
 
+    function getType() {
+        return $this->type;
+    }
+
+    function setType($type) {
+        $this->type = $type;
+        return $this;
+    }
+
     /**
      * Set Participant
      *
@@ -166,24 +182,24 @@ class Action {
     }
 
     /**
-     * Set Ressource
+     * Set Module
      *
-     * @param Ressource $ressource
+     * @param Module $module
      * @return Action
      */
-    public function setRessource($ressource) {
-        $this->ressource = $ressource;
+    public function setModule($module) {
+        $this->module = $module;
 
         return $this;
     }
 
     /**
-     * Get Ressource
+     * Get Module
      *
-     * @return Ressource
+     * @return Module
      */
-    public function getRessource() {
-        return $this->ressource;
+    public function getModule() {
+        return $this->module;
     }
 
 }

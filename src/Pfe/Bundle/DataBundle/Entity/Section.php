@@ -45,6 +45,13 @@ class Section {
     private $duration_days;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_id", type="integer")
+     */
+    private $mooc_id;
+
+    /**
      * @var Theme
      *
      * @ORM\ManyToOne(targetEntity="Theme")
@@ -122,6 +129,15 @@ class Section {
      */
     function setDuration_days($duration_days) {
         $this->duration_days = $duration_days;
+        return $this;
+    }
+
+    function getMooc_id() {
+        return $this->mooc_id;
+    }
+
+    function setMooc_id($mooc_id) {
+        $this->mooc_id = $mooc_id;
         return $this;
     }
 

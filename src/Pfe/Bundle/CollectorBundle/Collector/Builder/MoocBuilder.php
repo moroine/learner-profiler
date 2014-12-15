@@ -34,6 +34,7 @@ class MoocBuilder {
      * @var array
      */
     private $stats;
+    private $n_managed;
 
     public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine, \Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi $gplace_api, \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi $geoname_api) {
         $this->doctrine = $doctrine;
@@ -49,6 +50,10 @@ class MoocBuilder {
         $this->stats['localisations'] = 0;
         $this->stats['theme'] = 0;
         $this->stats['section'] = 0;
+        $this->stats['module'] = 0;
+        $this->stats['action'] = 0;
+
+        $this->n_managed = 0;
     }
 
     /**
@@ -79,9 +84,10 @@ class MoocBuilder {
     public function buildSection(OutputInterface $output, \Pfe\Bundle\DataBundle\Entity\Theme $theme, $data) {
         $name = trim($data['name']);
         $order = intval($data['section']);
-        // $sequence = trim($data['sequence']);
 
         $section = new \Pfe\Bundle\DataBundle\Entity\Section($name, $order, 7, $theme);
+
+        $section->setMooc_id(intval($data['id']));
 
         $this->stats['section'] ++;
 
@@ -92,21 +98,55 @@ class MoocBuilder {
 
     /**
      *
-     * @param type $data
-     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     * @param \Pfe\Bundle\DataBundle\Entity\Section[] $sections
+     * @param array $data
+     * @return \Pfe\Bundle\DataBundle\Entity\Module
      */
-    public function buildRessource(OutputInterface $output, \Pfe\Bundle\DataBundle\Entity\Theme $theme, $data) {
-        $name = trim($data['name']);
-        $order = intval($data['section']);
-        // $sequence = trim($data['sequence']);
+    public function buildModule(OutputInterface $output, $sections, $data) {
+        /**
+         * @var \Pfe\Bundle\DataBundle\Entity\Section[] $sections
+         */
+        $mooc_id = intval($data['id']);
+        $module_type = intval($data['module']);
+        switch ($module_type) {
+            case 7:
+                $type = "feedback";
+                break;
+            case 9:
+                $type = "forum";
+                break;
+            case 10:
+                $type = "glossary";
+                break;
+            case 15:
+                $type = "page";
+                break;
+            case 16:
+                $type = "quiz";
+                break;
+            case 17:
+                $type = "resource";
+                break;
+            case 20:
+                $type = "url";
+                break;
+            case 22:
+                $type = "workshop";
+                break;
+        }
+        $name = trim($data[$type . '_name']);
+        $section_order = intval($data['section']);
 
-        $section = new \Pfe\Bundle\DataBundle\Entity\Section($name, $order, 7, $theme);
+        $module = null;
+        if (array_key_exists($section_order, $sections)) {
+            $module = new \Pfe\Bundle\DataBundle\Entity\Module($name, $type, $sections[$section_order]);
+            $module->setMoocId($mooc_id);
+            $this->stats['module'] ++;
+        }
 
-        $this->stats['section'] ++;
+        $this->doctrine->getManager()->persist($module);
 
-        $this->doctrine->getManager()->persist($section);
-
-        return $section;
+        return $module;
     }
 
     /**
@@ -140,6 +180,9 @@ class MoocBuilder {
 
         $participant->setEmail($email);
 
+        $mooc_id = intval($data['id']);
+        $participant->setMoocId($mooc_id);
+
         $name = trim($data['firstname'] . " " . $data['lastname']);
         $participant->setName($name);
 
@@ -150,25 +193,70 @@ class MoocBuilder {
         $lang = trim(strtolower($data['lang']));
         $participant->setLang($lang);
 
-        $countryCode = trim($data['country']);
-        $countryInfos = (empty($countryCode)) ? null : $this->getCountryInformation($output, $countryCode);
+//        $countryCode = trim($data['country']);
+//        $countryInfos = (empty($countryCode)) ? null : $this->getCountryInformation($output, $countryCode);
 
         $city = trim($data['city']);
 
-        $localisation = $this->getLocalisation($countryInfos, $city, $output);
-        $participant->setHome($localisation);
+//        $localisation = $this->getLocalisation($countryInfos, $city, $output);
+//        $participant->setHome($localisation);
 
         $this->doctrine->getManager()->persist($participant);
 
         return $participant;
     }
 
+    /**
+     *
+     * @param OutputInterface $output
+     * @param \Pfe\Bundle\DataBundle\Entity\Module[] $modules
+     * @param \Pfe\Bundle\DataBundle\Entity\Participant[] $participants
+     * @param array $data
+     */
+    public function buildAction(OutputInterface $output, $modules, $participants, $data) {
+        $time = "@" . trim($data['time']);
+        $userid = intval($data['userid']);
+        $ip = trim($data['ip']);
+        $mooc_mod_id = intval($data['cmid']);
+        $type = trim($data['action']);
+
+
+        $action = new \Pfe\Bundle\DataBundle\Entity\Action(new \DateTime($time));
+
+        if (array_key_exists($userid, $participants)) {
+            $participant = $this->doctrine->getManager()->merge($participants[$userid]);
+            $action->setParticipant($participant);
+        }
+
+        if (array_key_exists($mooc_mod_id, $modules)) {
+            $participant = $this->doctrine->getManager()->merge($modules[$mooc_mod_id]);
+            $action->setParticipant($participant);
+        }
+
+
+        $action->setIp($ip);
+        $action->setType($type);
+
+        $this->stats['action'] ++;
+
+        $this->doctrine->getManager()->persist($action);
+
+        $this->n_managed ++;
+        if ($this->n_managed > 1000) {
+            $this->n_managed = 0;
+            $this->saveChanges();
+        }
+
+        return $action;
+    }
+
     public function saveChanges() {
         $this->doctrine->getManager()->flush();
+        $this->doctrine->getManager()->clear();
     }
 
     public function getStats() {
-        return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations\n" . $this->stats['theme'] . " theme + " . $this->stats['section'] . ' sections';
+        return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations\n" . $this->stats['theme'] . " theme + " . $this->stats['section'] . ' sections + ' . $this->stats['module'] . ' modules\n' . $this->stats['action'] . " actions";
     }
 
     private function getLocalisation($countryInfos, $city, OutputInterface $output) {

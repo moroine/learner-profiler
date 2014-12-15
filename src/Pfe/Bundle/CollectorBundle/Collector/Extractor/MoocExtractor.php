@@ -25,11 +25,17 @@ class MoocExtractor {
      */
     private $statement;
 
+    /**
+     * @var long
+     */
+    private $mutex;
+
     public function __construct(\Doctrine\DBAL\Connection $connection) {
         $this->connection = $connection;
         if (!$this->connection->isConnected()) {
             $this->connection->connect();
         }
+        $this->mutex = Mutex::create();
     }
 
     public function isConnected() {
@@ -72,13 +78,13 @@ class MoocExtractor {
     }
 
     public function getSectionDataQuery($course_id_label) {
-        $query = "SELECT s.name, s.section, s.sequence FROM mdl_course_sections s WHERE s.visible=1 AND s.course=:" . $course_id_label;
+        $query = "SELECT s.id, s.name, s.section, s.sequence FROM mdl_course_sections s WHERE s.visible=1 AND s.course=:" . $course_id_label;
 
         return $query;
     }
 
-    public function extractRessourceData(OutputInterface $output, $course_id) {
-        $this->statement = $this->connection->prepare($this->getRessourceDataQuery('course_id'));
+    public function extractModuleData(OutputInterface $output, $course_id) {
+        $this->statement = $this->connection->prepare($this->getModuleDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
         if (!$this->statement->execute()) {
@@ -86,8 +92,24 @@ class MoocExtractor {
         }
     }
 
-    public function getRessourceDataQuery($course_id_label) {
-        $query = "SELECT s.name, s.section, s.sequence FROM mdl_course_sections s WHERE s.visible=1 AND s.course=:" . $course_id_label;
+    public function getModuleDataQuery($course_id_label) {
+        $query = <<<EOT
+            SELECT DISTINCT cm.id, cm.module, cm.section, cm.instance, feedback.name as feedback_name, forum.name as forum_name, glossary.name as glossary_name, page.name as page_name, quiz.name as quiz_name, resource.name as resource_name, url.name as url_name, workshop.name as workshop_name
+
+            FROM (SELECT * FROM `mdl_course_modules`) cm
+            LEFT JOIN `mdl_feedback` feedback ON feedback.id = cm.instance
+            LEFT JOIN `mdl_forum` forum ON forum.id = cm.instance
+            LEFT JOIN `mdl_glossary` glossary ON glossary.id = cm.instance
+            LEFT JOIN `mdl_page` page ON page.id = cm.instance
+            LEFT JOIN `mdl_quiz` quiz ON quiz.id = cm.instance
+            LEFT JOIN `mdl_resource` resource ON resource.id = cm.instance
+            LEFT JOIN `mdl_url` url ON url.id = cm.instance
+            LEFT JOIN `mdl_workshop`as workshop ON workshop.id = cm.instance
+
+            WHERE cm.course=:{$course_id_label} AND cm.visible=1 AND cm.module IN (7, 9, 10, 15, 16, 17, 20,22)
+            ORDER BY cm.module
+
+EOT;
 
         return $query;
     }
@@ -116,6 +138,24 @@ EOT;
         return $query;
     }
 
+    public function extractActionData(OutputInterface $output, $course_id) {
+        $this->statement = $this->connection->prepare($this->getActionDataQuery('course_id'));
+        $this->statement->bindParam('course_id', $course_id);
+
+        if (!$this->statement->execute()) {
+            $output->writeln("<error>Unable to execute the query");
+        }
+    }
+
+    private function getActionDataQuery($course_id_label) {
+        $query = <<<EOT
+            SELECT l.time, l.userid, l.ip, l.cmid, l.action
+            FROM mdl_log l
+            WHERE l.course=:{$course_id_label}
+EOT;
+        return $query;
+    }
+
     public function nextRow() {
         $data = $this->statement->fetch();
 
@@ -124,6 +164,23 @@ EOT;
         }
 
         return null;
+    }
+
+    public function nextRowsPackage($size) {
+        Mutex::lock($this->mutex);
+
+        $datas = [];
+        $i = 0;
+        $data = $this->nextRow();
+        while ($data !== null && $i < $size) {
+            $datas[] = $data;
+            $i++;
+            $data = $this->nextRow();
+        }
+
+        Mutex::unlock($this->mutex);
+
+        return $datas;
     }
 
 }

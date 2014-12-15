@@ -63,6 +63,13 @@ class Participant implements \JsonSerializable {
     private $lang;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_id", type="integer")
+     */
+    private $mooc_id;
+
+    /**
      *
      * @var Localisation
      *
@@ -141,6 +148,15 @@ class Participant implements \JsonSerializable {
 
     function setLang($lang) {
         $this->lang = $lang;
+        return $this;
+    }
+
+    function getMoocId() {
+        return $this->mooc_id;
+    }
+
+    function setMoocId($mooc_id) {
+        $this->mooc_id = $mooc_id;
         return $this;
     }
 

@@ -6,12 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Ressource
+ * Module
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\RessourceRepository")
+ * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\ModuleRepository")
  */
-class Ressource {
+class Module {
 
     /**
      * @var integer
@@ -37,6 +37,13 @@ class Ressource {
      * @Assert\NotBlank()
      */
     private $type;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_id", type="integer")
+     */
+    private $mooc_id;
 
     /**
      * @var Section
@@ -72,7 +79,7 @@ class Ressource {
     /**
      *
      * @param string $name
-     * @return Ressource
+     * @return Module
      */
     function setName($name) {
         $this->name = $name;
@@ -83,7 +90,7 @@ class Ressource {
      * Set type
      *
      * @param string $type
-     * @return Ressource
+     * @return Module
      */
     public function setType($type) {
         $this->type = $type;
@@ -111,10 +118,19 @@ class Ressource {
     /**
      *
      * @param Section $section
-     * @return Ressource
+     * @return Module
      */
     function setSection(Section $section) {
         $this->section = $section;
+        return $this;
+    }
+
+    function getMoocId() {
+        return $this->mooc_id;
+    }
+
+    function setMoocId($mooc_id) {
+        $this->mooc_id = $mooc_id;
         return $this;
     }
 
