@@ -16,6 +16,10 @@
             <argument type="service" id="doctrine" />
             <argument type="service" id="pfe_services.g_place_api" />
             <argument type="service" id="pfe_services.geonames_api" />
+            <argument type="service" id="pfe_collector.mooc.builder.theme" />
+        </service>
+        <service id="pfe_collector.mooc.builder.theme" class="Pfe\Bundle\CollectorBundle\Collector\Builder\ThemeMoocBuilder">
+            <argument type="service" id="doctrine" />
         </service>
     </services>
 </container>

@@ -36,12 +36,19 @@ class MoocBuilder {
     private $stats;
     private $n_managed;
 
-    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine, \Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi $gplace_api, \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi $geoname_api) {
+    /**
+     *
+     * @var ThemeMoocBuilder
+     */
+    private $theme_builder;
+
+    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine, \Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi $gplace_api, \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi $geoname_api, \Pfe\Bundle\CollectorBundle\Collector\Builder\ThemeMoocBuilder $themeBuilder) {
         $this->doctrine = $doctrine;
 
         $this->gplace_api = $gplace_api;
         $this->geonames_api = $geoname_api;
 
+        $this->theme_builder = $themeBuilder;
         $this->stats = array();
         $this->stats['participants'] = 0;
         $this->stats['etudiants'] = 0;
@@ -62,22 +69,7 @@ class MoocBuilder {
      * @return \Pfe\Bundle\CoreBundle\Entity\Theme
      */
     public function buildTheme(OutputInterface $output, $data) {
-        $id = intval($data['id']);
-        $name = trim($data['fullname']);
-
-        $theme = $this->doctrine->getRepository("PfeCoreBundle:Theme")->findOneBy(array("course_id" => $id));
-
-        if (empty($theme)) {
-            $theme = new \Pfe\Bundle\CoreBundle\Entity\Theme();
-        }
-
-        $theme->setName($name);
-        $theme->setCourseId($id);
-
-        $this->doctrine->getManager()->persist($theme);
-        $this->stats['theme'] ++;
-
-        return $theme;
+        return $this->theme_builder->buildTheme($output, $data);
     }
 
     /**
@@ -296,7 +288,7 @@ class MoocBuilder {
     }
 
     public function getStats() {
-        return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations\n" . $this->stats['theme'] . " theme + " . $this->stats['section'] . ' sections + ' . $this->stats['module'] . ' modules\n' . $this->stats['action'] . " actions";
+        return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations\n" . $this->theme_builder->getStats() . "\n" . $this->stats['section'] . ' sections + ' . $this->stats['module'] . ' modules\n' . $this->stats['action'] . " actions";
     }
 
     private function getLocalisation($countryInfos, $city, OutputInterface $output) {

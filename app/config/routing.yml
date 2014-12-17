@@ -7,6 +7,6 @@ pfe_geonames:
     prefix:   /geonames
 
 pfe_data:
-    resource: "@PfeDataBundle/Controller"
-    prefix:   /data
+    resource: "@PfeProviderBundle/Controller"
+    prefix:   /provider
 
