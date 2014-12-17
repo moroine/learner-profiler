@@ -151,6 +151,7 @@ class MoocBuilder {
             }
         } else {
             $section = $this->doctrine->getRepository("PfeCoreBundle:Section")->findBy(array("order" => $section_order));
+            $module = new \Pfe\Bundle\CoreBundle\Entity\Module($name, $type, $section);
             $module->setMoocId($mooc_id);
             $this->stats['module'] ++;
         }
