@@ -65,7 +65,11 @@ class MoocBuilder {
         $id = intval($data['id']);
         $name = trim($data['fullname']);
 
-        $theme = new \Pfe\Bundle\CoreBundle\Entity\Theme();
+        $theme = $this->doctrine->getRepository("PfeCoreBundle:Theme")->findOneBy(array("course_id" => $id));
+
+        if (empty($theme)) {
+            $theme = new \Pfe\Bundle\CoreBundle\Entity\Theme();
+        }
 
         $theme->setName($name);
         $theme->setCourseId($id);
@@ -90,7 +94,10 @@ class MoocBuilder {
             $theme = $this->doctrine->getRepository("PfeCoreBundle:Theme")->findOneBy(array('course_id' => $course_id));
         }
 
-        $section = new \Pfe\Bundle\CoreBundle\Entity\Section($name, $order, 7, $theme);
+        $section = $this->doctrine->getRepository("PfeCoreBundle:Section")->findOneBy(array("order" => $order));
+        if (empty($section)) {
+            $section = new \Pfe\Bundle\CoreBundle\Entity\Section($name, $order, 7, $theme);
+        }
 
         $section->setMoocId(intval($data['id']));
 
@@ -142,17 +149,25 @@ class MoocBuilder {
         $name = trim($data[$type . '_name']);
         $section_order = intval($data['section']);
 
-        $module = null;
+
+        $module = $this->doctrine->getRepository("PfeCoreBundle:Module")->findOneBy(array("mooc_id" => $mooc_id));
+        if (empty($module)) {
+            $module = new \Pfe\Bundle\CoreBundle\Entity\Module($name, $type, $sections[$section_order]);
+            $module->setMoocId($mooc_id);
+        }
+
+        $module->setName($name);
+        $module->setType($type);
+        $module->setSection($sections[$section_order]);
+
         if ($sections !== null) {
             if (array_key_exists($section_order, $sections)) {
-                $module = new \Pfe\Bundle\CoreBundle\Entity\Module($name, $type, $sections[$section_order]);
-                $module->setMoocId($mooc_id);
+                $module->setSection($sections[$section_order]);
                 $this->stats['module'] ++;
             }
         } else {
             $section = $this->doctrine->getRepository("PfeCoreBundle:Section")->findBy(array("order" => $section_order));
-            $module = new \Pfe\Bundle\CoreBundle\Entity\Module($name, $type, $section);
-            $module->setMoocId($mooc_id);
+            $module->setSection($section);
             $this->stats['module'] ++;
         }
 
@@ -173,13 +188,13 @@ class MoocBuilder {
         $participant = $this->doctrine->getManager()->getRepository("PfeCoreBundle:Participant")->findOneByEmail($email);
 
         if ($participant === null) {
-            if ($data['auth'] === 'shibboleth' || ($data['enrol'] === 'manual' || $data['enrol'] === 'cohort') && $data['shortname'] === 'student') {
+            if ($data['enrol'] === 'cohort' && $data['shortname'] === 'student') {
                 $participant = new \Pfe\Bundle\CoreBundle\Entity\Etudiant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
                 $this->stats['etudiants'] ++;
-            } elseif ($data['auth'] === 'email' && $data['enrol'] === 'self' && $data['shortname'] === 'student') {
+            } elseif ($data['enrol'] === 'self' && $data['shortname'] === 'student') {
                 $participant = new \Pfe\Bundle\CoreBundle\Entity\Apprenant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
                 $this->stats['apprenants'] ++;
-            } elseif (($data['enrol'] === 'manual' || $data['enrol'] === 'cohort') && $data['shortname'] !== 'student') {
+            } elseif ($data['shortname'] !== 'student') {
                 $participant = new \Pfe\Bundle\CoreBundle\Entity\Staff($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
                 $this->stats['staffs'] ++;
             } else {
@@ -191,6 +206,7 @@ class MoocBuilder {
         }
 
         $participant->setEmail($email);
+
 
         $mooc_id = intval($data['id']);
         $participant->setMoocId($mooc_id);
@@ -220,31 +236,43 @@ class MoocBuilder {
 
     /**
      *
-     * @param OutputInterface $output
-     * @param \Pfe\Bundle\CoreBundle\Entity\Module[] $modules
-     * @param \Pfe\Bundle\CoreBundle\Entity\Participant[] $participants
      * @param array $data
+     * @param \Pfe\Bundle\CoreBundle\Entity\Module[]|null $modules
+     * @param \Pfe\Bundle\CoreBundle\Entity\Participant[]|null $participants
      */
-    public function buildAction(OutputInterface $output, $modules, $participants, $data) {
+    public function buildAction(OutputInterface $output, $data, $modules = null, $participants = null) {
         $time = "@" . trim($data['time']);
+        $id = intval($data['id']);
         $userid = intval($data['userid']);
         $ip = trim($data['ip']);
         $mooc_mod_id = intval($data['cmid']);
         $type = trim($data['action']);
 
-
-        $action = new \Pfe\Bundle\CoreBundle\Entity\Action(new \DateTime($time));
-
-        if (array_key_exists($userid, $participants)) {
-            $participant = $this->doctrine->getManager()->merge($participants[$userid]);
-            $action->setParticipant($participant);
+        $action = $this->doctrine->getRepository("PfeCoreBundle:Action")->findOneBy(array("mooc_id" => $id));
+        if (empty($action)) {
+            $action = new \Pfe\Bundle\CoreBundle\Entity\Action(new \DateTime($time));
+            $action->setMoocId($id);
         }
 
-        if (array_key_exists($mooc_mod_id, $modules)) {
-            $participant = $this->doctrine->getManager()->merge($modules[$mooc_mod_id]);
+        if ($participants !== null) {
+            if (array_key_exists($userid, $participants)) {
+                $participant = $this->doctrine->getManager()->merge($participants[$userid]);
+                $action->setParticipant($participant);
+            }
+        } else {
+            $participant = $this->doctrine->getRepository("PfeCoreBundle:Participant")->findBy(array("mooc_id" => $userid));
             $action->setParticipant($participant);
         }
+        if ($participants !== null) {
 
+            if (array_key_exists($mooc_mod_id, $modules)) {
+                $module = $this->doctrine->getManager()->merge($modules[$mooc_mod_id]);
+                $action->setModule($module);
+            }
+        } else {
+            $participant = $this->doctrine->getRepository("PfeCoreBundle:Participant")->findBy(array("mooc_id" => $userid));
+            $action->setParticipant($participant);
+        }
 
         $action->setIp($ip);
         $action->setType($type);
@@ -254,7 +282,7 @@ class MoocBuilder {
         $this->doctrine->getManager()->persist($action);
 
         $this->n_managed ++;
-        if ($this->n_managed > 1000) {
+        if ($this->n_managed > 30000) {
             $this->n_managed = 0;
             $this->saveChanges();
         }
@@ -292,6 +320,9 @@ class MoocBuilder {
             switch (count($gplaces)) {
                 case 0:
                     $output->writeln('<error>Empty response for ' . $countryName . ' - ' . $city . '</error>');
+                    return null;
+                case null:
+                    $output->writeln('<error>No response for ' . $countryName . ' - ' . $city . '</error>');
                     return null;
                 case 1:
                     break;

@@ -53,7 +53,7 @@ class Module {
      */
     private $section;
 
-    function __construct($name, $type, Section $section = null) {
+    function __construct($name = null, $type = null, Section $section = null) {
         $this->name = $name;
         $this->type = $type;
         $this->section = $section;

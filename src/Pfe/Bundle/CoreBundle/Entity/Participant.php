@@ -65,7 +65,7 @@ class Participant implements \JsonSerializable {
     /**
      * @var integer
      *
-     * @ORM\Column(name="mooc_id", type="integer")
+     * @ORM\Column(name="mooc_id", type="integer", unique=true)
      */
     private $mooc_id;
 

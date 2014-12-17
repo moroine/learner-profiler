@@ -34,7 +34,11 @@ class GPlaceApi {
     }
 
     private function request($url) {
-        $this->buzz->get($url, array('Content-type: application/json'));
+        try {
+            $this->buzz->get($url, array('Content-type: application/json'));
+        } catch (Buzz\Exception\RequestException $e) {
+            return null;
+        }
 
         $response = json_decode($this->buzz->getLastResponse()->getContent());
 

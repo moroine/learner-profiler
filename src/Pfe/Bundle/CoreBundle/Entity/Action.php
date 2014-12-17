@@ -4,12 +4,15 @@ namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Action
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ActionRepository")
+ *
+ * @UniqueEntity(fields={"datetime", "city"}, message="message")
  */
 class Action {
 
@@ -61,6 +64,13 @@ class Action {
      * @Assert\Valid
      */
     private $localisation;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_id", type="integer", unique=true)
+     */
+    private $mooc_id;
 
     /**
      * @var Module
@@ -136,6 +146,15 @@ class Action {
 
     function setType($type) {
         $this->type = $type;
+        return $this;
+    }
+
+    function getMoocId() {
+        return $this->mooc_id;
+    }
+
+    function setMoocId($mooc_id) {
+        $this->mooc_id = $mooc_id;
         return $this;
     }
 

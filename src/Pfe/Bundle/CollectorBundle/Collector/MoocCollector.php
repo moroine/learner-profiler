@@ -130,11 +130,11 @@ class MoocCollector {
         $count = 0;
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
-            $this->builder->buildAction($output, $modules, $participants, $data);
+            $this->builder->buildAction($output, $data, $modules, $participants);
 
             $data = $this->extractor->nextRow($output);
             $count++;
-            if ($count % 1000 === 0) {
+            if ($count % 20000 === 0) {
                 $output->writeln("<info>" . $count . " actions imported</info>");
             }
         }

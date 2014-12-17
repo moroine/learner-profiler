@@ -128,10 +128,10 @@ EOT;
             FROM mdl_user u
             JOIN mdl_enrol e ON e.courseid=:{$course_id_label}
             JOIN mdl_user_enrolments ue ON ue.userid=u.id AND ue.enrolid=e.id
-            LEFT JOIN mdl_context c ON c.contextlevel=50 AND c.instanceid=:{$course_id_label}
+            LEFT JOIN mdl_context c ON c.contextlevel=50 AND c.instanceid=e.courseid
             LEFT JOIN mdl_role_assignments ra ON  ra.userid=u.id AND ra.contextid=c.id
             LEFT JOIN mdl_role r ON ra.roleid=r.id
-            LEFT JOIN mdl_user_lastaccess ul ON ul.userid=u.id AND ul.courseid=:{$course_id_label}
+            LEFT JOIN mdl_user_lastaccess ul ON ul.userid=u.id AND ul.courseid=e.courseid
             GROUP BY u.email
 EOT;
         return $query;
@@ -148,7 +148,7 @@ EOT;
 
     private function getActionDataQuery($course_id_label) {
         $query = <<<EOT
-            SELECT l.time, l.userid, l.ip, l.cmid, l.action
+            SELECT l.id, l.time, l.userid, l.ip, l.cmid, l.action
             FROM mdl_log l
             WHERE l.course=:{$course_id_label}
 EOT;
