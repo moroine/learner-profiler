@@ -59,13 +59,13 @@ class MoocBuilder {
     /**
      *
      * @param type $data
-     * @return \Pfe\Bundle\DataBundle\Entity\Theme
+     * @return \Pfe\Bundle\CoreBundle\Entity\Theme
      */
     public function buildTheme(OutputInterface $output, $data) {
         $id = intval($data['id']);
         $name = trim($data['fullname']);
 
-        $theme = new \Pfe\Bundle\DataBundle\Entity\Theme();
+        $theme = new \Pfe\Bundle\CoreBundle\Entity\Theme();
 
         $theme->setName($name);
         $theme->setCourseId($id);
@@ -79,15 +79,20 @@ class MoocBuilder {
     /**
      *
      * @param type $data
-     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     * @return \Pfe\Bundle\CoreBundle\Entity\Section
      */
-    public function buildSection(OutputInterface $output, \Pfe\Bundle\DataBundle\Entity\Theme $theme, $data) {
+    public function buildSection(OutputInterface $output, $data, \Pfe\Bundle\CoreBundle\Entity\Theme $theme = null) {
         $name = trim($data['name']);
         $order = intval($data['section']);
 
-        $section = new \Pfe\Bundle\DataBundle\Entity\Section($name, $order, 7, $theme);
+        if ($theme === null) {
+            $course_id = intval($data['course']);
+            $theme = $this->doctrine->getRepository("PfeCoreBundle:Theme")->findOneBy(array('course_id' => $course_id));
+        }
 
-        $section->setMooc_id(intval($data['id']));
+        $section = new \Pfe\Bundle\CoreBundle\Entity\Section($name, $order, 7, $theme);
+
+        $section->setMoocId(intval($data['id']));
 
         $this->stats['section'] ++;
 
@@ -98,13 +103,13 @@ class MoocBuilder {
 
     /**
      *
-     * @param \Pfe\Bundle\DataBundle\Entity\Section[] $sections
      * @param array $data
-     * @return \Pfe\Bundle\DataBundle\Entity\Module
+     * @param \Pfe\Bundle\CoreBundle\Entity\Section[]|null $sections
+     * @return \Pfe\Bundle\CoreBundle\Entity\Module
      */
-    public function buildModule(OutputInterface $output, $sections, $data) {
+    public function buildModule(OutputInterface $output, $data, $sections = null) {
         /**
-         * @var \Pfe\Bundle\DataBundle\Entity\Section[] $sections
+         * @var \Pfe\Bundle\CoreBundle\Entity\Section[] $sections
          */
         $mooc_id = intval($data['id']);
         $module_type = intval($data['module']);
@@ -138,8 +143,14 @@ class MoocBuilder {
         $section_order = intval($data['section']);
 
         $module = null;
-        if (array_key_exists($section_order, $sections)) {
-            $module = new \Pfe\Bundle\DataBundle\Entity\Module($name, $type, $sections[$section_order]);
+        if ($sections !== null) {
+            if (array_key_exists($section_order, $sections)) {
+                $module = new \Pfe\Bundle\CoreBundle\Entity\Module($name, $type, $sections[$section_order]);
+                $module->setMoocId($mooc_id);
+                $this->stats['module'] ++;
+            }
+        } else {
+            $section = $this->doctrine->getRepository("PfeCoreBundle:Section")->findBy(array("order" => $section_order));
             $module->setMoocId($mooc_id);
             $this->stats['module'] ++;
         }
@@ -152,27 +163,27 @@ class MoocBuilder {
     /**
      *
      * @param type $data
-     * @return \Pfe\Bundle\DataBundle\Entity\Participant
+     * @return \Pfe\Bundle\CoreBundle\Entity\Participant
      */
     public function buildParticipant(OutputInterface $output, $data) {
 
         $email = strtolower(trim($data['email']));
 
-        $participant = $this->doctrine->getManager()->getRepository("PfeDataBundle:Participant")->findOneByEmail($email);
+        $participant = $this->doctrine->getManager()->getRepository("PfeCoreBundle:Participant")->findOneByEmail($email);
 
         if ($participant === null) {
             if ($data['auth'] === 'shibboleth' || ($data['enrol'] === 'manual' || $data['enrol'] === 'cohort') && $data['shortname'] === 'student') {
-                $participant = new \Pfe\Bundle\DataBundle\Entity\Etudiant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
+                $participant = new \Pfe\Bundle\CoreBundle\Entity\Etudiant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
                 $this->stats['etudiants'] ++;
             } elseif ($data['auth'] === 'email' && $data['enrol'] === 'self' && $data['shortname'] === 'student') {
-                $participant = new \Pfe\Bundle\DataBundle\Entity\Apprenant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
+                $participant = new \Pfe\Bundle\CoreBundle\Entity\Apprenant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
                 $this->stats['apprenants'] ++;
             } elseif (($data['enrol'] === 'manual' || $data['enrol'] === 'cohort') && $data['shortname'] !== 'student') {
-                $participant = new \Pfe\Bundle\DataBundle\Entity\Staff($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
+                $participant = new \Pfe\Bundle\CoreBundle\Entity\Staff($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
                 $this->stats['staffs'] ++;
             } else {
 
-                $participant = new \Pfe\Bundle\DataBundle\Entity\Participant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
+                $participant = new \Pfe\Bundle\CoreBundle\Entity\Participant($data['firstname'] . " " . $data['lastname'], $data['email'], $data['lang'], $data['timeaccess']);
             }
 
             $this->stats['participants'] ++;
@@ -193,13 +204,13 @@ class MoocBuilder {
         $lang = trim(strtolower($data['lang']));
         $participant->setLang($lang);
 
-//        $countryCode = trim($data['country']);
-//        $countryInfos = (empty($countryCode)) ? null : $this->getCountryInformation($output, $countryCode);
+        $countryCode = trim($data['country']);
+        $countryInfos = (empty($countryCode)) ? null : $this->getCountryInformation($output, $countryCode);
 
         $city = trim($data['city']);
 
-//        $localisation = $this->getLocalisation($countryInfos, $city, $output);
-//        $participant->setHome($localisation);
+        $localisation = $this->getLocalisation($countryInfos, $city, $output);
+        $participant->setHome($localisation);
 
         $this->doctrine->getManager()->persist($participant);
 
@@ -209,8 +220,8 @@ class MoocBuilder {
     /**
      *
      * @param OutputInterface $output
-     * @param \Pfe\Bundle\DataBundle\Entity\Module[] $modules
-     * @param \Pfe\Bundle\DataBundle\Entity\Participant[] $participants
+     * @param \Pfe\Bundle\CoreBundle\Entity\Module[] $modules
+     * @param \Pfe\Bundle\CoreBundle\Entity\Participant[] $participants
      * @param array $data
      */
     public function buildAction(OutputInterface $output, $modules, $participants, $data) {
@@ -221,7 +232,7 @@ class MoocBuilder {
         $type = trim($data['action']);
 
 
-        $action = new \Pfe\Bundle\DataBundle\Entity\Action(new \DateTime($time));
+        $action = new \Pfe\Bundle\CoreBundle\Entity\Action(new \DateTime($time));
 
         if (array_key_exists($userid, $participants)) {
             $participant = $this->doctrine->getManager()->merge($participants[$userid]);
@@ -262,12 +273,12 @@ class MoocBuilder {
     private function getLocalisation($countryInfos, $city, OutputInterface $output) {
         $countryName = (empty($countryInfos)) ? null : $countryInfos->countryName;
 
-        $repo = $this->doctrine->getRepository("PfeDataBundle:Localisation");
+        $repo = $this->doctrine->getRepository("PfeCoreBundle:Localisation");
 
         $localisation = $repo->findOneBy(array("state" => $countryName, "city" => $city));
 
         if (empty($localisation)) {
-            $localisation = new \Pfe\Bundle\DataBundle\Entity\Localisation($countryName, $city);
+            $localisation = new \Pfe\Bundle\CoreBundle\Entity\Localisation($countryName, $city);
 
             if (!empty($countryName) && !empty($city) && $city !== $countryName) {
                 $gplaces = $this->gplace_api->searchLocality($city, $countryName);

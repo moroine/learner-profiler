@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Entity;
+namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Action
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\ActionRepository")
+ * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ActionRepository")
  */
 class Action {
 

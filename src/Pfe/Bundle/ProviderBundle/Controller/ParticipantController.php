@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Controller;
+namespace Pfe\Bundle\ProviderBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -8,7 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Response;
-use Pfe\Bundle\DataBundle\Entity\Participant;
+use Pfe\Bundle\CoreBundle\Entity\Participant;
 
 /**
  * @Route("/participant")
@@ -17,14 +17,14 @@ class ParticipantController extends Controller {
 
     public function renderParticipantsAction(array $participants, $_format) {
         $engine = $this->container->get('templating');
-        $content = $engine->render('PfeDataBundle:Participant:participants.' . $_format . '.twig', array('participants' => $participants));
+        $content = $engine->render('PfeProviderBundle:Participant:participants.' . $_format . '.twig', array('participants' => $participants));
 
         return new Response($content);
     }
 
     public function renderParticipantAction(Participant $participant, $_format) {
         $engine = $this->container->get('templating');
-        $content = $engine->render('PfeDataBundle:Participant:participant.' . $_format . '.twig', array('participant' => $participant));
+        $content = $engine->render('PfeProviderBundle:Participant:participant.' . $_format . '.twig', array('participant' => $participant));
 
         return new Response($content);
     }
@@ -34,7 +34,7 @@ class ParticipantController extends Controller {
      * @Method({"GET"})
      */
     public function participantsAction($_format) {
-        $repository = $this->getDoctrine()->getRepository("PfeDataBundle:Participant");
+        $repository = $this->getDoctrine()->getRepository("PfeCoreBundle:Participant");
 
         $participants = $repository->findAll();
 
@@ -45,7 +45,7 @@ class ParticipantController extends Controller {
      *
      * @Route("/{id}.{_format}", defaults={"_format"="json"})
      * @Method({"GET"})
-     * @ParamConverter("participant", class="PfeDataBundle:Participant")
+     * @ParamConverter("participant", class="PfeCoreBundle:Participant")
      * @Template()
      */
     public function participantAction(Participant $participant, $_format) {
@@ -55,13 +55,13 @@ class ParticipantController extends Controller {
     /**
      * @Route("/{id}/localisation.{_format}", defaults={"_format"="json"})
      * @Method({"GET"})
-     * @ParamConverter("participant", class="PfeDataBundle:Participant")
+     * @ParamConverter("participant", class="PfeCoreBundle:Participant")
      * @Template()
      */
     public function participantLocalisationAction(Participant $participant, $_format) {
         $localisation = $participant->getHome();
 
-        return $this->forward("PfeDataBundle:Localisation:renderLocalisation", array(
+        return $this->forward("PfeProviderBundle:Localisation:renderLocalisation", array(
                 "localisation" => $localisation,
                 "_format" => $_format
         ));

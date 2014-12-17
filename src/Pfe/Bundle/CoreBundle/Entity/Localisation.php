@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Entity;
+namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * Localisation
  *
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="localisation_unique", columns={"state", "city"})})
- * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\LocalisationRepository")
+ * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\LocalisationRepository")
  *
  * @UniqueEntity(fields={"state", "city"}, message="Le participant d'adresse email {{value}} existe déjà")
  */

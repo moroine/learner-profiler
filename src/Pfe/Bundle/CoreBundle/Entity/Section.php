@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Entity;
+namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Section
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\SectionRepository")
+ * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\SectionRepository")
  */
 class Section {
 
@@ -33,7 +33,7 @@ class Section {
     /**
      * @var integer
      *
-     * @ORM\Column(name="section_order", type="integer")
+     * @ORM\Column(name="section_order", type="integer", unique=true)
      */
     private $order;
 
@@ -108,14 +108,14 @@ class Section {
      *
      * @return integer
      */
-    function getDuration_days() {
+    function getDurationDays() {
         return $this->duration_days;
     }
 
     /**
      *
      * @param integer $order
-     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     * @return \Pfe\Bundle\CoreBundle\Entity\Section
      */
     function setOrder($order) {
         $this->order = $order;
@@ -125,18 +125,18 @@ class Section {
     /**
      *
      * @param integer $duration_days
-     * @return \Pfe\Bundle\DataBundle\Entity\Section
+     * @return \Pfe\Bundle\CoreBundle\Entity\Section
      */
-    function setDuration_days($duration_days) {
+    function setDurationDays($duration_days) {
         $this->duration_days = $duration_days;
         return $this;
     }
 
-    function getMooc_id() {
+    function getMoocId() {
         return $this->mooc_id;
     }
 
-    function setMooc_id($mooc_id) {
+    function setMoocId($mooc_id) {
         $this->mooc_id = $mooc_id;
         return $this;
     }

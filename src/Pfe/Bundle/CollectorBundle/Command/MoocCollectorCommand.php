@@ -19,17 +19,25 @@ class MoocCollectorCommand extends ContainerAwareCommand {
         $this
             ->setName('pfe:collector:mooc')
             ->setDescription('Import sql dump from MOOC')
-            ->addArgument('file', InputArgument::REQUIRED, 'Sql dump file required')
-            ->addArgument('course_id', InputArgument::REQUIRED, 'Target course is required')
+            ->addOption("sql-dump", "md", InputOption::VALUE_OPTIONAL, "Specify the sql dump file")
+            ->addArgument('course-id', InputArgument::REQUIRED, 'Target course is required')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $course_id = intval($input->getArgument('course_id'));
+        $course_id = intval($input->getArgument('course-id'));
+        $sqlDump = $input->getOption('sql-dump');
 
-        /* @var \Pfe\Bundle\CollectorBundle\Collector\MoocCollector */
+        /**
+         * @var \Pfe\Bundle\CollectorBundle\Collector\MoocCollector
+         */
         $mooc_collector = $this->getContainer()->get('pfe_collector.mooc');
-        $mooc_collector->collect($output, $input->getArgument('file'), $course_id);
+
+        if ($sqlDump !== null) {
+            $mooc_collector->importSqlDb($output, $sqlDump);
+        }
+
+        $mooc_collector->collect($output, $course_id);
     }
 
 }

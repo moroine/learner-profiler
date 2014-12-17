@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Entity;
+namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * Participant
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\ParticipantRepository")
+ * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ParticipantRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="role", type="string")
  * @ORM\DiscriminatorMap({"etudiant" = "Etudiant", "staff" = "Staff", "apprenant" = "Apprenant", "participant" = "Participant"})

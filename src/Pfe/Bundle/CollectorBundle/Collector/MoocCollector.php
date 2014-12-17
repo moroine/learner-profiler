@@ -28,13 +28,7 @@ class MoocCollector {
         $this->builder = $builder;
     }
 
-    public function collect(OutputInterface $output, $sqlFile, $course_id) {
-        $path = $this->getFilePath($output, $sqlFile);
-
-        if ($path === null) {
-            return 0;
-        }
-
+    public function collect(OutputInterface $output, $course_id) {
         if ($course_id < 0) {
             $output->writeln('<error>Wrong course id</error>');
 
@@ -47,20 +41,29 @@ class MoocCollector {
             return 0;
         }
 
-//        $this->importSqlDb($output, $path);
         $modules = $this->collectCourseData($output, $course_id);
         $participants = $this->collectParticipantData($output, $course_id);
 
         $this->collectActionData($output, $course_id, $modules, $participants);
 
         $output->writeln($this->builder->getStats(), \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
+
+        return 1;
     }
 
-    private function importSqlDb(OutputInterface $output, $path) {
+    public function importSqlDb(OutputInterface $output, $sqlFile) {
+        $path = $this->getFilePath($output, $sqlFile);
+
+        if ($path === null) {
+            return 0;
+        }
+
         $output->writeln("<info>Importig sql database ....</info>");
         $output->writeln("<info>This could take a while, please wait ...</info>");
         $this->extractor->importSqlDb($output, $path);
         $output->writeln("<info>Sql Database succefully imported</info>");
+
+        return 1;
     }
 
     private function collectCourseData(OutputInterface $output, $course_id) {
@@ -73,8 +76,8 @@ class MoocCollector {
         $sections = [];
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
-            $section = $this->builder->buildSection($output, $theme, $data);
-            $sections[$section->getMooc_id()] = $section;
+            $section = $this->builder->buildSection($output, $data, $theme);
+            $sections[$section->getMoocId()] = $section;
 
             $data = $this->extractor->nextRow($output);
         }
@@ -83,7 +86,7 @@ class MoocCollector {
         $modules = [];
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
-            $module = $this->builder->buildModule($output, $sections, $data);
+            $module = $this->builder->buildModule($output, $data, $sections);
             $modules[$module->getMoocId()] = $module;
 
             $data = $this->extractor->nextRow($output);
@@ -117,18 +120,23 @@ class MoocCollector {
      *
      * @param OutputInterface $output
      * @param integer $course_id
-     * @param \Pfe\Bundle\DataBundle\Entity\Module[] $modules
-     * @param \Pfe\Bundle\DataBundle\Entity\Participant[] $participants
+     * @param \Pfe\Bundle\CoreBundle\Entity\Module[] $modules
+     * @param \Pfe\Bundle\CoreBundle\Entity\Participant[] $participants
      */
     private function collectActionData(OutputInterface $output, $course_id, $modules, $participants) {
         $output->writeln("<info>Collecting Action data ...</info>");
         $this->extractor->extractActionData($output, $course_id);
 
+        $count = 0;
         $data = $this->extractor->nextRow($output);
         while ($data !== null) {
             $this->builder->buildAction($output, $modules, $participants, $data);
 
             $data = $this->extractor->nextRow($output);
+            $count++;
+            if ($count % 1000 === 0) {
+                $output->writeln("<info>" . $count . " actions imported</info>");
+            }
         }
 
         $this->builder->saveChanges();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Entity;
+namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Theme
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="Pfe\Bundle\DataBundle\Entity\ThemeRepository")
+ * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ThemeRepository")
  */
 class Theme {
 
@@ -32,7 +32,7 @@ class Theme {
     /**
      * @var integer
      *
-     * @ORM\Column(name="moodle_course_id", type="integer")
+     * @ORM\Column(name="moodle_course_id", type="integer", unique=true)
      */
     private $course_id;
 
@@ -77,7 +77,7 @@ class Theme {
     /**
      *
      * @param integer $course_id
-     * @return \Pfe\Bundle\DataBundle\Entity\Theme
+     * @return \Pfe\Bundle\CoreBundle\Entity\Theme
      */
     function setCourseId($course_id) {
         $this->course_id = $course_id;

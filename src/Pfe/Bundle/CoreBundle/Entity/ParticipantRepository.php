@@ -1,6 +1,6 @@
 <?php
 
-namespace Pfe\Bundle\DataBundle\Entity;
+namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
 
@@ -13,13 +13,13 @@ use Doctrine\ORM\EntityRepository;
 class ParticipantRepository extends EntityRepository {
 
     public function findAllLocalisations() {
-        $dql = 'SELECT DISTINCT p.state, p.city, COUNT(p) as n FROM PfeDataBundle:Participant as p GROUP BY p.state, p.city ORDER BY n, p.state, p.city';
+        $dql = 'SELECT DISTINCT p.state, p.city, COUNT(p) as n FROM PfeCoreBundle:Participant as p GROUP BY p.state, p.city ORDER BY n, p.state, p.city';
 
         return $this->getEntityManager()->createQuery($dql)->getResult();
     }
 
     public function findAllStates() {
-        $dql = 'SELECT DISTINCT p.state, COUNT(p) as n FROM PfeDataBundle:Participant as p GROUP BY p.state ORDER BY n, p.state';
+        $dql = 'SELECT DISTINCT p.state, COUNT(p) as n FROM PfeCoreBundle:Participant as p GROUP BY p.state ORDER BY n, p.state';
 
         return $this->getEntityManager()->createQuery($dql)->getResult();
     }

@@ -35,7 +35,6 @@ class MoocExtractor {
         if (!$this->connection->isConnected()) {
             $this->connection->connect();
         }
-        $this->mutex = Mutex::create();
     }
 
     public function isConnected() {
@@ -78,7 +77,7 @@ class MoocExtractor {
     }
 
     public function getSectionDataQuery($course_id_label) {
-        $query = "SELECT s.id, s.name, s.section, s.sequence FROM mdl_course_sections s WHERE s.visible=1 AND s.course=:" . $course_id_label;
+        $query = "SELECT s.id, s.name, s.section, s.sequence, s.course FROM mdl_course_sections s WHERE s.visible=1 AND s.course=:" . $course_id_label;
 
         return $query;
     }
