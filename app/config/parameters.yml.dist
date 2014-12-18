@@ -21,9 +21,9 @@ parameters:
     debug_redirects:        false
     use_assetic_controller: true
 
-	#Your ecampus login
+    #Your ecampus login
     ecampus_username: ~ #Your Ecampus username
     ecampus_password: ~ #Your Ecampus password
 
-    gplace_api_key: ~
-    geonames_api_username: ~
+    gplace_api_key: ~ # Your GPlace API Key https://developers.google.com/places/documentation/
+    geonames_api_username: ~ # Your Geoname username http://www.geonames.org/

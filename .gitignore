@@ -7,8 +7,5 @@
 /vendor/
 /app/config/parameters.yml
 /app/Resources/dump/*
-<<<<<<< HEAD
 !.gitkeep
-=======
-!.gitkeep
->>>>>>> github/master
+!/app/bootstrap.php.cache
