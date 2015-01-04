@@ -16,7 +16,7 @@ To install the project simply run `vagrant up` command from project directory.
 You have to edit app/config/parameters.yml to specify the missing parameters:
 
 - gplace_api_key: ~ # Your [GPlace API](https://developers.google.com/places/documentation/) Key
-- geonames_api_username: ~ # Your [Geoname](http://www.geonames.org/) username 
+- geonames_api_username: ~ # Your [Geoname](http://www.geonames.org/) username
 
 ##Using Symfony console
 
@@ -30,5 +30,5 @@ The website is available in the following address: [localhost:8080](http://local
 
 ##Next Steps
 
-- [Import Moodle Datas](import_moodle.mkd)
-- [Access the Api](api_access.mkd)
+- [Import Moodle Datas](import_moodle.md)
+- [Access the Api](api_access.md)

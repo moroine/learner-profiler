@@ -2,15 +2,15 @@
 
 ##Installation
 
-There is two installations ways : 
+There is two installations ways :
 
 1. [Vagrant Installation](installation_vagrant.mkd)
 2.  __Recommanded__: [Manual Installation](installation_manually.mkd)
 
 ##Importing Moodle Datas
 
-- [Import Moodle Datas](import_moodle.mkd)
+- [Import Moodle Datas](import_moodle.md)
 
 ##Access Api
 
-- [Access the Api](api_access.mkd)
+- [Access the Api](api_access.md)

@@ -1,4 +1,4 @@
-#Manual Installation 
+#Manual Installation
 
 ##Prerequisites
 
@@ -71,7 +71,7 @@ If you are using apache2 you can use a virtualhost by create a configuration fil
 Then you have to enable this virtual host by using the command `a2ensite learner_profiler.conf`.
 
 Then add in the file `/etc/hosts` the following line :
-    
+
     127.0.0.1   learnerprofiler.dev
 
 Finally restart your server by using command `service apache2 restart`.
@@ -172,7 +172,7 @@ Make sure you have mySQL installed, then use the following commands :
      cd /var/www/learnerprofiler;
      php app/console doctrine:database:create
      php app/console doctrine:schema:create
-     
+
 ##Using Symfony console
 
 - Access Symfony console: `php app/console`
@@ -183,5 +183,5 @@ The website is available in the following address: [learnerprofiler.dev](http://
 
 ##Next Steps
 
-- [Import Moodle Datas](import_moodle.mkd)
-- [Access the Api](api_access.mkd)
+- [Import Moodle Datas](import_moodle.md)
+- [Access the Api](api_access.md)
