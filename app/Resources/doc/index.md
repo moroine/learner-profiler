@@ -4,8 +4,8 @@
 
 There is two installations ways :
 
-1. [Vagrant Installation](installation_vagrant.mkd)
-2.  __Recommanded__: [Manual Installation](installation_manually.mkd)
+1. [Vagrant Installation](installation_vagrant.md)
+2.  __Recommanded__: [Manual Installation](installation_manually.md)
 
 ##Importing Moodle Datas
 
