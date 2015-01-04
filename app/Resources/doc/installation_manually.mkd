@@ -1,14 +1,14 @@
-<link href="http://kevinburke.bitbucket.org/markdowncss/markdown.css" rel="stylesheet"></link>
+#Manual Installation 
 
-Learner Profiler: ASR's Final Major Project
-===========================================
+##Prerequisites
 
-This document contains information on how to install and start this project.
+You need a fully working server on your machine.
 
-The project is running under [Symfony Standard Edition][1] - a fully-fonctional Symfony2 application.
+- apache2
+- mysql
+- php5
 
-Installation
-------------
+##Installation
 
 ### 1) Downloading Dependencies
 
@@ -21,7 +21,7 @@ http://getcomposer.org/ or just run the following command:
     curl -s http://getcomposer.org/installer | php
 
 Then move the "composer.phar" file in "/usr/local/bin" using :
-    sudo mv /home/thomas/composer.phar /usr/local/bin/composer
+    sudo mv composer.phar /usr/local/bin/composer
 
 Then, use the `update` command to download all dependencies :
     composer update
@@ -43,8 +43,9 @@ If you are using apache2 you can use a virtualhost by create a configuration fil
 
     	ServerAdmin webmaster@localhost
     	DocumentRoot /var/www/learnerprofiler/
-    	<Directory />
-    		Options Indexes FollowSymLinks MultiViews
+    	<Directory /var/www/learnerprofiler >
+		DirectoryIndex app.php
+		Options FollowSymlinks Indexes Multiviews
     		AllowOverride All
     		Order allow,deny
     		allow from all
@@ -69,8 +70,9 @@ If you are using apache2 you can use a virtualhost by create a configuration fil
 
 Then you have to enable this virtual host by using the command `a2ensite learner_profiler.conf`.
 
-Then add in the file "/etc/hosts" the following line :
-127.0.0.1   learnerprofiler.dev
+Then add in the file `/etc/hosts` the following line :
+    
+    127.0.0.1   learnerprofiler.dev
 
 Finally restart your server by using command `service apache2 restart`.
 
@@ -83,17 +85,17 @@ One common issue is that the app/cache and app/logs directories must be writable
 ##### 1. Using ACL on a system that supports chmod +a
 Many systems allow you to use the chmod +a command. Try this first, and if you get an error - try the next method. This uses a command to try to determine your web server user and set it as HTTPDUSER:
 
-    $ HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
-    $ sudo chmod +a "$HTTPDUSER allow delete,write,append,file_inherit,directory_inherit" app/cache app/logs
-    $ sudo chmod +a "`whoami` allow delete,write,append,file_inherit,directory_inherit" app/cache app/logs
+    HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+    sudo chmod +a "$HTTPDUSER allow delete,write,append,file_inherit,directory_inherit" app/cache app/logs
+    sudo chmod +a "`whoami` allow delete,write,append,file_inherit,directory_inherit" app/cache app/logs
 
 ##### 2. Using ACL on a system that does not support chmod +a
 
 Some systems don't support chmod +a, but do support another utility called setfacl. You may need to enable ACL support on your partition and install setfacl before using it (as is the case with Ubuntu). This uses a command to try to determine your web server user and set it as HTTPDUSER:
 
-    $ HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
-    $ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/cache app/logs
-    $ sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/cache app/logs
+    HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+    sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/cache app/logs
+    sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/cache app/logs
 
 If this doesn't work, try adding -n option.
 
@@ -144,6 +146,9 @@ You have to copy the `app/config/parameters.yml.dist` to `app/config/parameters.
         ecampus_username: ~ #Your Ecampus username
         ecampus_password: ~  #Your Ecampus password
 
+        gplace_api_key: ~ # Your GPlace API Key https://developers.google.com/places/documentation/
+        geonames_api_username: ~ # Your Geoname username http://www.geonames.org/
+
 ### 4) Checking your System Configuration
 
 Before starting coding, make sure that your local system is properly
@@ -167,71 +172,16 @@ Make sure you have mySQL installed, then use the following commands :
      cd /var/www/learnerprofiler;
      php app/console doctrine:database:create
      php app/console doctrine:schema:create
+     
+##Using Symfony console
 
-Enjoy !
+- Access Symfony console: `php app/console`
 
-What's inside?
----------------
+##Accessing Website
 
-### Symfony Standard Edition
+The website is available in the following address: [learnerprofiler.dev](http://learnerprofiler.dev) (Depending on your virtualhost).
 
-The Symfony Standard Edition is configured with the following defaults:
+##Next Steps
 
-  * Twig is the only configured template engine;
-
-  * Doctrine ORM/DBAL is configured;
-
-  * Swiftmailer is configured;
-
-  * Annotations for everything are enabled.
-
-Symfony Standard Edition comes pre-configured with the following bundles:
-
-  * **FrameworkBundle** - The core Symfony framework bundle
-
-  * [**SensioFrameworkExtraBundle**][3] - Adds several enhancements, including
-    template and routing annotation capability
-
-  * [**DoctrineBundle**][4] - Adds support for the Doctrine ORM
-
-  * [**TwigBundle**][5] - Adds support for the Twig templating engine
-
-  * [**SecurityBundle**][6] - Adds security by integrating Symfony's security
-    component
-
-  * [**SwiftmailerBundle**][7] - Adds support for Swiftmailer, a library for
-    sending emails
-
-  * [**MonologBundle**][8] - Adds support for Monolog, a logging library
-
-  * [**AsseticBundle**][9] - Adds support for Assetic, an asset processing
-    library
-
-  * **WebProfilerBundle** (in dev/test env) - Adds profiling functionality and
-    the web debug toolbar
-
-  * **SensioDistributionBundle** (in dev/test env) - Adds functionality for
-    configuring and working with Symfony distributions
-
-  * [**SensioGeneratorBundle**][10] (in dev/test env) - Adds code generation
-    capabilities
-
-All libraries and bundles included in the Symfony Standard Edition are
-released under the MIT or BSD license.
-
-Licence
--------
-
-TODO: Licence file
-
-
-[1]:  https://github.com/symfony/symfony-standard
-[2]:  http://getcomposer.org/
-[3]:  http://symfony.com/doc/2.5/bundles/SensioFrameworkExtraBundle/index.html
-[4]:  http://symfony.com/doc/2.5/book/doctrine.html
-[5]:  http://symfony.com/doc/2.5/book/templating.html
-[6]:  http://symfony.com/doc/2.5/book/security.html
-[7]: http://symfony.com/doc/2.5/cookbook/email.html
-[8]: http://symfony.com/doc/2.5/cookbook/logging/monolog.html
-[9]: http://symfony.com/doc/2.5/cookbook/assetic/asset_management.html
-[10]: http://symfony.com/doc/2.5/bundles/SensioGeneratorBundle/index.html
+- [Import Moodle Datas](import_moodle.mkd)
+- [Access the Api](api_access.mkd)
