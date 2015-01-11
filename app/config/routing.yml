@@ -1,3 +1,8 @@
+pfe_analyser:
+    resource: "@PfeAnalyserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 pfe_g_api:
     resource: "@PfeGPlaceApiBundle/Controller"
     prefix:   /gplace

@@ -43,13 +43,19 @@ class MoocExtractor {
 
     public function importSqlDb(OutputInterface $output, $path) {
         $username = " -u " . $this->connection->getUsername();
-        $password = empty($this->connection->getPassword()) ? "" : " -p " . $this->connection->getPassword();
+        $password = empty($this->connection->getPassword()) ? "" : " -p" . $this->connection->getPassword();
 
         $cmd = "mysql" . $username . $password . " " . $this->connection->getDatabase() . " < " . $path;
 
-        exec($cmd);
+        $output->writeln(">>>".$cmd);
+        $outs = array();
+        $status;
+        exec($cmd, $outs, $status);
+        foreach($outs as $out){
+            $output->writeln($out);
+        }
 
-        return;
+        return $status;
     }
 
     public function extractThemeData(OutputInterface $output, $course_id) {

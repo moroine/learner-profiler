@@ -55,15 +55,21 @@ class MoocCollector {
         $path = $this->getFilePath($output, $sqlFile);
 
         if ($path === null) {
+            $output->writeln("<info>File not found ....</info>");
             return 0;
         }
 
         $output->writeln("<info>Importig sql database ....</info>");
         $output->writeln("<info>This could take a while, please wait ...</info>");
-        $this->extractor->importSqlDb($output, $path);
-        $output->writeln("<info>Sql Database succefully imported</info>");
-
-        return 1;
+        if($this->extractor->importSqlDb($output, $path) == 0){
+            $output->writeln("<info>Sql Database succefully imported</info>");
+            
+            return 0;
+        }else{
+            $output->writeln("<error>Error on importing sql database</error>");
+            
+            return 1;
+        }
     }
 
     private function collectCourseData(OutputInterface $output, $course_id) {
