@@ -1,3 +1,7 @@
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /provider/doc
+
 pfe_g_api:
     resource: "@PfeGPlaceApiBundle/Controller"
     prefix:   /gplace
@@ -9,4 +13,8 @@ pfe_geonames:
 pfe_data:
     resource: "@PfeProviderBundle/Controller"
     prefix:   /provider
+
+pfe_core:
+    resource: "@PfeCoreBundle/Controller"
+    prefix:   /core
 
