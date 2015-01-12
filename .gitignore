@@ -1,11 +1,13 @@
 /nbproject/
 /web/bundles/
-!/web/bundles/common
+/web/assetic/
 /app/bootstrap*
+/compiler*
 /app/cache/*
 /app/logs/*
 /vendor/
 /app/config/parameters.yml
-/app/Resources/dump/*
+/app/Resources/dump/**
+/app/Resources/public/**/*
 !.gitkeep
 !/app/bootstrap.php.cache

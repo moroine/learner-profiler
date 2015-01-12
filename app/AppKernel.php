@@ -24,6 +24,7 @@ class AppKernel extends Kernel {
             new Pfe\Bundle\CoreBundle\PfeCoreBundle(),
             new Pfe\Bundle\ProviderBundle\PfeProviderBundle(),
             new Pfe\Bundle\GeonamesApiBundle\PfeGeonamesApiBundle(),
+            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Pfe\Bundle\AnalyserBundle\PfeAnalyserBundle(),
         );
 

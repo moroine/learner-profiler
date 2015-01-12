@@ -32,6 +32,8 @@ apt-get install -y php5-json
 apt-get install -y php5-readline
 apt-get install -y php5-xdebug
 apt-get install -y git
+apt-get install -y automake
+apt-get install -y textinfo
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
