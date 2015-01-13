@@ -18,7 +18,3 @@ pfe_data:
     resource: "@PfeProviderBundle/Controller"
     prefix:   /provider
 
-pfe_core:
-    resource: "@PfeCoreBundle/Controller"
-    prefix:   /core
-

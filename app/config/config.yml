@@ -33,15 +33,20 @@ twig:
 assetic:
     debug:          "%kernel.debug%"
     use_controller: true
-    bundles:
-        - PfeCoreBundle
-
     #java: /usr/bin/java
     assets:
         ease_js:
             inputs: "%kernel.root_dir%/Resources/public/mikegerwitz/easejs/ease-0.2.4.min.js"
         bootstrap_css:
-            inputs: "%kernel.root_dir%/Resources/public/twbs/bootstrap/css/bootstrap.min.css"
+            inputs:
+                - "%kernel.root_dir%/Resources/public/twbs/bootstrap/css/bootstrap.min.css"
+                - "%kernel.root_dir%/Resources/public/twbs/bootstrap/css/bootstrap-theme.min.css"
+        bootstrap_font_eot:
+            inputs: "%kernel.root_dir%/Resources/public/twbs/bootstrap/fonts/glyphicons-halflings-regular.eot"
+        bootstrap_font_ttf:
+            inputs: "%kernel.root_dir%/Resources/public/twbs/bootstrap/fonts/glyphicons-halflings-regular.ttf"
+        bootstrap_font_woff:
+            inputs: "%kernel.root_dir%/Resources/public/twbs/bootstrap/fonts/glyphicons-halflings-regular.woff"
         bootstrap_js:
             inputs: "%kernel.root_dir%/Resources/public/twbs/bootstrap/js/bootstrap.min.js"
         jquery_js:
