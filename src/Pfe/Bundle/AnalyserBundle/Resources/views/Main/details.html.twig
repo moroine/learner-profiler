@@ -1,0 +1,284 @@
+{% block details %}
+    <div class="panel-group" id="accordion" role="tablist">
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        #1: Tracé 1
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <!-- Table -->
+                <table class="table table-hover">
+                    <tr>
+                        <th colspan="3">Operation</th>
+                        <th><span class="glyphicon glyphicon-pencil"></span></th>
+                        <th><span class="glyphicon glyphicon-trash"></span></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="radio" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>Count</td>
+                        <td>Bubble</td>
+                        <td>Group By: State, City</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th colspan="5">Filters</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Localisation</td>
+                        <td>State: France</td>
+                        <td>City: Any</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Activité</td>
+                        <td>Theory</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is not</td>
+                        <td>Localisation</td>
+                        <td>State: France</td>
+                        <td>City: Evry</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Date</td>
+                        <td>hour: 15</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Date</td>
+                        <td>day: monday</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is not</td>
+                        <td>Date</td>
+                        <td>week: 1</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>after</td>
+                        <td>Date</td>
+                        <td>01/09/14</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>before</td>
+                        <td>Date</td>
+                        <td>01/11/14</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-controls="collapseTwo">
+                        #2: Tracé 2
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                <!-- Table -->
+                <table class="table table-hover">
+                    <tr>
+                        <th colspan="3">Operation</th>
+                        <th><a href="#"><span class="glyphicon glyphicon-pencil"></span></a></th>
+                        <th><a href="#"><span class="glyphicon glyphicon-trash"></span></a></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="radio" name="collapseTwoOperation">
+                                </label>
+                            </div>
+                        </td>
+                        <td>Count</td>
+                        <td>Denominator: #1</td>
+                        <td>Choroplète</td>
+                        <td>Group By: State</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="radio" name="collapseTwoOperation" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>Percentage</td>
+                        <td>Denominator: #1</td>
+                        <td>Choroplète</td>
+                        <td>Group By: State</td>
+                    </tr>
+                    <tr>
+                        <th colspan="5">Filters</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Localisation</td>
+                        <td>State: France</td>
+                        <td>City: Any</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Activité</td>
+                        <td>Theory</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Date</td>
+                        <td>hour: 15</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is</td>
+                        <td>Date</td>
+                        <td>day: monday</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>is not</td>
+                        <td>Date</td>
+                        <td>week: 1</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>after</td>
+                        <td>Date</td>
+                        <td>01/09/14</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div>
+                                <label>
+                                    <input type="checkbox" checked>
+                                </label>
+                            </div>
+                        </td>
+                        <td>before</td>
+                        <td>Date</td>
+                        <td>01/11/14</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
