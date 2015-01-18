@@ -29,6 +29,12 @@ View.UiView = function () {
      * @type {View.DetailsView}
      */
     this._details = new View.DetailsView(this);
+
+    this._$self = $("#main-container");
+};
+
+View.UiView.prototype.init = function () {
+    this._navigation.init();
 };
 
 /**

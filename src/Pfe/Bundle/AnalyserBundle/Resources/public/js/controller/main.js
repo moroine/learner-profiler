@@ -1,7 +1,8 @@
 $('document').ready(
         function () {
 //    var visu = ...;
-            var ui = View.UiView();
-            ui.getMapView().setVisualisation(visu);
+            var ui = new View.UiView();
+            ui.init();
+//            ui.getMapView().setVisualisation(visu);
         }
 );

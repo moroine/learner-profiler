@@ -21,5 +21,47 @@ View.NavigationView.prototype.init = function () {
 };
 
 View.NavigationView.prototype.bindEvents = function () {
-    this._$self.on('click', '')
+    var scope = this;
+
+    this._$self.on('click', 'li a', function (e) {
+        scope.onNavigationTypeEvent(e.target);
+        e.preventDefault();
+    });
+};
+
+/**
+ *
+ * @param {HTMLElement} target
+ */
+View.NavigationView.prototype.onNavigationTypeEvent = function (target) {
+    console.warn("Not available");
+    return;
+
+    var $target = $(target);
+    var nav = $target.data('navigation');
+    var value = $target.data('navigation-' + nav);
+    $target.parent().parent().find('.active').removeClass('active');
+    $target.parent().addClass('active');
+    switch (nav) {
+        case 'type':
+            this.setType(value);
+            break;
+        case 'datatype':
+            this.setDataType(value);
+            break;
+    }
+};
+
+/**
+ * @param {string} type
+ */
+View.NavigationView.prototype.setType = function (type) {
+    this._type = type;
+};
+
+/**
+ * @param {string} datatype
+ */
+View.NavigationView.prototype.setDataType = function (datatype) {
+    this._datatype = datatype;
 };
