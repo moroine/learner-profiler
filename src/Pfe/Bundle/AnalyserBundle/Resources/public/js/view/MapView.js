@@ -37,10 +37,8 @@ View.MapView = function (ui) {
             var choroplethTrace = visualisation.getActiveChoropleth();
             //var bubbleTrace = visualisation.getActiveBubble();
 
-            console.log(choroplethData);
-
             if (choroplethTrace !== null) {
-                var choroplethData = choroplethTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
+                var choroplethData = choroplethTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
                 //var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
             }
 
@@ -64,26 +62,29 @@ View.MapView = function (ui) {
      * @param {type} choroplethData
      * @returns {undefined}
      */
-    this.displayTrace = function (trace, choroplethData) {
-        var legends = trace.getLegends();
+    this.displayTrace = function (visualisation, trace, choroplethData) {
+        var legends = visualisation.getLegends();
         var i;
 
-        var fillKeys = {};
+        var fillKeys = {
+            defaultFill: '#CCCCCC'
+        };
 
         for (i = 0; i < legends.length; i++) {
-            fills[legends.getName()] = legends.getColor();
+            fillKeys[legends[i].getName()] = legends[i].getColor();
             for (country in choroplethData) {
+
                 if (legends[i].getMin() === null) {
-                    if (country.number < legends[i].getMax()) {
-                        country.fillKey = legends[i].getName();
+                    if (choroplethData[country].number < legends[i].getMax()) {
+                        choroplethData[country].fillKey = legends[i].getName();
                     }
                 } else if (legends[i].getMax() === null) {
-                    if (country.number >= legends[i].getMin()) {
-                        country.fillKey = legends[i].getName();
+                    if (choroplethData[country].number >= legends[i].getMin()) {
+                        choroplethData[country].fillKey = legends[i].getName();
                     }
                 }
-                else if (country.number >= legends[i].getMin() && country.number < legends[i].getMax()) {
-                    country.fillKey = legends[i].getName();
+                else if (choroplethData[country].number >= legends[i].getMin() && choroplethData[country].number < legends[i].getMax()) {
+                    choroplethData[country].fillKey = legends[i].getName();
                 }
             }
         }
@@ -106,6 +107,7 @@ View.MapView = function (ui) {
                 }
             }
         });
+        container.legend();
 
 
     };

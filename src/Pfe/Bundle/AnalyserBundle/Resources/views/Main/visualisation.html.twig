@@ -1,5 +1,7 @@
 {% block visualisation %}
     {% image '@PfeAnalyserBundle/Resources/public/images/fake.png' %}
-    <img src="{{asset_url}}" class="img-responsive" alt="Responsive image" />
+    {#<img src="{{asset_url}}" class="img-responsive" alt="Responsive image" />#}
+
+    <div id="container" style="position: relative; width: 1000px; height: 600px;"></div>
     {% endimage %}
 {% endblock %}
