@@ -30,7 +30,10 @@
         "mikegerwitz/easejs": "0.2.4",
         "fxp/composer-asset-plugin": "1.0.0-beta4",
         "bower-asset/bootstrap": "dev-master",
-        "bower-asset/jquery": "2.*"
+        "bower-asset/jquery": "2.*",
+        "bower-asset/topojson": "~1.4.3",
+        "bower-asset/d3": "~3.3.8",
+        "bower-asset/datamaps": "~0.3.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
@@ -65,6 +68,28 @@
             "npm-asset-library": "app/Resources/public/assets",
             "bower-asset-library": "app/Resources/public/assets"
         },
+        "asset-repositories": [
+            {
+                "type": "bower-github",
+                "url": "https://github.com/markmarkoh/datamaps.git",
+                "name": "bower-asset/datamaps"
+            },
+            {
+                "type": "bower-github",
+                "url": "https://github.com/jquery/jquery.git",
+                "name": "bower-asset/jquery"
+            },
+            {
+                "type": "bower-github",
+                "url": "https://github.com/twbs/bootstrap.git",
+                "name": "bower-asset/bootstrap"
+            },
+            {
+                "type": "bower-github",
+                "url": "https://github.com/mbostock/d3.git",
+                "name": "bower-asset/d3"
+            }
+        ],
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
         "incenteev-parameters": {

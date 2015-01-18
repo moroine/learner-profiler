@@ -3,7 +3,10 @@
 {% block title %}PfeAnalyserBundle:Main:index{% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container" id="main-container">
+        <div id="alert-message">
+
+        </div>
         <div class="col-md-12">
             <div class="col-md-3" id="navigation">
                 {% include 'PfeAnalyserBundle:Main:navigation.html.twig' %}
@@ -28,6 +31,9 @@
 
 {% block javascripts %}
     {{ parent() }}
+    {% javascripts '@d3_js' debug=false %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
     {% javascripts
         '@PfeAnalyserBundle/Resources/public/js/*'
         '@PfeAnalyserBundle/Resources/public/js/*/*'

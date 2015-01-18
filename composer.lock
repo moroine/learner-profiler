@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3b42be913b2d4fa410977754ce0e432c",
+    "hash": "976621d38cf17f25ee140b82a55d5448",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "8a1efe91df296e62bc560e51b462e9d51d31a988"
+                "reference": "bf69fbdf1fb669eb077b641a63011c8f80b91421"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/8a1efe91df296e62bc560e51b462e9d51d31a988",
-                "reference": "8a1efe91df296e62bc560e51b462e9d51d31a988",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/bf69fbdf1fb669eb077b641a63011c8f80b91421",
+                "reference": "bf69fbdf1fb669eb077b641a63011c8f80b91421",
                 "shasum": ""
             },
             "require": {
@@ -56,7 +56,84 @@
                 "responsive",
                 "web"
             ],
-            "time": "2015-01-16 23:16:52"
+            "time": "2015-01-18 05:51:03"
+        },
+        {
+            "name": "bower-asset/d3",
+            "version": "v3.3.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mbostock/d3.git",
+                "reference": "3234f47ad38f430b5165d3a242ed1d57a1c0b189"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mbostock/d3/zipball/3234f47ad38f430b5165d3a242ed1d57a1c0b189",
+                "reference": "3234f47ad38f430b5165d3a242ed1d57a1c0b189",
+                "shasum": ""
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "d3.js",
+                "bower-asset-ignore": [
+                    ".DS_Store",
+                    ".git",
+                    ".gitignore",
+                    ".npmignore",
+                    ".travis.yml",
+                    "Makefile",
+                    "bin",
+                    "component.json",
+                    "index-browserify.js",
+                    "index.js",
+                    "lib",
+                    "node_modules",
+                    "package.json",
+                    "src",
+                    "test"
+                ]
+            }
+        },
+        {
+            "name": "bower-asset/datamaps",
+            "version": "v0.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/markmarkoh/datamaps.git",
+                "reference": "66c928fbc5ccdfb028dea41e18849e643200ed94"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/markmarkoh/datamaps/zipball/66c928fbc5ccdfb028dea41e18849e643200ed94",
+                "reference": "66c928fbc5ccdfb028dea41e18849e643200ed94",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/d3": ">=3.3.8,<3.4",
+                "bower-asset/topojson": ">=1.4.3,<1.5"
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "dist/datamaps.all.js",
+                "bower-asset-ignore": [
+                    "**/.*",
+                    "node_modules",
+                    "bower_components",
+                    "test",
+                    "tests",
+                    "public"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Interactive maps for data visualizations. Bundled into a single Javascript file.",
+            "keywords": [
+                "Map",
+                "USA",
+                "Visualization",
+                "World"
+            ]
         },
         {
             "name": "bower-asset/jquery",
@@ -100,6 +177,37 @@
                 "jquery",
                 "library"
             ]
+        },
+        {
+            "name": "bower-asset/topojson",
+            "version": "v1.4.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mbostock/topojson.git",
+                "reference": "94d2786c3435c916c87ed043a57893d1a9fe9911"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mbostock/topojson/zipball/94d2786c3435c916c87ed043a57893d1a9fe9911",
+                "reference": "94d2786c3435c916c87ed043a57893d1a9fe9911",
+                "shasum": ""
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": "topojson.js",
+                "bower-asset-ignore": [
+                    ".DS_Store",
+                    ".git",
+                    "Makefile",
+                    "bin",
+                    "examples",
+                    "index.js",
+                    "lib",
+                    "node_modules",
+                    "package.json",
+                    "test"
+                ]
+            }
         },
         {
             "name": "doctrine/annotations",

@@ -4,25 +4,28 @@
         <meta charset="UTF-8" />
         <title>{% block title %}Welcome!{% endblock %}</title>
         {% block stylesheets %}
-            {% stylesheets '@bootstrap_font_eot' output="assetic/fonts/glyphicons-halflings-regular.eot" debug=false %}
-            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+            {% stylesheets '@bootstrap_font_woff' output="fonts/glyphicons-halflings-regular.woff2" debug=false %}
+            <link type="application/x-font-woff" href="{{ asset_url }}" />
             {% endstylesheets %}
-            {% stylesheets '@bootstrap_font_ttf' output="assetic/fonts/glyphicons-halflings-regular.ttf" debug=false %}
-            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+            {% stylesheets '@bootstrap_font_woff' output="fonts/glyphicons-halflings-regular.woff" debug=false %}
+            <link type="application/x-font-woff" href="{{ asset_url }}" />
             {% endstylesheets %}
-            {% stylesheets '@bootstrap_font_woff' output="assetic/fonts/glyphicons-halflings-regular.woff" debug=false %}
-            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
-            {% endstylesheets %}
-            {% stylesheets '@bootstrap_css' output="assetic/css/bootstrap.min.css" debug=false %}
+            {% stylesheets '@bootstrap_css' '@bootstrap_theme' debug=false %}
             <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
+    <body style="padding-top: 40px">
     {% block body %}{% endblock %}
     {% block javascripts %}
-        {% javascripts '@jquery_js' '@bootstrap_js' debug=false %}
+        {% javascripts '@jquery_js' debug=false %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+        {% javascripts '@jquery_map' output="js/jquery.min.map" debug=false %}
+        <script type="application/json" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+        {% javascripts '@bootstrap_js' debug=false %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}
     {% endblock %}
