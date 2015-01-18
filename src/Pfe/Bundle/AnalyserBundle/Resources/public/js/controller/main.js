@@ -1,4 +1,4 @@
-document.onready(
+$('document').ready(
         function () {
 //    var visu = ...;
             var ui = View.UiView();
