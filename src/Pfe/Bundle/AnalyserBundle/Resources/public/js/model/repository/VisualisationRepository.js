@@ -12,40 +12,40 @@ if (typeof Repository === 'undefined') {
 }
 
 /**
- * @constructor
+ * @class
  * @returns {undefined}
  */
 Repository.VisualisationRepository = function () {
     this._visualisations = {};
     this._id = 0;
+};
 
-    /**
-     *
-     * @param {int} id
-     * @returns {Visualisation}
-     */
-    this.get = function (id) {
-        return this._visualisations.id;
-    };
+/**
+ *
+ * @param {int} id
+ * @returns {Visualisation}
+ */
+Repository.VisualisationRepository.prototype.get = function (id) {
+    return this._visualisations.id;
+};
 
-    /**
-     *
-     * @param {Visualisation} obj
-     * @returns {Visualisation}
-     */
-    this.persist = function (obj) {
-        obj.setId(this._id++);
-        this._visualisations[obj.getId()] = obj;
+/**
+ *
+ * @param {Visualisation} obj
+ * @returns {Visualisation}
+ */
+Repository.VisualisationRepository.prototype.persist = function (obj) {
+    obj.setId(this._id++);
+    this._visualisations[obj.getId()] = obj;
 
-        return obj;
-    };
+    return obj;
+};
 
-    /**
-     *
-     * @param {Visualisation} obj
-     * @returns {undefined}
-     */
-    this.remove = function (obj) {
-        delete this._visualisations[obj.getId()];
-    };
+/**
+ *
+ * @param {Visualisation} obj
+ * @returns {undefined}
+ */
+Repository.VisualisationRepository.prototype.remove = function (obj) {
+    delete this._visualisations[obj.getId()];
 };
