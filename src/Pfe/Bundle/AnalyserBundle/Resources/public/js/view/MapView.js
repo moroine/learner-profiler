@@ -34,13 +34,15 @@ View.MapView = function (ui) {
     this.setMap = function (visualisation) {
         if (visualisation.getDatatype() === "apprenants") {
             // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
-            var choroplethTrace = visualisation.getFirstChoropleth();
-            var bubbleTrace = visualisation.getFirstBubble();
+            var choroplethTrace = visualisation.getActiveChoropleth();
+            //var bubbleTrace = visualisation.getActiveBubble();
 
-            var choroplethData = choroplethTrace.getData(visualisation.getDatatype(), visualisation.getLegends());
-            var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends());
+            console.log(choroplethData);
 
-            this.displayMap();
+            if (choroplethTrace !== null) {
+                var choroplethData = choroplethTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
+                //var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
+            }
 
         } else { // Datatype === "actions"
 
@@ -58,12 +60,53 @@ View.MapView = function (ui) {
 
     /**
      *
+     * @param {Trace} trace
      * @param {type} choroplethData
-     * @param {type} bubbleData
-     * @param {Legend[]} legends
      * @returns {undefined}
      */
-    this.displayMap = function (choroplethData, bubbleData, legends) {
+    this.displayTrace = function (trace, choroplethData) {
+        var legends = trace.getLegends();
+        var i;
+
+        var fillKeys = {};
+
+        for (i = 0; i < legends.length; i++) {
+            fills[legends.getName()] = legends.getColor();
+            for (country in choroplethData) {
+                if (legends[i].getMin() === null) {
+                    if (country.number < legends[i].getMax()) {
+                        country.fillKey = legends[i].getName();
+                    }
+                } else if (legends[i].getMax() === null) {
+                    if (country.number >= legends[i].getMin()) {
+                        country.fillKey = legends[i].getName();
+                    }
+                }
+                else if (country.number >= legends[i].getMin() && country.number < legends[i].getMax()) {
+                    country.fillKey = legends[i].getName();
+                }
+            }
+        }
+
+        var container = document.getElementById("visualisation_container");
+
+        document.getElementById("container").innerHTML = "";
+        container = new Datamaps({
+            element: document.getElementById('container'),
+            fills: fillKeys,
+            data: choroplethData,
+            geographyConfig: {
+                popupTemplate: function (geo, data) {
+                    if (data === null) {
+                        return '<div class="hoverinfo">' + geo.properties.name + '<br />None</div>';
+                    } else {
+                        var number = data.number;
+                        return '<div class="hoverinfo">' + geo.properties.name + ' : ' + number + '<br />Size : ' + data.fillKey + '</div>';
+                    }
+                }
+            }
+        });
+
 
     };
 

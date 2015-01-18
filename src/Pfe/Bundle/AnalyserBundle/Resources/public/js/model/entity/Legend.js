@@ -13,7 +13,7 @@ if (typeof Entity === 'undefined') {
 
 /**
  *
- * @constructor
+ * @class
  * @param {String} name
  * @param {int} min
  * @param {int} max
@@ -45,89 +45,89 @@ Entity.Legend = function (name, min, max, color) {
      * @type String
      */
     this._color = color;
+};
 
-    /**
-     *
-     * @returns {int}
-     */
-    this.getId = function () {
-        return this._id;
-    };
+/**
+ *
+ * @returns {int}
+ */
+Entity.Legend.prototype.getId = function () {
+    return this._id;
+};
 
-    /**
-     *
-     * @param {int} id
-     * @returns {undefined}
-     */
-    this.setId = function (id) {
-        this._id = id;
-    };
+/**
+ *
+ * @param {int} id
+ * @returns {undefined}
+ */
+Entity.Legend.prototype.setId = function (id) {
+    this._id = id;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getName = function () {
-        return this._name;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Legend.prototype.getName = function () {
+    return this._name;
+};
 
-    /**
-     *
-     * @param {String} name
-     * @returns {undefined}
-     */
-    this.setName = function (name) {
-        this._name = name;
-    };
+/**
+ *
+ * @param {String} name
+ * @returns {undefined}
+ */
+Entity.Legend.prototype.setName = function (name) {
+    this._name = name;
+};
 
-    /**
-     *
-     * @returns {int}
-     */
-    this.getMin = function () {
-        return this._min;
-    };
+/**
+ *
+ * @returns {int}
+ */
+Entity.Legend.prototype.getMin = function () {
+    return this._min;
+};
 
-    /**
-     *
-     * @param {int} min
-     * @returns {undefined}
-     */
-    this.setMin = function (min) {
-        this._min = min;
-    };
+/**
+ *
+ * @param {int} min
+ * @returns {undefined}
+ */
+Entity.Legend.prototype.setMin = function (min) {
+    this._min = min;
+};
 
-    /**
-     *
-     * @returns {int}
-     */
-    this.getMax = function () {
-        return this._max;
-    };
+/**
+ *
+ * @returns {int}
+ */
+Entity.Legend.prototype.getMax = function () {
+    return this._max;
+};
 
-    /**
-     *
-     * @param {int} max
-     * @returns {undefined}
-     */
-    this.setMax = function (max) {
-        this._max = max;
-    };
+/**
+ *
+ * @param {int} max
+ * @returns {undefined}
+ */
+Entity.Legend.prototype.setMax = function (max) {
+    this._max = max;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getColor = function () {
-        return this._color;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Legend.prototype.getColor = function () {
+    return this._color;
+};
 
-    /**
-     *
-     * @param {String} color
-     * @returns {undefined}
-     */
-    this.setColor = function (color) {
-        this._color = color;
-    };
+/**
+ *
+ * @param {String} color
+ * @returns {undefined}
+ */
+Entity.Legend.prototype.setColor = function (color) {
+    this._color = color;
 };

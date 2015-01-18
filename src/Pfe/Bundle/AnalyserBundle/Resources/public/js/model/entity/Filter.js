@@ -13,7 +13,7 @@ if (typeof Entity === 'undefined') {
 
 /**
  *
- * @constructor
+ * @class
  * @param {String} rule
  * @param {String} type
  * @param {String} field
@@ -51,88 +51,90 @@ Entity.Filter = function (rule, type, field, value) {
      */
     this._actif = true;
 
-    /**
-     *
-     * @returns {int}
-     */
-    this.getId = function () {
-        return this._id;
-    };
 
-    /**
-     *
-     * @param {int} id
-     * @returns {undefined}
-     */
-    this.setId = function (id) {
-        this._id = id;
-    };
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getRule = function () {
-        return this._rule;
-    };
+/**
+ *
+ * @returns {int}
+ */
+Entity.Filter.prototype.getId = function () {
+    return Entity.Filter.prototype._id;
+};
 
-    /**
-     *
-     * @param {String} rule
-     * @returns {undefined}
-     */
-    this.setRule = function (rule) {
-        this._rule = rule;
-    };
+/**
+ *
+ * @param {int} id
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setId = function (id) {
+    this._id = id;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getType = function () {
-        return this._type;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Filter.prototype.getRule = function () {
+    return this._rule;
+};
 
-    /**
-     *
-     * @param {String} type
-     * @returns {undefined}
-     */
-    this.setType = function (type) {
-        this._type = type;
-    };
+/**
+ *
+ * @param {String} rule
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setRule = function (rule) {
+    this._rule = rule;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getField = function () {
-        return this._field;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Filter.prototype.getType = function () {
+    return this._type;
+};
 
-    /**
-     *
-     * @param {String} field
-     * @returns {undefined}
-     */
-    this.setField = function (field) {
-        this._field = field;
-    };
+/**
+ *
+ * @param {String} type
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setType = function (type) {
+    this._type = type;
+};
 
-    /**
-     *
-     * @returns {int}
-     */
-    this.getValue = function () {
-        return this._value;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Filter.prototype.getField = function () {
+    return this._field;
+};
 
-    /**
-     *
-     * @param {int} value
-     * @returns {undefined}
-     */
-    this.setValue = function (value) {
-        this._value = value;
-    };
+/**
+ *
+ * @param {String} field
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setField = function (field) {
+    this._field = field;
+};
+
+/**
+ *
+ * @returns {int}
+ */
+Entity.Filter.prototype.getValue = function () {
+    return this._value;
+};
+
+/**
+ *
+ * @param {int} value
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setValue = function (value) {
+    this._value = value;
 };

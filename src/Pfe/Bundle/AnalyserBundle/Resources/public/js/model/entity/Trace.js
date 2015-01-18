@@ -12,7 +12,7 @@ if (typeof Entity === 'undefined') {
 }
 
 /**
- * @constructor
+ * @class
  * @param {String} operation
  * @param {String} type
  * @returns {undefined}
@@ -48,97 +48,127 @@ Entity.Trace = function (operation, type) {
      */
     this._active = true;
 
-    /**
-     *
-     * @returns {int}
-     */
-    this.getId = function () {
-        return this._id;
-    };
+    this._data = {};
+};
 
-    /**
-     *
-     * @param {int} id
-     * @returns {undefined}
-     */
-    this.setId = function (id) {
-        this._id = id;
-    };
+/**
+ *
+ * @returns {int}
+ */
+Entity.Trace.prototype.getId = function () {
+    return this._id;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getOperation = function () {
-        return this._operation;
-    };
+/**
+ *
+ * @param {int} id
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setId = function (id) {
+    this._id = id;
+};
 
-    /**
-     *
-     * @param {String} operation
-     * @returns {undefined}
-     */
-    this.setOperation = function (operation) {
-        this._operation = operation;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Trace.prototype.getOperation = function () {
+    return this._operation;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getType = function () {
-        return this._type;
-    };
+/**
+ *
+ * @param {String} operation
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setOperation = function (operation) {
+    this._operation = operation;
+};
 
-    /**
-     *
-     * @param {String} type
-     * @returns {undefined}
-     */
-    this.setType = function (type) {
-        this._type = type;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Trace.prototype.getType = function () {
+    return this._type;
+};
 
-    /**
-     *
-     * @returns {Filter[]} - Array of filters
-     */
-    this.getFilters = function () {
-        return this._filters;
-    };
+/**
+ *
+ * @param {String} type
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setType = function (type) {
+    this._type = type;
+};
 
-    /**
-     *
-     * @param {Filter[]} filters - Array of filters
-     * @returns {undefined}
-     */
-    this.setFilters = function (filters) {
-        this._filters = filters;
-    };
+/**
+ *
+ * @returns {Filter[]} - Array of filters
+ */
+Entity.Trace.prototype.getFilters = function () {
+    return this._filters;
+};
 
-    /**
-     *
-     * @returns {String}
-     */
-    this.getDenominateur = function () {
-        return this._denominateur;
-    };
+/**
+ *
+ * @param {Filter[]} filters - Array of filters
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setFilters = function (filters) {
+    this._filters = filters;
+};
 
-    /**
-     *
-     * @param {String} denominateur
-     * @returns {undefined}
-     */
-    this.setDenominateur = function (denominateur) {
-        this._denominateur = denominateur;
-    };
+/**
+ *
+ * @returns {String}
+ */
+Entity.Trace.prototype.getDenominateur = function () {
+    return this._denominateur;
+};
 
-    /**
-     *
-     * @returns {Boolean}
-     */
+/**
+ *
+ * @param {String} denominateur
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setDenominateur = function (denominateur) {
+    this._denominateur = denominateur;
+};
 
-    this.isActive = function () {
-        return this._active;
-    };
+/**
+ *
+ * @returns {Boolean}
+ */
+
+Entity.Trace.prototype.isActive = function () {
+    return this._active;
+};
+
+Entity.Trace.prototype.getData = function (datatype, legends, callback) {
+    $.getJSON("../json/participantsReal.json", function (data) {
+        var countCountries = {};
+        var essai;
+        $.each(data.participants, function (key, val) {
+            if (val.home_id !== null) {
+                if (countries[val.home_id.state] !== undefined) {
+                    if (countCountries[countries[val.home_id.state]] === undefined) {
+                        countCountries[countries[val.home_id.state]] = 1;
+                    } else {
+                        countCountries[countries[val.home_id.state]] += 1;
+                    }
+                    //console.log(val.home_id.state + " : " + countCountries[countries[val.home_id.state]]);
+                }
+            }
+        });
+        for (essai in countCountries) {
+            countCountries[essai] = {
+                "fillKey": "",
+                "number": countCountries[essai]
+            };
+        }
+
+        this._data = countCountries;
+        callback(this, this._data);
+    });
 };
