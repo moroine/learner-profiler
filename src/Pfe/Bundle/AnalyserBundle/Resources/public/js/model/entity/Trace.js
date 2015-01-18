@@ -145,8 +145,8 @@ Entity.Trace.prototype.isActive = function () {
     return this._active;
 };
 
-Entity.Trace.prototype.getData = function (datatype, legends, callback) {
-    $.getJSON("../json/participantsReal.json", function (data) {
+Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
+    $.getJSON("/bundles/pfeanalyser/js/json/participantsReal.json", function (data) {
         var countCountries = {};
         var essai;
         $.each(data.participants, function (key, val) {
@@ -169,6 +169,6 @@ Entity.Trace.prototype.getData = function (datatype, legends, callback) {
         }
 
         this._data = countCountries;
-        callback(this, this._data);
+        callback(visualisation, this, this._data);
     });
 };

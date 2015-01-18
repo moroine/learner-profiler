@@ -29,7 +29,9 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-        '@PfeAnalyserBundle/Resources/public/js/*'
+        '@PfeAnalyserBundle/Resources/public/js/lib/d3.min.js'
+        '@PfeAnalyserBundle/Resources/public/js/lib/topojson.v1.min.js'
+        '@PfeAnalyserBundle/Resources/public/js/lib/datamaps.world.min.js'
         '@PfeAnalyserBundle/Resources/public/js/*/*'
         '@PfeAnalyserBundle/Resources/public/js/*/*/*'
     %}

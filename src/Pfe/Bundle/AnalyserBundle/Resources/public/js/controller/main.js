@@ -11,7 +11,7 @@ $('document').ready(
             legends.push(new Entity.Legend("veryBig", 50, 100, "#e74c3c"));
             legends.push(new Entity.Legend("soMuch", 100, null, "#c0392b"));
 
-            visu._traces[0].setLegends(legends);
+            visu.setLegends(legends);
 
             var ui = new View.UiView();
             ui.init();
