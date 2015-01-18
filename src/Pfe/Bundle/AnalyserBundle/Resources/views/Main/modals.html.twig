@@ -1,0 +1,111 @@
+{% block modals %}
+    {# Trace Modal #}
+    <div class="modal fade" id="trace-modal" role="dialog" aria-labelledby="add-trace" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create a Trace</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="trace-name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="trace-name" placeholder="Name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="trace-operation" class="col-sm-2 control-label">Operation</label>
+                            <div class="col-sm-10">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="trace-operation" value="count" checked>
+                                        Count
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="trace-operation" value="percentage">
+                                        Percentage
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="trace-denominator" class="col-sm-2 control-label">Denominator</label>
+                            <div class="col-sm-10">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="trace-denominator" value="1" checked>
+                                        1
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="trace-denominator" value="2">
+                                        2
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="trace-subtype" class="col-sm-2 control-label">SubType</label>
+                            <div class="col-sm-10">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="trace-subtype" value="cloropleth" checked>
+                                        Cloropleth
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="trace-subtype" value="bubble">
+                                        Bubble
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3>Filters</h3>
+                            <table class="table table-striped">
+                                <tr>
+                                    <th><span class="glyphicon glyphicon-plus text-primary"></span></th>
+                                    <th>Comparaison</th>
+                                    <th>Type</th>
+                                    <th colspan="2">Fields</th>
+                                </tr>
+                                <tr>
+                                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                                    <td>is</td>
+                                    <td>Localisation</td>
+                                    <td>France</td>
+                                    <td>Any City</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                                    <td>is not</td>
+                                    <td>Localisation</td>
+                                    <td>France</td>
+                                    <td>Evry</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+                                    <td>after</td>
+                                    <td>Date</td>
+                                    <td>Monday</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
