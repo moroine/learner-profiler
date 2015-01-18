@@ -1,6 +1,12 @@
 /nbproject/
 /web/bundles/
 /web/assetic/
+/web/assets/
+/assetic/
+/web/js/
+/web/fonts/
+/web/images/
+/web/css/
 /app/bootstrap*
 /compiler*
 /app/cache/*
