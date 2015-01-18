@@ -1,0 +1,18 @@
+{% extends "::base.html.twig" %}
+
+{% block body %}
+    <table class="table table-striped table-hover">
+        <tr>
+            <th>#</th>
+            <th>Pays</th>
+            <th>Ville</th>
+            <th>Adresse</th>
+        </tr>
+        <tr>
+            <td>{{ localisation.id }}</td>
+            <td>{{ localisation.state }}</td>
+            <td>{{ localisation.city }}</td>
+            <td>{{ localisation.g_address }}</td>
+        </tr>
+    </table>
+{% endblock %}

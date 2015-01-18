@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="pfe_collector.mooc" class="Pfe\Bundle\CollectorBundle\Collector\MoocCollector">
+            <argument type="service" id="pfe_collector.mooc.extractor" />
+            <argument type="service" id="pfe_collector.mooc.builder" />
+        </service>
+        <service id="pfe_collector.mooc.extractor" class="Pfe\Bundle\CollectorBundle\Collector\Extractor\MoocExtractor">
+            <argument type="service" id="doctrine.dbal.collector_connection" />
+        </service>
+        <service id="pfe_collector.mooc.builder" class="Pfe\Bundle\CollectorBundle\Collector\Builder\MoocBuilder">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="pfe_services.g_place_api" />
+            <argument type="service" id="pfe_services.geonames_api" />
+            <argument type="service" id="pfe_collector.mooc.builder.theme" />
+        </service>
+        <service id="pfe_collector.mooc.builder.theme" class="Pfe\Bundle\CollectorBundle\Collector\Builder\ThemeMoocBuilder">
+            <argument type="service" id="doctrine" />
+        </service>
+    </services>
+</container>

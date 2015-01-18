@@ -1,0 +1,33 @@
+{% block legend %}
+    <h3>Legend</h3>
+    <table class="table table-striped">
+        <tr>
+            <th><span class="glyphicon glyphicon-plus text-primary"></span></th>
+            <th>Label</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Color</th>
+        </tr>
+        <tr>
+            <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+            <td>low</td>
+            <td>none</td>
+            <td>10</td>
+            <td><input type="color" value="#ff00ff" disabled /></td>
+        </tr>
+        <tr>
+            <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+            <td>medium</td>
+            <td>10</td>
+            <td>50</td>
+            <td><input type="color" value="#00ff00" disabled /></td>
+        </tr>
+        <tr>
+            <td><span class="glyphicon glyphicon-remove text-danger"></span></td>
+            <td>high</td>
+            <td>50</td>
+            <td>100</td>
+            <td><input type="color" value="#ffffff" disabled /></td>
+        </tr>
+    </table>
+{% endblock %}

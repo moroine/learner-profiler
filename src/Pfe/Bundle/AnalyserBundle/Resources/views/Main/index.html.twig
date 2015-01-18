@@ -1,0 +1,46 @@
+{% extends "::base.html.twig" %}
+
+{% block title %}PfeAnalyserBundle:Main:index{% endblock %}
+
+{% block body %}
+    <div class="container" id="main-container">
+        <div id="alert-message">
+
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-3" id="navigation">
+                {% include 'PfeAnalyserBundle:Main:navigation.html.twig' %}
+            </div>
+            <div class="col-md-9">
+                {% include 'PfeAnalyserBundle:Main:visualisation.html.twig' %}
+            </div>
+        </div>
+        <hr />
+        <div class="col-md-12">
+            {% include 'PfeAnalyserBundle:Main:legend.html.twig' %}
+        </div>
+        <hr />
+        <div class="col-md-12">
+            {% include 'PfeAnalyserBundle:Main:details.html.twig' %}
+        </div>
+        <div class="">
+            {% include 'PfeAnalyserBundle:Main:modals.html.twig' %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts '@d3_js' debug=false %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% javascripts
+        '@PfeAnalyserBundle/Resources/public/js/lib/d3.min.js'
+        '@PfeAnalyserBundle/Resources/public/js/lib/topojson.v1.min.js'
+        '@PfeAnalyserBundle/Resources/public/js/lib/datamaps.world.min.js'
+        '@PfeAnalyserBundle/Resources/public/js/*/*'
+        '@PfeAnalyserBundle/Resources/public/js/*/*/*'
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
