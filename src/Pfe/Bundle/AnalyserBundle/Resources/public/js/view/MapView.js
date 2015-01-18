@@ -77,7 +77,7 @@ View.MapView = function (ui) {
                     if (country.number < legends[i].getMax()) {
                         country.fillKey = legends[i].getName();
                     }
-                } else if (legends[i].getMax() == null) {
+                } else if (legends[i].getMax() === null) {
                     if (country.number >= legends[i].getMin()) {
                         country.fillKey = legends[i].getName();
                     }
