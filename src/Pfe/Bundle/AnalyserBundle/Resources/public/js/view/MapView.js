@@ -1,18 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 if (typeof View === "undefined") {
     var View = {};
 }
 
 
 /**
- *
- * @constructor
+ * @class
+ * @param {View.UiView} ui
  */
-View.MapView = function () {
+View.MapView = function (ui) {
+    /**
+     * @type {View.UiView}
+     */
+    this._ui = ui;
+
     /**
      *
      * @param {Entity.Visualisation} visualisation
@@ -70,4 +70,12 @@ View.MapView = function () {
     this.displayGraph = function () {
 
     };
+};
+
+/**
+ *
+ * @returns {View.UiView}
+ */
+View.MapView.prototype.getUiview = function () {
+    return this._ui;
 };
