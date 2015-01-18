@@ -9,30 +9,6 @@
             "SymfonyStandard": "app/"
         }
     },
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "mikegerwitz/easejs",
-                "version": "0.2.4",
-                "dist": {
-                    "url": "https://ftp.gnu.org/gnu/easejs/ease-0.2.4.min.js",
-                    "type": "file"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "jquery/jquery",
-                "version": "2.1.3",
-                "dist": {
-                    "url": "http://code.jquery.com/jquery-2.1.3.min.js",
-                    "type": "file"
-                }
-            }
-        }
-    ],
     "require": {
         "php": ">=5.3.3",
         "symfony/symfony": "2.6.*",
@@ -52,8 +28,9 @@
         "jms/serializer": "~0.16",
         "nelmio/api-doc-bundle": "dev-master",
         "mikegerwitz/easejs": "0.2.4",
-        "twbs/bootstrap": "3.*",
-        "jquery/jquery": "2.*"
+        "fxp/composer-asset-plugin": "1.0.0-beta4",
+        "bower-asset/bootstrap": "dev-master",
+        "bower-asset/jquery": "2.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
@@ -68,8 +45,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
-            "sh install_js_lib.sh"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
         ],
         "post-update-cmd": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
@@ -77,8 +53,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles",
-            "sh install_js_lib.sh"
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
         ]
     },
     "config": {
@@ -86,6 +61,10 @@
         "vendor-dir": "vendor"
     },
     "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "app/Resources/public/assets",
+            "bower-asset-library": "app/Resources/public/assets"
+        },
         "symfony-app-dir": "app",
         "symfony-web-dir": "web",
         "incenteev-parameters": {
