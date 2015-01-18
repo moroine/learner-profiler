@@ -21,11 +21,34 @@ if (typeof Entity === 'undefined') {
  * @returns {undefined}
  */
 Entity.Filter = function (rule, type, field, value) {
+    /**
+     * @type int
+     */
     this._id = null;
+
+    /**
+     * @type String
+     */
     this._rule = rule;
+
+    /**
+     * @type String
+     */
     this._type = type;
+
+    /**
+     * @type String
+     */
     this._field = field;
+
+    /**
+     * @type String
+     */
     this._value = value;
+
+    /**
+     * @type boolean
+     */
     this._actif = true;
 
     /**

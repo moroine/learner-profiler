@@ -18,12 +18,35 @@ if (typeof Entity === 'undefined') {
  * @returns {undefined}
  */
 Entity.Trace = function (operation, type) {
+    /**
+     * @type int
+     */
     this._id = null;
+
+    /**
+     * @type String
+     */
     this._operation = operation;
+
+    /**
+     * @type String
+     */
     this._type = type;
+
+    /**
+     * @type {Filter[]}
+     */
     this._filters = [];
-    this._legends = [];
+
+    /**
+     * @type String
+     */
     this._denominateur = null;
+
+    /**
+     * @type boolean
+     */
+    this._active = true;
 
     /**
      *
@@ -78,7 +101,7 @@ Entity.Trace = function (operation, type) {
 
     /**
      *
-     * @returns {Array} - Array of filters
+     * @returns {Filter[]} - Array of filters
      */
     this.getFilters = function () {
         return this._filters;
@@ -86,28 +109,11 @@ Entity.Trace = function (operation, type) {
 
     /**
      *
-     * @param {Array} filters - Array of filters
+     * @param {Filter[]} filters - Array of filters
      * @returns {undefined}
      */
     this.setFilters = function (filters) {
         this._filters = filters;
-    };
-
-    /**
-     *
-     * @returns {Array} - Array of legends
-     */
-    this.getLegends = function () {
-        return this._legends;
-    };
-
-    /**
-     *
-     * @param {Array} legends - Array of legends
-     * @returns {undefined}
-     */
-    this.setLegends = function (legends) {
-        this._legends = legends;
     };
 
     /**
@@ -125,5 +131,14 @@ Entity.Trace = function (operation, type) {
      */
     this.setDenominateur = function (denominateur) {
         this._denominateur = denominateur;
+    };
+
+    /**
+     *
+     * @returns {Boolean}
+     */
+
+    this.isActive = function () {
+        return this._active;
     };
 };
