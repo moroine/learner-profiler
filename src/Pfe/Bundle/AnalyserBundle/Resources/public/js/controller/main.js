@@ -1,4 +1,4 @@
-document.onready(
+$('document').ready(
         function () {
             var visu = new Entity.Visualisation("map", "apprenants");
             visu._traces[0] = new Entity.Trace("count", "choropleth");

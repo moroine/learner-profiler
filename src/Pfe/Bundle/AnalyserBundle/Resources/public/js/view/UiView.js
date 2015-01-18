@@ -44,3 +44,17 @@ View.UiView.prototype.getNavigation = function () {
 View.UiView.prototype.getMapView = function () {
     return this._map;
 };
+
+/**
+ * @returns {View.LegendView}
+ */
+View.UiView.prototype.getLegendView = function () {
+    return this._legend;
+};
+
+/**
+ * @returns {View.DetailsView}
+ */
+View.UiView.prototype.getDetailsView = function () {
+    return this._details;
+};
