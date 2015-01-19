@@ -9,11 +9,11 @@
 /web/css/
 /app/bootstrap*
 /compiler*
-/app/cache/*
-/app/logs/*
+/app/cache/**
+/app/logs/**
 /vendor/
 /app/config/parameters.yml
 /app/Resources/dump/**
-/app/Resources/public/**/*
+/app/Resources/public/assets/**
 !.gitkeep
 !/app/bootstrap.php.cache
