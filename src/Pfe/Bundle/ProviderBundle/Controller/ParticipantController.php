@@ -71,7 +71,7 @@ class ParticipantController extends Controller
             }
         }
         $engine = $this->container->get('templating');
-        $content = $engine->render('PfeProviderBundle:Main:raw.' . $_format . '.twig', array('content' => $count));
+        $content = $engine->render('PfeProviderBundle:Main:raw.' . $_format . '.twig', array('content' => $count, "config" => $this->get('router')->generate('pfe_provider_participant_participantscount')));
 
         return new Response($content);
     }
