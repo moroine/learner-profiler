@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 class MainController extends Controller
 {
+
     /**
      * @Route("/")
      * @Template()
@@ -15,7 +16,8 @@ class MainController extends Controller
     public function indexAction()
     {
         return array(
-                // ...
-            );    }
+            "config" => $this->get('router')->generate('pfe_provider_participant_participantscount', array("_format" => 'json'))
+        );
+    }
 
 }
