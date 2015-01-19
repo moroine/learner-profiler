@@ -146,29 +146,8 @@ Entity.Trace.prototype.isActive = function () {
 };
 
 Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
-    $.getJSON("/bundles/pfeanalyser/js/json/participantsReal.json", function (data) {
-        var countCountries = {};
-        var essai;
-        $.each(data.participants, function (key, val) {
-            if (val.home_id !== null) {
-                if (countries[val.home_id.state] !== undefined) {
-                    if (countCountries[countries[val.home_id.state]] === undefined) {
-                        countCountries[countries[val.home_id.state]] = 1;
-                    } else {
-                        countCountries[countries[val.home_id.state]] += 1;
-                    }
-                    //console.log(val.home_id.state + " : " + countCountries[countries[val.home_id.state]]);
-                }
-            }
-        });
-        for (essai in countCountries) {
-            countCountries[essai] = {
-                "fillKey": "",
-                "number": countCountries[essai]
-            };
-        }
-
-        this._data = countCountries;
+    $.getJSON(Learner, function (data) {
+        this._data = data;
         callback(visualisation, this, this._data);
     });
 };
