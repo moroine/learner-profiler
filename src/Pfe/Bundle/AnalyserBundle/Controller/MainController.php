@@ -13,11 +13,13 @@ class MainController extends Controller
      * @Route("/")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(\Symfony\Component\HttpFoundation\Request $request)
     {
-        return array(
-            "config" => $this->get('router')->generate('pfe_provider_participant_participantscount', array("_format" => 'json'))
+        $config = array(
+            "endpoint" => $request->getBaseUrl() . "/provider"
         );
+
+        return array("config" => $config);
     }
 
 }

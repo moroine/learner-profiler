@@ -145,9 +145,9 @@ Entity.Trace.prototype.isActive = function () {
     return this._active;
 };
 
-Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
-    $.getJSON(Learner, function (data) {
+Entity.Trace.prototype.getData = function (datatype, legends, callback) {
+    $.getJSON(Provider.endpoint + "/participant/count.json", function (data) {
         this._data = data;
-        callback(visualisation, this, this._data);
+        callback(this, this._data);
     });
 };

@@ -13,6 +13,15 @@ use Doctrine\ORM\EntityRepository;
 class ParticipantRepository extends EntityRepository
 {
 
+    private $labels;
+
+    public function __construct($em, \Doctrine\ORM\Mapping\ClassMetadata $class)
+    {
+        parent::__construct($em, $class);
+
+        $labels = array();
+    }
+
     public function findAllLocalisations()
     {
         $dql = 'SELECT DISTINCT p.state, p.city, COUNT(p) as n FROM PfeCoreBundle:Participant as p GROUP BY p.state, p.city ORDER BY n, p.state, p.city';
@@ -38,6 +47,125 @@ class ParticipantRepository extends EntityRepository
                 ->getQuery();
 
         return $query->getResult();
+    }
+
+    public function findByCustomQuery($operation, $group, $filters)
+    {
+        $this->labels = array();
+
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->from('PfeCoreBundle:Participant', 'p');
+        $this->labels['Participant'] = "p";
+
+        switch ($operation) {
+            case 'count':
+                $qb->select('COUNT(p) as entry');
+                break;
+            default:
+                $qb->select('p as entry');
+                break;
+        }
+
+        switch ($group) {
+            case 'Localisation.state':
+                if (empty($this->labels['Localisation'])) {
+                    $qb->leftJoin('p.home', 'l');
+                    $this->labels['Localisation'] = 'l';
+                }
+                $qb->addSelect('l.isoAlpha3');
+                $qb->addSelect('l.state');
+                $qb->groupBy('l.isoAlpha3');
+                break;
+            case 'Localisation.city':
+                if (empty($this->labels['Localisation'])) {
+                    $qb->leftJoin('p.home', 'l');
+                    $this->labels['Localisation'] = 'l';
+                }
+                $qb->addSelect('l.isoAlpha3, l.city, l.latitude, l.longitude');
+                $qb->groupBy('l.isoAlpha3');
+                $qb->AddGroupBy('l.city');
+                break;
+        }
+
+        $this->applyFilters($qb, $filters);
+        $query = $qb->getQuery();
+
+        return $query->getArrayResult();
+    }
+
+    private function applyFilters(\Doctrine\ORM\QueryBuilder $qb, $filters)
+    {
+        $allowedRules = array("is", "not", "lower", "higher");
+        $allowedTypes = array("Localisation", "Participant", "Action");
+
+        foreach ($filters as $key => $filter) {
+            $rule = $filter["rule"];
+            if (!in_array($rule, $allowedRules)) {
+                continue;
+            }
+            $type = $filter["type"];
+            if (!in_array($type, $allowedTypes)) {
+                continue;
+            }
+            switch ($type) {
+                case 'Localisation':
+                    $this->applyLocalisationFilter($qb, $rule, $filter["field"], $filter["value"]);
+                    break;
+            }
+        }
+    }
+
+    private function applyLocalisationFilter(\Doctrine\ORM\QueryBuilder $qb, $rule, $field, $value)
+    {
+        switch ($rule) {
+            case 'is':
+                $operator = "LIKE";
+                break;
+            case 'not':
+                $operator = "NOT LIKE";
+                break;
+            default:
+                return;
+        }
+
+        if (empty($this->labels['Localisation'])) {
+            $qb->leftJoin('p.home', 'l');
+            $this->labels['Localisation'] = 'l';
+        }
+
+        if ($field === "city") {
+            $key = uniqid("city");
+            $qb->andWhere($this->getRuleExpression("LOWER(l.city)", $operator, " LOWER(:" . $key . ')'));
+            $qb->setParameter($key, $value);
+        }
+        if ($field === "isoAlpha3") {
+            $key = uniqid("isoAlpha3");
+            $qb->andWhere($this->getRuleExpression("LOWER(l.isoAlpha3)", $operator, " LOWER(:" . $key . ')'));
+            $qb->setParameter($key, $value);
+        }
+    }
+
+    private function getRuleExpression($left, $rule, $right)
+    {
+        switch ($rule) {
+            case 'is':
+                $operator = "=";
+                break;
+            case 'not':
+                $operator = "<>";
+                break;
+            case 'lower':
+                $operator = "<";
+                break;
+            case 'higher':
+                $operator = ">";
+                break;
+            default:
+                return "1 = 1";
+        }
+
+        return $left . " " . $operator . " " . $right;
     }
 
 }

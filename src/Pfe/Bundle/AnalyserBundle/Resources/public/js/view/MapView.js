@@ -38,7 +38,11 @@ View.MapView = function (ui) {
             //var bubbleTrace = visualisation.getActiveBubble();
 
             if (choroplethTrace !== null) {
-                var choroplethData = choroplethTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
+                var scope = this;
+                var callback = function (trace, data) {
+                    scope.displayTrace(visualisation, trace, data);
+                };
+                var choroplethData = choroplethTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), callback);
                 //var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
             }
 
