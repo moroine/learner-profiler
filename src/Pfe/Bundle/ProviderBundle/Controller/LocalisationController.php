@@ -13,16 +13,19 @@ use Pfe\Bundle\CoreBundle\Entity\Localisation;
 /**
  * @Route("/localisation")
  */
-class LocalisationController extends Controller {
+class LocalisationController extends Controller
+{
 
-    public function renderLocalisationsAction(array $localisations, $_format) {
+    public function renderLocalisationsAction(array $localisations, $_format)
+    {
         $engine = $this->container->get('templating');
         $content = $engine->render('PfeProviderBundle:Localisation:localisations.' . $_format . '.twig', array('localisations' => $localisations));
 
         return new Response($content);
     }
 
-    public function renderLocalisationAction(Localisation $localisation, $_format) {
+    public function renderLocalisationAction(Localisation $localisation, $_format)
+    {
         $engine = $this->container->get('templating');
         $content = $engine->render('PfeProviderBundle:Localisation:localisation.' . $_format . '.twig', array('localisation' => $localisation));
 
@@ -33,7 +36,8 @@ class LocalisationController extends Controller {
      * @Route(".{_format}", defaults={"_format"="json"})
      * @Method({"GET"})
      */
-    public function localisationsAction($_format) {
+    public function localisationsAction($_format)
+    {
         $repository = $this->getDoctrine()->getRepository("PfeCoreBundle:Localisation");
 
         $localisations = $repository->findAll();
@@ -46,7 +50,8 @@ class LocalisationController extends Controller {
      * @Method({"GET"})
      * @ParamConverter()
      */
-    public function localisationAction(Localisation $localisation, $_format) {
+    public function localisationAction(Localisation $localisation, $_format)
+    {
         return $this->renderLocalisationAction($localisation, $_format);
     }
 
@@ -56,15 +61,16 @@ class LocalisationController extends Controller {
      * @ParamConverter("localisation", class="PfeCoreBundle:Localisation")
      * @Template()
      */
-    public function localisationParticipantsAction(Localisation $localisation, $_format) {
+    public function localisationParticipantsAction(Localisation $localisation, $_format)
+    {
         /* @var Pfe\Bundle\CoreBundle\Entity\ParticipantRepository $repository */
         $repository = $this->getDoctrine()->getRepository("PfeCoreBundle:Participant");
 
         $participants = $repository->findByHome($localisation);
 
         return $this->forward("PfeProviderBundle:Participant:renderParticipants", array(
-                "participants" => $participants,
-                "_format" => $_format
+                    "participants" => $participants,
+                    "_format" => $_format
         ));
     }
 

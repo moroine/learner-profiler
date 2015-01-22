@@ -37,10 +37,6 @@ View.NavigationView.prototype.bindEvents = function () {
  * @param {HTMLElement} target
  */
 View.NavigationView.prototype.onNavigationTypeEvent = function (target) {
-    console.warn("Not available");
-    this._ui.alertWarning("Warning!", "Not implemented yet.");
-    return;
-
     var $target = $(target);
     var nav = $target.data('navigation');
     var value = $target.data('navigation-' + nav);
@@ -61,6 +57,14 @@ View.NavigationView.prototype.onNavigationTypeEvent = function (target) {
  */
 View.NavigationView.prototype.setType = function (type) {
     this._type = type;
+    switch (type) {
+        case "graph":
+            this._ui.getMapView().setVisualisation(visuGraph);
+            break;
+        case "map":
+            this._ui.getMapView().setVisualisation(visuMap);
+            break;
+    }
 };
 
 /**

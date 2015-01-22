@@ -51,7 +51,11 @@ Entity.Filter = function (rule, type, field, value) {
      */
     this._actif = true;
 
-
+    /**
+     *
+     * @type String
+     */
+    this._groupBy = groupBy;
 };
 
 /**
@@ -137,4 +141,21 @@ Entity.Filter.prototype.getValue = function () {
  */
 Entity.Filter.prototype.setValue = function (value) {
     this._value = value;
+};
+
+/**
+ *
+ * @returns {String|groupBy}
+ */
+Entity.Filter.prototype.getGroupBy = function () {
+    return this._groupBy;
+};
+
+/**
+ *
+ * @param {String} groupBy
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setGroupBy = function (groupBy) {
+    this._groupBy = groupBy;
 };
