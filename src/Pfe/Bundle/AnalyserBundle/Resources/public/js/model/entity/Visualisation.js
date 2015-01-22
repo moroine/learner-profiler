@@ -180,3 +180,20 @@ Entity.Visualisation.prototype.getActiveBubble = function () {
 
     return null;
 };
+
+/**
+ *
+ * @returns {?Trace}
+ */
+Entity.Visualisation.prototype.getActiveHistogram = function () {
+    var activeTraces = this.getActiveTraces();
+    var i;
+
+    for (i = 0; i < activeTraces.length; i++) {
+        if (activeTraces[i].getType() === "histogram") {
+            return activeTraces[i];
+        }
+    }
+
+    return null;
+};

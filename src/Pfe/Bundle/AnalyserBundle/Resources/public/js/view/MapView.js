@@ -19,10 +19,13 @@ View.MapView = function (ui) {
      * @returns {undefined}
      */
     this.setVisualisation = function (visualisation) { // visualisation from "VisualisationRepository"
+        if (visualisation !== null) {
+            document.getElementById("visualisation_container").innerHTML = "";
+        }
         if (visualisation.getType() === "map") {
             this.setMap(visualisation);
         } else {
-            this.setGraph(visualisation, "apprenants");
+            this.setGraph(visualisation);
         }
     };
 
@@ -38,11 +41,7 @@ View.MapView = function (ui) {
             //var bubbleTrace = visualisation.getActiveBubble();
 
             if (choroplethTrace !== null) {
-                var scope = this;
-                var callback = function (trace, data) {
-                    scope.displayTrace(visualisation, trace, data);
-                };
-                var choroplethData = choroplethTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), callback);
+                var choroplethData = choroplethTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
                 //var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
             }
 
@@ -57,11 +56,24 @@ View.MapView = function (ui) {
      * @returns {undefined}
      */
     this.setGraph = function (visualisation) {
+        if (visualisation.getDatatype() === "apprenants") {
+            // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
+            var histogramTrace = visualisation.getActiveHistogram();
+            //var bubbleTrace = visualisation.getActiveBubble();
 
+            if (histogramTrace !== null) {
+                var histogramData = histogramTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), this.displayGraph);
+                //var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
+            }
+
+        } else { // Datatype === "actions"
+
+        }
     };
 
     /**
      *
+     * @param {Visualisation} visualisation
      * @param {Trace} trace
      * @param {type} choroplethData
      * @returns {undefined}
@@ -95,9 +107,9 @@ View.MapView = function (ui) {
 
         var container = document.getElementById("visualisation_container");
 
-        document.getElementById("container").innerHTML = "";
+        document.getElementById("visualisation_container").innerHTML = "";
         container = new Datamaps({
-            element: document.getElementById('container'),
+            element: document.getElementById('visualisation_container'),
             fills: fillKeys,
             data: choroplethData,
             geographyConfig: {
@@ -116,10 +128,88 @@ View.MapView = function (ui) {
 
     };
 
-    this.displayGraph = function () {
+    this.displayGraph = function (visualisation, trace, histogramData) {
+        var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function (d) {
+                    return "<strong>Count :</strong> <span style='color:red'>" + d.nombre + "</span>";
+                });
 
+        var svg = d3.select("#visualisation_container").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+        var abscisse = [];
+        var ordonnee = [];
+
+        for (item in histogramData) {
+            abscisse.push(item);
+            ordonnee.push(histogramData[item].number);
+        }
+
+        d3.json(Learner, function (error, data) {
+            x.domain(abscisse);
+            y.domain(ordonnee);
+
+
+
+            var dataArray = [];
+            for (item in data) {
+                var nom = item;
+                dataArray.push({
+                    "name": nom,
+                    "nombre": data[item].number
+                })
+            }
+
+            svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+            svg.select("x axis")
+                    .selectAll(".tick")
+                    .attr("transform", "translate(")
+                    .style("text-anchor", "end")
+
+            svg.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis)
+                    .append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 0)
+                    .attr("dy", ".71em")
+                    .style("text-anchor", "end")
+                    .text("Number of participants");
+
+            svg.selectAll(".bar")
+                    .data(dataArray)
+                    .enter().append("rect")
+                    .attr("class", "bar")
+                    .attr("x", function (d) {
+                        return x(d.name);
+                    })
+                    .attr("width", x.rangeBand())
+                    .attr("y", function (d) {
+                        return y(d.nombre);
+                    })
+                    .attr("height", function (d) {
+                        return height - y(d.nombre);
+                    })
+                    .on('mouseover', tip.show)
+                    .on('mouseout', tip.hide);
+
+            svg.call(tip);
+        });
     };
 };
+
+
 
 /**
  *

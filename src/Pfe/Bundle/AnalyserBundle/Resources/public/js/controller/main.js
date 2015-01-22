@@ -1,6 +1,10 @@
+var visuMap, visuGraph;
+
 window.onload = function () {
-    var visu = new Entity.Visualisation("map", "apprenants");
-    visu._traces[0] = new Entity.Trace("count", "choropleth");
+    visuMap = new Entity.Visualisation("map", "apprenants");
+    visuGraph = new Entity.Visualisation("graph", "apprenants");
+    visuMap._traces[0] = new Entity.Trace("count", "choropleth");
+    visuGraph._traces[0] = new Entity.Trace("count", "histogram");
 
     var legends = [];
     legends.push(new Entity.Legend("VeryFew", null, 5, "#f1c40f"));
@@ -10,9 +14,9 @@ window.onload = function () {
     legends.push(new Entity.Legend("veryBig", 50, 100, "#e74c3c"));
     legends.push(new Entity.Legend("soMuch", 100, null, "#c0392b"));
 
-            visu.setLegends(legends);
+    visuMap.setLegends(legends);
 
     var ui = new View.UiView();
     ui.init();
-    ui.getMapView().setVisualisation(visu);
+    ui.getMapView().setVisualisation(visuMap);
 };
