@@ -1,6 +1,7 @@
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /provider/doc
+
 pfe_analyser:
     resource: "@PfeAnalyserBundle/Controller/"
     type:     annotation

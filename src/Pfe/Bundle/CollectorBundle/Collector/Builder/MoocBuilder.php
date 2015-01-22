@@ -9,7 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Moroine Bentefrit <moroine.bentefrit@gmail.com>
  */
-class MoocBuilder {
+class MoocBuilder
+{
 
     /**
      *
@@ -42,7 +43,8 @@ class MoocBuilder {
      */
     private $theme_builder;
 
-    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine, \Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi $gplace_api, \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi $geoname_api, \Pfe\Bundle\CollectorBundle\Collector\Builder\ThemeMoocBuilder $themeBuilder) {
+    public function __construct(\Doctrine\Bundle\DoctrineBundle\Registry $doctrine, \Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi $gplace_api, \Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi $geoname_api, \Pfe\Bundle\CollectorBundle\Collector\Builder\ThemeMoocBuilder $themeBuilder)
+    {
         $this->doctrine = $doctrine;
 
         $this->gplace_api = $gplace_api;
@@ -68,7 +70,8 @@ class MoocBuilder {
      * @param type $data
      * @return \Pfe\Bundle\CoreBundle\Entity\Theme
      */
-    public function buildTheme(OutputInterface $output, $data) {
+    public function buildTheme(OutputInterface $output, $data)
+    {
         return $this->theme_builder->buildTheme($output, $data);
     }
 
@@ -77,7 +80,8 @@ class MoocBuilder {
      * @param type $data
      * @return \Pfe\Bundle\CoreBundle\Entity\Section
      */
-    public function buildSection(OutputInterface $output, $data, \Pfe\Bundle\CoreBundle\Entity\Theme $theme = null) {
+    public function buildSection(OutputInterface $output, $data, \Pfe\Bundle\CoreBundle\Entity\Theme $theme = null)
+    {
         $name = trim($data['name']);
         $order = intval($data['section']);
 
@@ -106,7 +110,8 @@ class MoocBuilder {
      * @param \Pfe\Bundle\CoreBundle\Entity\Section[]|null $sections
      * @return \Pfe\Bundle\CoreBundle\Entity\Module
      */
-    public function buildModule(OutputInterface $output, $data, $sections = null) {
+    public function buildModule(OutputInterface $output, $data, $sections = null)
+    {
         /**
          * @var \Pfe\Bundle\CoreBundle\Entity\Section[] $sections
          */
@@ -173,7 +178,8 @@ class MoocBuilder {
      * @param type $data
      * @return \Pfe\Bundle\CoreBundle\Entity\Participant
      */
-    public function buildParticipant(OutputInterface $output, $data) {
+    public function buildParticipant(OutputInterface $output, $data)
+    {
 
         $email = strtolower(trim($data['email']));
 
@@ -232,7 +238,8 @@ class MoocBuilder {
      * @param \Pfe\Bundle\CoreBundle\Entity\Module[]|null $modules
      * @param \Pfe\Bundle\CoreBundle\Entity\Participant[]|null $participants
      */
-    public function buildAction(OutputInterface $output, $data, $modules = null, $participants = null) {
+    public function buildAction(OutputInterface $output, $data, $modules = null, $participants = null)
+    {
         $time = "@" . trim($data['time']);
         $id = intval($data['id']);
         $userid = intval($data['userid']);
@@ -282,16 +289,19 @@ class MoocBuilder {
         return $action;
     }
 
-    public function saveChanges() {
+    public function saveChanges()
+    {
         $this->doctrine->getManager()->flush();
         $this->doctrine->getManager()->clear();
     }
 
-    public function getStats() {
+    public function getStats()
+    {
         return $this->stats['participants'] . " participants ajoutés: " . $this->stats['apprenants'] . " apprenants + " . $this->stats['etudiants'] . " étudiants + " . $this->stats['staffs'] . " staffs\n" . $this->stats['localisations'] . " localisations\n" . $this->theme_builder->getStats() . "\n" . $this->stats['section'] . ' sections + ' . $this->stats['module'] . ' modules\n' . $this->stats['action'] . " actions";
     }
 
-    private function getLocalisation($countryInfos, $city, OutputInterface $output) {
+    private function getLocalisation($countryInfos, $city, OutputInterface $output)
+    {
         $countryName = (empty($countryInfos)) ? null : $countryInfos->countryName;
 
         $repo = $this->doctrine->getRepository("PfeCoreBundle:Localisation");
@@ -327,8 +337,12 @@ class MoocBuilder {
 
             $localisation->setLatitude($gplace->geometry->location->lat);
             $localisation->setLongitude($gplace->geometry->location->lng);
-            $localisation->getG_place_id($gplace->place_id);
-            $localisation->getG_address($gplace->formatted_address);
+            $localisation->setG_place_id($gplace->place_id);
+            $localisation->setG_address($gplace->formatted_address);
+
+            if (in_array("locality", $gplace->types)) {
+                $localisation->setCity($gplace->name);
+            }
 
             if (!empty($countryInfos->fipsCode)) {
                 $localisation->setFips($countryInfos->fipsCode);
@@ -342,16 +356,22 @@ class MoocBuilder {
                 $localisation->setIsoAlpha3($countryInfos->isoAlpha3);
             }
 
+            $loc = $repo->findOneBy(array("place_id" => $localisation->getG_place_id()));
+
+            if ($loc !== null) {
+                return $loc; // Already in Database
+            }
+
             $this->doctrine->getManager()->persist($localisation);
             $this->doctrine->getManager()->flush();
-
             $this->stats['localisations'] ++;
         }
 
         return $localisation;
     }
 
-    private function getCountryInformation(OutputInterface $output, $countryCode) {
+    private function getCountryInformation(OutputInterface $output, $countryCode)
+    {
         $results = $this->geonames_api->searchByCountryCode($countryCode);
 
         if (count($results) === 0) {
