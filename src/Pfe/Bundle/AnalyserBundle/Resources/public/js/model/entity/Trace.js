@@ -146,8 +146,15 @@ Entity.Trace.prototype.isActive = function () {
 };
 
 Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
-    $.getJSON(Learner, function (data) {
-        this._data = data;
-        callback(visualisation, this, this._data);
-    });
+    if (this.getType() === "choropleth") {
+        $.getJSON(Learner, function (data) {
+            this._data = data;
+            callback(visualisation, this, this._data);
+        });
+    } else if (this.getType() === "histogram") {
+        $.getJSON(Learner, function (data) {
+            this._data = data;
+            callback(visualisation, this, this._data);
+        });
+    }
 };
