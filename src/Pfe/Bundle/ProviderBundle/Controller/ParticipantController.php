@@ -45,33 +45,26 @@ class ParticipantController extends Controller
     }
 
     /**
-     * @Route("/count.{_format}", defaults={"_format"="json"})
-     * @Method({"GET"})
+     * @Route("/custom.{_format}", defaults={"_format"="json"})
+     * @Method({"GET", "POST"})
      */
-    public function participantsCountAction(\Symfony\Component\HttpFoundation\Request $request, $_format)
+    public function participantsCustomAction(\Symfony\Component\HttpFoundation\Request $request, $_format)
     {
         $repository = $this->getDoctrine()->getRepository("PfeCoreBundle:Participant");
 
-        $group = $request->query->has('group') ? $request->query->get('group') : null;
+        $operation = $request->request->get("operation", "list");
+        $group = $request->request->get("group", null);
+        $filters = $request->request->get("filters", array());
+        $legends = $request->request->get("legends", array());
 
-        $results = $repository->count();
+        $results = $repository->findByCustomQuery($operation, $group, $filters);
 
-        $count = array();
         foreach ($results as $key => $result) {
-            if ($result['isoAlpha3'] !== null) {
-                $count[$result['isoAlpha3']] = array(
-                    "fillKey" => "",
-                    "number" => $result['n']
-                );
-            } else {
-                $count["none"] = array(
-                    "fillKey" => "",
-                    "number" => $result['n']
-                );
-            }
+            $results[$key]["fillKey"] = $this->getLegend($legends, $results[$key]["entry"]);
         }
+
         $engine = $this->container->get('templating');
-        $content = $engine->render('PfeProviderBundle:Main:raw.' . $_format . '.twig', array('content' => $count, "config" => $this->get('router')->generate('pfe_provider_participant_participantscount')));
+        $content = $engine->render('PfeProviderBundle:Main:raw.' . $_format . '.twig', array('content' => $results, "config" => $this->get('router')->generate('pfe_provider_participant_participantscustom')));
 
         return new Response($content);
     }
@@ -99,6 +92,26 @@ class ParticipantController extends Controller
                     "localisation" => $localisation,
                     "_format" => $_format
         ));
+    }
+
+    private function getLegend($legends, $value)
+    {
+        foreach ($legends as $legend) {
+            if (empty($legend["name"])) {
+                continue;
+            }
+
+            if (isset($legend["min"]) && $legend["min"] !== NULL && floatval($value) < floatval($legend["min"])) {
+                continue;
+            }
+
+            if (isset($legend["max"]) && $legend["max"] !== NULL && floatval($value) >= floatval($legend["min"])) {
+                continue;
+            }
+
+            return $legend["name"];
+        }
+        return null;
     }
 
 }
