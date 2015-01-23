@@ -11,9 +11,12 @@ class GPlaceApi
 
     public function searchLocality($city, $state)
     {
-        $query = urlencode($city) . '+' . urlencode($state);
+        if (empty($state)) {
+            $query = rawurlencode($city);
+        } else {
+            $query = rawurlencode($city) . '+' . rawurlencode($state);
+        }
         $types = 'political';
-
         $gplaces = $this->request($this->endpoint . '/json?query=' . $query . '&types=' . $types . '&key=' . $this->key);
 
         if (count($gplaces) === 0) {

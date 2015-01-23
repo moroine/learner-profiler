@@ -302,46 +302,64 @@ class MoocBuilder
 
     private function getLocalisation($countryInfos, $city, OutputInterface $output)
     {
-        $countryName = (empty($countryInfos)) ? null : $countryInfos->countryName;
+        $countryName = (empty($countryInfos)) ? null : strtolower($countryInfos->countryName);
+        $cityName = (empty($city)) ? null : strtolower($city);
+
+        if ($countryName === null) {
+            return null;
+        }
 
         $repo = $this->doctrine->getRepository("PfeCoreBundle:Localisation");
 
-        $localisation = $repo->findOneBy(array("state" => $countryName, "city" => $city));
+        $localisation = $repo->findOneBy(array("state" => $countryName, "city" => $cityName));
 
         if (empty($localisation)) {
-            $localisation = new \Pfe\Bundle\CoreBundle\Entity\Localisation($countryName, $city);
+            $localisation = new \Pfe\Bundle\CoreBundle\Entity\Localisation($countryName, $cityName);
+        }
 
-            if (!empty($countryName) && !empty($city) && $city !== $countryName) {
-                $gplaces = $this->gplace_api->searchLocality($city, $countryName);
-            } elseif (!empty($countryName)) {
-                $gplaces = $this->gplace_api->searchState($countryName);
-            } else {
-                return null;
+        if ($localisation->getG_place_id() === null) {
+            $gplaces = array();
+
+            if (!empty($countryName) && !empty($cityName) && $cityName !== $countryName) {
+                $gplaces = $this->gplace_api->searchLocality($cityName, $countryName);
             }
 
-            switch (count($gplaces)) {
+            if (!empty($countryName) && count($gplaces) == 0) {
+                $gplaces = $this->gplace_api->searchState($countryName);
+            }
+
+            $n = count($gplaces);
+            switch ($n) {
                 case 0:
-                    $output->writeln('<error>Empty response for ' . $countryName . ' - ' . $city . '</error>');
-                    return null;
+                    $output->writeln('<error>Empty response for ' . $countryName . ' - ' . $cityName . '</error>');
+                    break;
                 case null:
-                    $output->writeln('<error>No response for ' . $countryName . ' - ' . $city . '</error>');
-                    return null;
+                    $output->writeln('<error>No response for ' . $countryName . ' - ' . $cityName . '</error>');
+                    break;
                 case 1:
                     break;
                 default:
-                    $output->writeln('<error>' . count($gplaces) . ' results for ' . $countryName . ' - ' . $city . '</error>');
+                    $output->writeln('<info>' . $n . ' results for ' . $countryName . ' - ' . $cityName . '</info>');
                     break;
             }
 
-            $gplace = $gplaces[0];
+            if ($n > 0) {
+                $gplace = $gplaces[0];
 
-            $localisation->setLatitude($gplace->geometry->location->lat);
-            $localisation->setLongitude($gplace->geometry->location->lng);
-            $localisation->setG_place_id($gplace->place_id);
-            $localisation->setG_address($gplace->formatted_address);
+                $localisation->setLatitude($gplace->geometry->location->lat);
+                $localisation->setLongitude($gplace->geometry->location->lng);
+                $localisation->setG_place_id($gplace->place_id);
+                $localisation->setG_address($gplace->formatted_address);
+                $localisation->setG_place_results($n);
 
-            if (in_array("locality", $gplace->types)) {
-                $localisation->setCity($gplace->name);
+                $loc = $repo->findOneBy(array("g_place_id" => $localisation->getG_place_id()));
+
+                if (in_array("locality", $gplace->types)) {
+                    $localisation->setCity(strtolower($gplace->name));
+                }
+                if ($loc !== null) {
+                    return $loc; // Already in Database
+                }
             }
 
             if (!empty($countryInfos->fipsCode)) {
@@ -355,13 +373,6 @@ class MoocBuilder
             if (!empty($countryInfos->isoAlpha3)) {
                 $localisation->setIsoAlpha3($countryInfos->isoAlpha3);
             }
-
-            $loc = $repo->findOneBy(array("place_id" => $localisation->getG_place_id()));
-
-            if ($loc !== null) {
-                return $loc; // Already in Database
-            }
-
             $this->doctrine->getManager()->persist($localisation);
             $this->doctrine->getManager()->flush();
             $this->stats['localisations'] ++;
