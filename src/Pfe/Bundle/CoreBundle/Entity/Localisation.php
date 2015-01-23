@@ -91,11 +91,19 @@ class Localisation implements \JsonSerializable
 
     /**
      *
-     * @var type
+     * @var string
      *
      * @ORM\Column(name="g_adress", type="string", nullable=true)
      */
     private $g_address;
+
+    /**
+     *
+     * @var int
+     *
+     * @ORM\Column(name="g_results", type="integer", nullable=true)
+     */
+    private $g_place_results;
 
     /**
      *
@@ -105,7 +113,7 @@ class Localisation implements \JsonSerializable
      * @param type $longitude
      * @param type $g_place_id
      */
-    public function __construct($state, $city = null, $latitude = null, $longitude = null, $g_place_id = null, $g_address = null)
+    public function __construct($state, $city = null, $latitude = null, $longitude = null, $g_place_id = null, $g_address = null, $g_place_results = 0)
     {
         $this->state = $state;
         $this->city = empty($city) ? null : $city;
@@ -113,6 +121,7 @@ class Localisation implements \JsonSerializable
         $this->longitude = $longitude;
         $this->g_place_id = $g_place_id;
         $this->g_address = $g_address;
+        $this->g_place_results = $g_place_results;
     }
 
     private function wd_remove_accents($str, $charset = 'utf-8')
@@ -269,6 +278,17 @@ class Localisation implements \JsonSerializable
         $obj->g_address = $this->g_address;
 
         return (array) $obj;
+    }
+
+    function getG_place_results()
+    {
+        return $this->g_place_results;
+    }
+
+    function setG_place_results($g_place_results)
+    {
+        $this->g_place_results = $g_place_results;
+        return $this;
     }
 
 }

@@ -101,8 +101,8 @@ class Action
 
     function __construct(\DateTime $datetime, Participant $participant = null, Module $module = null, $ip = null)
     {
-        $this->datetime = $datetime;
-        $this->ip = $ip;
+        $this->setDatetime($datetime);
+        $this->setIp($ip);
         $this->participant = $participant;
         // TODO: Get Localisation from ip
         // $this->localisation = $localisation;

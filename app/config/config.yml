@@ -140,4 +140,7 @@ fos_rest:
     routing_loader:
         include_format: true
 
+pfe_free_geo_ip:
+    endpoint: "http://freegeoip.net/"
+
 nelmio_api_doc: ~

@@ -1,3 +1,8 @@
+pfe_free_geo_ip:
+    resource: "@PfeFreeGeoIpBundle/Controller/"
+    type:     annotation
+    prefix:   /freegeoip
+
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /provider/doc
