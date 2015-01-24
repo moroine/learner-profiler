@@ -19,22 +19,24 @@ class MoocCollectorCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-                ->setName('pfe:collector:mooc')
-                ->setDescription('Import sql dump from MOOC')
-                ->addOption("sql-dump", "md", InputOption::VALUE_OPTIONAL, "Specify the sql dump file")
-                ->addArgument('course-id', InputArgument::REQUIRED, 'Target course is required')
+                ->setName('pfe:collector:moodle')
+                ->setDescription('Collect MOOC data from Moodle')
+                ->addOption("sql-dump", "md", InputOption::VALUE_OPTIONAL, "Specify the Moodle sql dump file")
+                ->addOption('course-id', "id", InputOption::VALUE_OPTIONAL, "Collect only specified theme")
+                ->addOption('component', "cmp", InputOption::VALUE_OPTIONAL, "Collect only specified theme")
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $course_id = intval($input->getArgument('course-id'));
+        $course_id = $input->getOption('course-id');
         $sqlDump = $input->getOption('sql-dump');
+        $cmp = $input->getOption('component');
 
         /**
-         * @var \Pfe\Bundle\CollectorBundle\Collector\MoocCollector
+         * @var \Pfe\Bundle\CollectorBundle\Moodle\MoocCollector
          */
-        $mooc_collector = $this->getContainer()->get('pfe_collector.mooc');
+        $mooc_collector = $this->getContainer()->get('pfe.collector.moodle');
 
         if ($sqlDump !== null) {
             if ($mooc_collector->importSqlDb($output, $sqlDump) == 1) {
@@ -42,7 +44,11 @@ class MoocCollectorCommand extends ContainerAwareCommand
             }
         }
 
-        $mooc_collector->collect($output, $course_id);
+        if (!empty($cmp)) {
+            $mooc_collector->collectComponent($output, $cmp, $course_id);
+        } else {
+            $mooc_collector->collect($output, $course_id);
+        }
     }
 
 }
