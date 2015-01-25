@@ -11,7 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author Moroine Bentefrit <moroine.bentefrit@gmail.com>
  */
-class MoocExtractor {
+class MoocExtractor
+{
 
     /**
      *
@@ -30,35 +31,39 @@ class MoocExtractor {
      */
     private $mutex;
 
-    public function __construct(\Doctrine\DBAL\Connection $connection) {
+    public function __construct(\Doctrine\DBAL\Connection $connection)
+    {
         $this->connection = $connection;
         if (!$this->connection->isConnected()) {
             $this->connection->connect();
         }
     }
 
-    public function isConnected() {
+    public function isConnected()
+    {
         return $this->connection->isConnected();
     }
 
-    public function importSqlDb(OutputInterface $output, $path) {
+    public function importSqlDb(OutputInterface $output, $path)
+    {
         $username = " -u " . $this->connection->getUsername();
         $password = empty($this->connection->getPassword()) ? "" : " -p" . $this->connection->getPassword();
 
         $cmd = "mysql" . $username . $password . " " . $this->connection->getDatabase() . " < " . $path;
 
-        $output->writeln(">>>".$cmd);
+        $output->writeln(">>>" . $cmd);
         $outs = array();
-        $status;
+//        $output->writeln("Executing cmd " . $cmd);
         exec($cmd, $outs, $status);
-        foreach($outs as $out){
+        foreach ($outs as $out) {
             $output->writeln($out);
         }
 
         return $status;
     }
 
-    public function extractThemeData(OutputInterface $output, $course_id) {
+    public function extractThemeData(OutputInterface $output, $course_id)
+    {
         $this->statement = $this->connection->prepare($this->getThemeDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
@@ -67,13 +72,15 @@ class MoocExtractor {
         }
     }
 
-    public function getThemeDataQuery($course_id_label) {
+    public function getThemeDataQuery($course_id_label)
+    {
         $query = "SELECT c.id, c.fullname FROM mdl_course c WHERE c.id=:" . $course_id_label;
 
         return $query;
     }
 
-    public function extractSectionData(OutputInterface $output, $course_id) {
+    public function extractSectionData(OutputInterface $output, $course_id)
+    {
         $this->statement = $this->connection->prepare($this->getSectionDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
@@ -82,13 +89,15 @@ class MoocExtractor {
         }
     }
 
-    public function getSectionDataQuery($course_id_label) {
+    public function getSectionDataQuery($course_id_label)
+    {
         $query = "SELECT s.id, s.name, s.section, s.sequence, s.course FROM mdl_course_sections s WHERE s.visible=1 AND s.course=:" . $course_id_label;
 
         return $query;
     }
 
-    public function extractModuleData(OutputInterface $output, $course_id) {
+    public function extractModuleData(OutputInterface $output, $course_id)
+    {
         $this->statement = $this->connection->prepare($this->getModuleDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
@@ -97,7 +106,8 @@ class MoocExtractor {
         }
     }
 
-    public function getModuleDataQuery($course_id_label) {
+    public function getModuleDataQuery($course_id_label)
+    {
         $query = <<<EOT
             SELECT DISTINCT cm.id, cm.module, cm.section, cm.instance, feedback.name as feedback_name, forum.name as forum_name, glossary.name as glossary_name, page.name as page_name, quiz.name as quiz_name, resource.name as resource_name, url.name as url_name, workshop.name as workshop_name
 
@@ -119,7 +129,8 @@ EOT;
         return $query;
     }
 
-    public function extractParticipantData(OutputInterface $output, $course_id) {
+    public function extractParticipantData(OutputInterface $output, $course_id)
+    {
         $this->statement = $this->connection->prepare($this->getParticipantDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
@@ -128,7 +139,8 @@ EOT;
         }
     }
 
-    private function getParticipantDataQuery($course_id_label) {
+    private function getParticipantDataQuery($course_id_label)
+    {
         $query = <<<EOT
             SELECT u.id, u.auth, u.username, u.firstname, u.lastname, u.email, u.city, u.country, u.lang, e.enrol, r.shortname, ul.timeaccess
             FROM mdl_user u
@@ -143,7 +155,8 @@ EOT;
         return $query;
     }
 
-    public function extractActionData(OutputInterface $output, $course_id) {
+    public function extractActionData(OutputInterface $output, $course_id)
+    {
         $this->statement = $this->connection->prepare($this->getActionDataQuery('course_id'));
         $this->statement->bindParam('course_id', $course_id);
 
@@ -152,7 +165,8 @@ EOT;
         }
     }
 
-    private function getActionDataQuery($course_id_label) {
+    private function getActionDataQuery($course_id_label)
+    {
         $query = <<<EOT
             SELECT l.id, l.time, l.userid, l.ip, l.cmid, l.action
             FROM mdl_log l
@@ -161,7 +175,8 @@ EOT;
         return $query;
     }
 
-    public function nextRow() {
+    public function nextRow()
+    {
         $data = $this->statement->fetch();
 
         if ($data) {
@@ -171,7 +186,8 @@ EOT;
         return null;
     }
 
-    public function nextRowsPackage($size) {
+    public function nextRowsPackage($size)
+    {
         Mutex::lock($this->mutex);
 
         $datas = [];
