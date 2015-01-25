@@ -8,10 +8,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Theme
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"mooc_id"})})
  * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ThemeRepository")
  */
-class Theme {
+class Theme
+{
 
     /**
      * @var integer
@@ -32,16 +33,17 @@ class Theme {
     /**
      * @var integer
      *
-     * @ORM\Column(name="moodle_course_id", type="integer", unique=true)
+     * @ORM\Column(name="mooc_id", type="integer", unique=true)
      */
-    private $course_id;
+    private $mooc_id;
 
     /**
      * Get id
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -51,7 +53,8 @@ class Theme {
      * @param string $name
      * @return Theme
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
 
         return $this;
@@ -62,7 +65,8 @@ class Theme {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -70,17 +74,20 @@ class Theme {
      *
      * @return integer
      */
-    function getCourseId() {
-        return $this->course_id;
+    function getMoocId()
+    {
+        return $this->mooc_id;
     }
 
     /**
      *
-     * @param integer $course_id
+     * @param integer $mooc_id
      * @return \Pfe\Bundle\CoreBundle\Entity\Theme
      */
-    function setCourseId($course_id) {
-        $this->course_id = $course_id;
+    function setMoocId($mooc_id)
+    {
+        $this->mooc_id = $mooc_id;
+
         return $this;
     }
 

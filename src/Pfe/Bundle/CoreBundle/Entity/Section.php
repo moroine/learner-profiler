@@ -8,10 +8,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Section
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"mooc_id"})})
  * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\SectionRepository")
  */
-class Section {
+class Section
+{
 
     /**
      * @var integer
@@ -33,16 +34,9 @@ class Section {
     /**
      * @var integer
      *
-     * @ORM\Column(name="section_order", type="integer", unique=true)
+     * @ORM\Column(name="section_order", type="integer")
      */
     private $order;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="duration_days", type="integer")
-     */
-    private $duration_days;
 
     /**
      * @var integer
@@ -52,18 +46,30 @@ class Section {
     private $mooc_id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_theme_id", type="integer")
+     */
+    private $mooc_theme_id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc__id", type="array")
+     */
+    private $mooc_module_ids;
+
+    /**
      * @var Theme
      *
-     * @ORM\ManyToOne(targetEntity="Theme")
+     * @ORM\ManyToOne(targetEntity="Theme", cascade={"persist","merge", "detach"})
      * @Assert\Valid()
      */
     private $theme;
 
-    function __construct($name, $order, $duration_days, Theme $theme) {
-        $this->name = $name;
-        $this->duration_days = $duration_days;
-        $this->order = $order;
-        $this->theme = $theme;
+    function __construct()
+    {
+        $this->mooc_module_ids = array();
     }
 
     /**
@@ -71,7 +77,8 @@ class Section {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -81,8 +88,9 @@ class Section {
      * @param string $name
      * @return Section
      */
-    public function setName($name) {
-        $this->name = $name;
+    public function setName($name)
+    {
+        $this->name = trim($name);
 
         return $this;
     }
@@ -92,7 +100,8 @@ class Section {
      *
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -100,16 +109,9 @@ class Section {
      *
      * @return integer
      */
-    function getOrder() {
+    function getOrder()
+    {
         return $this->order;
-    }
-
-    /**
-     *
-     * @return integer
-     */
-    function getDurationDays() {
-        return $this->duration_days;
     }
 
     /**
@@ -117,27 +119,20 @@ class Section {
      * @param integer $order
      * @return \Pfe\Bundle\CoreBundle\Entity\Section
      */
-    function setOrder($order) {
+    function setOrder($order)
+    {
         $this->order = $order;
         return $this;
     }
 
-    /**
-     *
-     * @param integer $duration_days
-     * @return \Pfe\Bundle\CoreBundle\Entity\Section
-     */
-    function setDurationDays($duration_days) {
-        $this->duration_days = $duration_days;
-        return $this;
-    }
-
-    function getMoocId() {
+    function getMoocId()
+    {
         return $this->mooc_id;
     }
 
-    function setMoocId($mooc_id) {
-        $this->mooc_id = $mooc_id;
+    function setMoocId($mooc_id)
+    {
+        $this->mooc_id = intval($mooc_id);
         return $this;
     }
 
@@ -145,7 +140,8 @@ class Section {
      *
      * @return Theme
      */
-    function getTheme() {
+    function getTheme()
+    {
         return $this->theme;
     }
 
@@ -154,8 +150,31 @@ class Section {
      * @param Theme $theme
      * @return Section
      */
-    function setTheme(Theme $theme) {
+    function setTheme(Theme $theme)
+    {
         $this->theme = $theme;
+        return $this;
+    }
+
+    function getMoocThemeId()
+    {
+        return $this->mooc_theme_id;
+    }
+
+    function getMoocModuleIds()
+    {
+        return $this->mooc_module_ids;
+    }
+
+    function setMoocThemeId($mooc_theme_id)
+    {
+        $this->mooc_theme_id = intval($mooc_theme_id);
+        return $this;
+    }
+
+    function setMoocModuleIds($mooc_module_ids)
+    {
+        $this->mooc_module_ids = intval($mooc_module_ids);
         return $this;
     }
 

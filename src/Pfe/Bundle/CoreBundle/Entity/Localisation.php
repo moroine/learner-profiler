@@ -14,7 +14,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *
  * @UniqueEntity(fields={"state", "city"}, message="Le participant d'adresse email {{value}} existe déjà")
  */
-class Localisation implements \JsonSerializable {
+class Localisation implements \JsonSerializable
+{
 
     /**
      * @var integer
@@ -90,27 +91,32 @@ class Localisation implements \JsonSerializable {
 
     /**
      *
-     * @var type
-     *
-     * @ORM\Column(name="g_adress", type="string", nullable=true)
-     */
-    private $g_address;
-
-    /**
-     *
      * @param type $state
      * @param type $city
      * @param type $latitude
      * @param type $longitude
      * @param type $g_place_id
      */
-    public function __construct($state, $city = null, $latitude = null, $longitude = null, $g_place_id = null, $g_address = null) {
+    public function __construct($state, $city = null, $latitude = null, $longitude = null, $g_place_id = null, $g_address = null, $g_place_results = 0)
+    {
         $this->state = $state;
         $this->city = empty($city) ? null : $city;
         $this->latitude = $latitude;
         $this->longitude = $longitude;
         $this->g_place_id = $g_place_id;
         $this->g_address = $g_address;
+        $this->g_place_results = $g_place_results;
+    }
+
+    private function wd_remove_accents($str, $charset = 'utf-8')
+    {
+        $str = htmlentities($str, ENT_NOQUOTES, $charset);
+
+        $str = preg_replace('#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $str);
+        $str = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $str); // pour les ligatures e.g. '&oelig;'
+        $str = preg_replace('#&[^;]+;#', '', $str); // supprime les autres caractères
+
+        return $str;
     }
 
     /**
@@ -118,7 +124,8 @@ class Localisation implements \JsonSerializable {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -128,8 +135,9 @@ class Localisation implements \JsonSerializable {
      * @param string $state
      * @return Localisation
      */
-    public function setState($state) {
-        $this->state = $state;
+    public function setState($state)
+    {
+        $this->state = strtolower($this->wd_remove_accents($state));
 
         return $this;
     }
@@ -139,7 +147,8 @@ class Localisation implements \JsonSerializable {
      *
      * @return string
      */
-    public function getState() {
+    public function getState()
+    {
         return $this->state;
     }
 
@@ -149,8 +158,9 @@ class Localisation implements \JsonSerializable {
      * @param string $city
      * @return Localisation
      */
-    public function setCity($city) {
-        $this->city = $city;
+    public function setCity($city)
+    {
+        $this->city = strtolower($this->wd_remove_accents($city));
 
         return $this;
     }
@@ -160,74 +170,79 @@ class Localisation implements \JsonSerializable {
      *
      * @return string
      */
-    public function getCity() {
+    public function getCity()
+    {
         return $this->city;
     }
 
-    public function getLatitude() {
+    public function getLatitude()
+    {
         return $this->latitude;
     }
 
-    public function getLongitude() {
+    public function getLongitude()
+    {
         return $this->longitude;
     }
 
-    public function getG_place_id() {
+    public function getG_place_id()
+    {
         return $this->g_place_id;
     }
 
-    public function setLatitude($latitude) {
+    public function setLatitude($latitude)
+    {
         $this->latitude = $latitude;
         return $this;
     }
 
-    public function setLongitude($longitude) {
+    public function setLongitude($longitude)
+    {
         $this->longitude = $longitude;
         return $this;
     }
 
-    public function setG_place_id($g_place_id) {
+    public function setG_place_id($g_place_id)
+    {
         $this->g_place_id = $g_place_id;
         return $this;
     }
 
-    public function getG_address() {
-        return $this->g_address;
-    }
-
-    public function setG_address($g_address) {
-        $this->g_address = $g_address;
-        return $this;
-    }
-
-    function getIsoAlpha3() {
+    function getIsoAlpha3()
+    {
         return $this->isoAlpha3;
     }
 
-    function getIsoAlpha2() {
+    function getIsoAlpha2()
+    {
         return $this->isoAlpha2;
     }
 
-    function getFips() {
+    function getFips()
+    {
         return $this->fips;
     }
 
-    function setIsoAlpha3($isoAlpha3) {
-        $this->isoAlpha3 = $isoAlpha3;
+    function setIsoAlpha3($isoAlpha3)
+    {
+        $this->isoAlpha3 = strtoupper($isoAlpha3);
         return $this;
     }
 
-    function setIsoAlpha2($isoAlpha2) {
-        $this->isoAlpha2 = $isoAlpha2;
+    function setIsoAlpha2($isoAlpha2)
+    {
+        $this->isoAlpha2 = strtoupper($isoAlpha2);
         return $this;
     }
 
-    function setFips($fips) {
-        $this->fips = $fips;
+    function setFips($fips)
+    {
+        $this->fips = strtoupper($fips);
         return $this;
     }
 
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         $obj = new \stdClass();
 
         $obj->id = $this->id;

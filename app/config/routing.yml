@@ -1,6 +1,16 @@
+pfe_data:
+    resource: "@PfeCoreBundle/Controller"
+    prefix:   /core
+
+pfe_free_geo_ip:
+    resource: "@PfeFreeGeoIpBundle/Controller/"
+    type:     annotation
+    prefix:   /freegeoip
+
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /provider/doc
+
 pfe_analyser:
     resource: "@PfeAnalyserBundle/Controller/"
     type:     annotation
