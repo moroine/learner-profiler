@@ -58,10 +58,14 @@ class ParticipantBuilder extends AbstractMoocBuilder
 
     public function buildLocalisations(OutputInterface $output)
     {
-        $output->writeln("<info>Building Localisations</info>");
         $offset = 0;
         $criteria = array('home' => null);
         $max = $this->countEntityBatches($criteria);
+        if ($max === 0) {
+            $output->writeln("<info>All Localisations are built</info>");
+            return;
+        }
+        $output->writeln("<info>Building Localisations</info>");
         $progress = new ProgressBar($output, $max);
         $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:3s%/%estimated:-3s% %memory:6s%');
         $progress->start();

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * IpLocation
  *
- * @ORM\Table(name="ecommerce_products",indexes={@ORM\Index(name="search_idx", columns={"ip"})})
+ * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"ip"})})
  * @ORM\Entity
  */
 class IpLocation

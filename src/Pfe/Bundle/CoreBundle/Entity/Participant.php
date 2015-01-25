@@ -199,12 +199,12 @@ class Participant implements \JsonSerializable
         return $this;
     }
 
-    function getCountry()
+    function getCountryCode()
     {
         return $this->country;
     }
 
-    function getCityCode()
+    function getCity()
     {
         return $this->city;
     }

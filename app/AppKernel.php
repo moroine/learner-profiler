@@ -29,6 +29,7 @@ class AppKernel extends Kernel
             new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new Pfe\Bundle\AnalyserBundle\PfeAnalyserBundle(),
             new Pfe\Bundle\FreeGeoIpBundle\PfeFreeGeoIpBundle(),
+            new Pfe\Bundle\BuilderBundle\PfeBuilderBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
