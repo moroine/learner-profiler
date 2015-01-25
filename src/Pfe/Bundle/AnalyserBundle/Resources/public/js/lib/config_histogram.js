@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 
-var margin = {top: 40, right: 20, bottom: 30, left: 70},
+var margin = {top: 40, right: 20, bottom: 40, left: 70},
 width = 990 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        height = 510 - margin.top - margin.bottom;
 
 var formatPercent = d3.format(".0%");
 
