@@ -36,7 +36,7 @@ class ActionCollectorComposant extends AbstractCollectorComposant
         }
 
         $date = new \DateTime();
-        $date->setTimestamp(trim($data['time']));
+        $date->setTimestamp((float) trim($data['time']));
         $action->setDatetime($date);
         $action->setMoocModuleId($data['cmid']);
         $action->setMoocUserId($data['userid']);

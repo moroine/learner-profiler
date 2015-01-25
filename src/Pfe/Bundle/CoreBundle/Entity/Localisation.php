@@ -91,22 +91,6 @@ class Localisation implements \JsonSerializable
 
     /**
      *
-     * @var string
-     *
-     * @ORM\Column(name="g_adress", type="string", nullable=true)
-     */
-    private $g_address;
-
-    /**
-     *
-     * @var int
-     *
-     * @ORM\Column(name="g_results", type="integer", nullable=true)
-     */
-    private $g_place_results;
-
-    /**
-     *
      * @param type $state
      * @param type $city
      * @param type $latitude
@@ -224,17 +208,6 @@ class Localisation implements \JsonSerializable
         return $this;
     }
 
-    public function getG_address()
-    {
-        return $this->g_address;
-    }
-
-    public function setG_address($g_address)
-    {
-        $this->g_address = $g_address;
-        return $this;
-    }
-
     function getIsoAlpha3()
     {
         return $this->isoAlpha3;
@@ -278,17 +251,6 @@ class Localisation implements \JsonSerializable
         $obj->g_address = $this->g_address;
 
         return (array) $obj;
-    }
-
-    function getG_place_results()
-    {
-        return $this->g_place_results;
-    }
-
-    function setG_place_results($g_place_results)
-    {
-        $this->g_place_results = $g_place_results;
-        return $this;
     }
 
 }

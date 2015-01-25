@@ -8,10 +8,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Module
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"mooc_id"})})
  * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ModuleRepository")
  */
-class Module {
+class Module
+{
 
     /**
      * @var integer
@@ -46,6 +47,13 @@ class Module {
     private $mooc_id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="section_mooc_id", type="integer")
+     */
+    private $section_mooc_id;
+
+    /**
      * @var Section
      *
      * @ORM\ManyToOne(targetEntity="Section")
@@ -53,7 +61,8 @@ class Module {
      */
     private $section;
 
-    function __construct($name = null, $type = null, Section $section = null) {
+    function __construct($name = null, $type = null, Section $section = null)
+    {
         $this->name = $name;
         $this->type = $type;
         $this->section = $section;
@@ -64,7 +73,8 @@ class Module {
      *
      * @return integer
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -72,7 +82,8 @@ class Module {
      *
      * @return string
      */
-    function getName() {
+    function getName()
+    {
         return $this->name;
     }
 
@@ -81,8 +92,9 @@ class Module {
      * @param string $name
      * @return Module
      */
-    function setName($name) {
-        $this->name = $name;
+    function setName($name)
+    {
+        $this->name = trim($name);
         return $this;
     }
 
@@ -92,7 +104,8 @@ class Module {
      * @param string $type
      * @return Module
      */
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
 
         return $this;
@@ -103,7 +116,8 @@ class Module {
      *
      * @return string
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -111,7 +125,8 @@ class Module {
      *
      * @return Section
      */
-    function getSection() {
+    function getSection()
+    {
         return $this->section;
     }
 
@@ -120,17 +135,31 @@ class Module {
      * @param Section $section
      * @return Module
      */
-    function setSection(Section $section) {
+    function setSection(Section $section = null)
+    {
         $this->section = $section;
         return $this;
     }
 
-    function getMoocId() {
+    function getMoocId()
+    {
         return $this->mooc_id;
     }
 
-    function setMoocId($mooc_id) {
-        $this->mooc_id = $mooc_id;
+    function setMoocId($mooc_id)
+    {
+        $this->mooc_id = (int) $mooc_id;
+        return $this;
+    }
+
+    function getSectionMoocId()
+    {
+        return $this->section_mooc_id;
+    }
+
+    function setSectionMoocId($section_mooc_id)
+    {
+        $this->section_mooc_id = intval($section_mooc_id);
         return $this;
     }
 

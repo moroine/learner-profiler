@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Action
  *
- * @ORM\Table()
+ * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"hour", "day", "ip", "mooc_id"})})
  * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ActionRepository")
  *
  * @UniqueEntity(fields={"datetime", "city"}, message="message")
@@ -56,7 +56,7 @@ class Action
     /**
      * @var string
      *
-     * @ORM\Column(name="ip", type="string", length=255)
+     * @ORM\Column(name="ip", type="string", length=255, nullable=true)
      * @Assert\Ip
      */
     private $ip;
@@ -64,7 +64,7 @@ class Action
     /**
      * @var string
      *
-     * @ORM\Column(name="action_type", type="string", length=255)
+     * @ORM\Column(name="action_type", type="string", length=255, nullable=true)
      */
     private $type;
 
@@ -92,22 +92,26 @@ class Action
     private $mooc_id;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_user_id", type="integer")
+     */
+    private $mooc_user_id;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="mooc_module_id", type="integer")
+     */
+    private $mooc_module_id;
+
+    /**
      * @var Module
      *
      * @ORM\ManyToOne(targetEntity="Module")
      * @Assert\Valid
      */
     private $module;
-
-    function __construct(\DateTime $datetime, Participant $participant = null, Module $module = null, $ip = null)
-    {
-        $this->setDatetime($datetime);
-        $this->setIp($ip);
-        $this->participant = $participant;
-        // TODO: Get Localisation from ip
-        // $this->localisation = $localisation;
-        $this->module = $module;
-    }
 
     /**
      * Get id
@@ -125,7 +129,7 @@ class Action
      * @param \DateTime $datetime
      * @return Action
      */
-    public function setDatetime($datetime)
+    public function setDatetime(\DateTime $datetime)
     {
         $this->datetime = $datetime;
         $this->day = $datetime->format("L");
@@ -185,7 +189,7 @@ class Action
 
     function setMoocId($mooc_id)
     {
-        $this->mooc_id = $mooc_id;
+        $this->mooc_id = (int) $mooc_id;
         return $this;
     }
 
@@ -195,7 +199,7 @@ class Action
      * @param Participant $participant
      * @return Action
      */
-    public function setParticipant($participant)
+    public function setParticipant(Participant $participant)
     {
         $this->participant = $participant;
 
@@ -218,7 +222,7 @@ class Action
      * @param Localisation $localisation
      * @return Action
      */
-    public function setLocalisation($localisation)
+    public function setLocalisation(Localisation $localisation)
     {
         $this->localisation = $localisation;
 
@@ -266,6 +270,28 @@ class Action
     function getDay()
     {
         return $this->day;
+    }
+
+    function getMoocUserId()
+    {
+        return $this->mooc_user_id;
+    }
+
+    function getMoocModuleId()
+    {
+        return $this->mooc_module_id;
+    }
+
+    function setMoocUserId($mooc_user_id)
+    {
+        $this->mooc_user_id = (int) $mooc_user_id;
+        return $this;
+    }
+
+    function setMoocModuleId($mooc_module_id)
+    {
+        $this->mooc_module_id = (int) $mooc_module_id;
+        return $this;
     }
 
 }

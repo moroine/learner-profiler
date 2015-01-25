@@ -2,6 +2,7 @@
 
 namespace Pfe\Bundle\CollectorBundle\Moodle;
 
+use Symfony\Component\Console\Helper\ProgressBar;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Doctrine\DBAL\Connection;
 use \Doctrine\ORM\EntityManager;
@@ -35,7 +36,7 @@ abstract class AbstractCollectorComposant
      * Threshold to launch automatic doctrine flush
      * @var type
      */
-    protected static $FLUSH_THRESHOLD = 50000;
+    protected static $FLUSH_THRESHOLD = 50;
 
     /**
      *
@@ -114,10 +115,16 @@ abstract class AbstractCollectorComposant
             $output->writeln("<error>Unable to execute the query:\n\t" . $query);
         }
 
+        $max = $this->statement->rowCount();
+        $progress = new ProgressBar($output, $max);
+        $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:3s%/%estimated:-3s% %memory:6s%');
+        $progress->start();
+        $data = $this->nextRow();
         while ($data = $this->nextRow()) {
             $entity = $this->hydrateEntity($data);
 
             $this->doctrine->persist($entity);
+            $progress->advance();
 
             if ($this->n_managed > self::$FLUSH_THRESHOLD) {
                 $this->flushEntities();
@@ -125,6 +132,7 @@ abstract class AbstractCollectorComposant
         }
 
         $this->flushEntities();
+        $progress->finish();
 
         return 1;
     }

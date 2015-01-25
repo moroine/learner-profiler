@@ -2,6 +2,7 @@
 
 namespace Pfe\Bundle\CollectorBundle\Moodle;
 
+use Pfe\Bundle\CollectorBundle\Command\MoocCollectorCommand;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\ORM\EntityManager;
 use \Doctrine\DBAL\Connection;
@@ -55,20 +56,23 @@ class MoocCollector
             } else {
                 $cmp_processes[$cmp] = new Process("php app/console pfe:collector:moodle --component " . $cmp);
             }
-            $cmp_processes[$cmp]->setTimeout(null);
             $cmp_processes[$cmp]->start();
         }
-
         foreach ($cmps as $key => $cmp) {
-            $output->writeln("<info>Waiting on  " . $cmp . "</info>");
+            $output->writeln("<info>Waiting on " . $cmp . "</info>");
             $output->writeln("<info>This could take a while...</info>");
-            $cmp_processes[$cmp]->wait();
+
+            while (!$cmp_processes[$cmp]->isTerminated()) {
+                $output->write($cmp_processes[$cmp]->getIncrementalOutput());
+                $output->write("<error>" . $cmp_processes[$cmp]->getIncrementalErrorOutput() . "</error>");
+                usleep(500000);
+            }
+            $output->write("<error>" . $cmp_processes[$cmp]->getIncrementalErrorOutput() . "</error>");
+            $output->write($cmp_processes[$cmp]->getIncrementalOutput());
             if (!$cmp_processes[$cmp]->isSuccessful()) {
                 $output->writeln("<error>Error on importing sql database</error>");
                 throw new \RuntimeException($cmp_processes[$cmp]->getErrorOutput());
             }
-
-            $output->writeln($cmp_processes[$cmp]->getOutput());
         }
 
         return 1;
@@ -107,7 +111,7 @@ class MoocCollector
             $cmp->collectBySql($output, $mooc_theme_id);
         }
 
-        $output->writeln($cmp->getStats(), \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
+        $output->writeln(" \n<info>\n" . $cmp->getStats() . "</info>\n\n\n", \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
 
         return 1;
     }
