@@ -225,19 +225,19 @@ class Localisation implements \JsonSerializable
 
     function setIsoAlpha3($isoAlpha3)
     {
-        $this->isoAlpha3 = $isoAlpha3;
+        $this->isoAlpha3 = strtoupper($isoAlpha3);
         return $this;
     }
 
     function setIsoAlpha2($isoAlpha2)
     {
-        $this->isoAlpha2 = $isoAlpha2;
+        $this->isoAlpha2 = strtoupper($isoAlpha2);
         return $this;
     }
 
     function setFips($fips)
     {
-        $this->fips = $fips;
+        $this->fips = strtoupper($fips);
         return $this;
     }
 

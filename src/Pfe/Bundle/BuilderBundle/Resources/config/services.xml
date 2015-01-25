@@ -8,14 +8,23 @@
     <services>
         <service id="pfe.builder.participant" class="Pfe\Bundle\BuilderBundle\Builder\ParticipantBuilder">
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument type="service" id="pfe_services.geonames_api" />
-            <argument type="service" id="pfe_services.g_place_api" />
+            <argument type="service" id="pfe.builder.localisation" />
+        </service>
+        <service id="pfe.builder.action" class="Pfe\Bundle\BuilderBundle\Builder\ActionBuilder">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="pfe.builder.localisation" />
         </service>
         <service id="pfe.builder.section" class="Pfe\Bundle\BuilderBundle\Builder\SectionBuilder">
             <argument type="service" id="doctrine.orm.entity_manager" />
         </service>
         <service id="pfe.builder.module" class="Pfe\Bundle\BuilderBundle\Builder\ModuleBuilder">
             <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
+        <service id="pfe.builder.localisation" class="Pfe\Bundle\BuilderBundle\Builder\LocalisationBuilder">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="pfe_services.geonames_api" />
+            <argument type="service" id="pfe_services.g_place_api" />
+            <argument type="service" id="pfe_services.freegeoip_api" />
         </service>
     </services>
 </container>

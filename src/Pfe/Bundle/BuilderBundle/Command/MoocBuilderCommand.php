@@ -21,32 +21,50 @@ class MoocBuilderCommand extends ContainerAwareCommand
                 ->setName('pfe:builder')
                 ->setDescription('Build participants data')
                 ->addOption("entity", null, InputOption::VALUE_OPTIONAL, "Specify entity to build")
+                ->addOption("all", null, InputOption::VALUE_NONE, "Specify entity to build")
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $entity = $input->getOption("entity");
+        $entity = strtolower($input->getOption("entity"));
+
+        $entities = array("participant", "section", "module", "action");
+
+        if (!$input->getOption("all") && !in_array($entity, $entities)) {
+            $msg = "Please specify an entity or use option --all\n";
+            $msg .= "Allowed entities: ";
+            $del = "";
+            foreach ($entities as $key => $val) {
+                $msg .= $del . $val;
+                $del = ", ";
+            }
+            $output->writeln('<error>' . $msg . '</error>');
+            return 1;
+        }
+
+        if (!$input->getOption("all")) {
+            return $this->launchBuilderService($output, $entity);
+        }
+
+        foreach ($entities as $key => $entity) {
+            $this->launchBuilderService($output, $entity);
+        }
+
+        return 0;
+    }
+
+    protected function launchBuilderService(OutputInterface $output, $entity)
+    {
         /**
          * @var \Pfe\Bundle\CollectorBundle\Collector\Builder\ParticipantBuilder $builder
          */
-        switch (strtolower($entity)) {
-            case 'participant':
-                $service = 'pfe.builder.participant';
-                break;
-            case 'section':
-                $service = 'pfe.builder.section';
-                break;
-            case 'module':
-                $service = 'pfe.builder.module';
-                break;
-            default:
-                throw new \Symfony\Component\Yaml\Exception\RuntimeException("Please specify entity option");
-        }
-        $builder = $this->getContainer()->get($service);
+        $builder = $this->getContainer()->get('pfe.builder.' . $entity);
 
         $builder->build($output);
         $output->writeln(" \n");
+
+        return 0;
     }
 
 }

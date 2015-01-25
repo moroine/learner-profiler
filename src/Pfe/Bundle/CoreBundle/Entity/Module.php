@@ -40,6 +40,13 @@ class Module
     private $type;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="category", type="string", length=255, nullable=true)
+     */
+    private $category;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="mooc_id", type="integer")
@@ -56,7 +63,7 @@ class Module
     /**
      * @var Section
      *
-     * @ORM\ManyToOne(targetEntity="Section")
+     * @ORM\ManyToOne(targetEntity="Section", cascade={"persist","merge", "detach"})
      * @Assert\Valid()
      */
     private $section;
@@ -160,6 +167,17 @@ class Module
     function setSectionMoocId($section_mooc_id)
     {
         $this->section_mooc_id = intval($section_mooc_id);
+        return $this;
+    }
+
+    function getCategory()
+    {
+        return $this->category;
+    }
+
+    function setCategory($category)
+    {
+        $this->category = $category;
         return $this;
     }
 

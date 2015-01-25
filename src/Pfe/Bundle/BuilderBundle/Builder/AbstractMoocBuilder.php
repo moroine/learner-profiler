@@ -18,7 +18,7 @@ abstract class AbstractMoocBuilder
      */
     abstract protected function getRepository();
 
-    protected static $BATCH_SIZE = 20;
+    protected static $BATCH_SIZE = 100;
     protected static $BUILDER_NAME = "Abstract";
 
     /**
@@ -68,7 +68,19 @@ abstract class AbstractMoocBuilder
 
     protected function countEntityBatches($criterias)
     {
-        return count($this->getRepository()->findBy($criterias));
+        $qb = $this->doctrine->createQueryBuilder();
+        $classname = $this->getRepository()->getClassName();
+        $qb->select('COUNT(e.id)')->from($classname, 'e');
+        foreach ($criterias as $field => $value) {
+            if (is_null($value)) {
+                $qb->andWhere("e." . $field . " IS NULL");
+            } else {
+                $qb->andWhere("e." . $field . " = :" . $field);
+                $qb->setParameter($field, $value);
+            }
+        }
+
+        return $qb->getQuery()->getSingleScalarResult();
     }
 
     protected function getEntityBatch($criteria, $offset)

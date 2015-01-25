@@ -1,3 +1,7 @@
+pfe_data:
+    resource: "@PfeCoreBundle/Controller"
+    prefix:   /core
+
 pfe_free_geo_ip:
     resource: "@PfeFreeGeoIpBundle/Controller/"
     type:     annotation

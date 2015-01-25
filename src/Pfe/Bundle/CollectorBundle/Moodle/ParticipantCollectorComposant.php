@@ -38,7 +38,7 @@ class ParticipantCollectorComposant extends AbstractCollectorComposant
             } elseif ($data['shortname'] !== 'student') {
                 $participant = new Staff();
             } else {
-                $participant = new Participant();
+                $participant = new Apprenant();
             }
 
             $participant->setMoocId($mooc_id);

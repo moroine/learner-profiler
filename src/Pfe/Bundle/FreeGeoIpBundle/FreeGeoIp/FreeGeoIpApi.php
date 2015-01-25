@@ -32,6 +32,9 @@ class FreeGeoIpApi
             $response = json_decode($this->buzz->getLastResponse()->getContent());
 
             $location = new \Pfe\Bundle\FreeGeoIpBundle\Entity\IpLocation();
+            if (!$response) {
+                return null;
+            }
             $location->setIp($response->ip);
             $location->setCountry($response->country_name);
             $location->setIsoAlpha2($response->country_code);

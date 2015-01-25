@@ -3,9 +3,10 @@
 namespace Pfe\Bundle\BuilderBundle\Builder;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use \Pfe\Bundle\CoreBundle\Entity\Localisation;
+use Pfe\Bundle\CoreBundle\Entity\Localisation;
 use Pfe\Bundle\GPlaceApiBundle\GPlaceApi\GPlaceApi;
 use Pfe\Bundle\GeonamesApiBundle\GeonamesApi\GeonamesApi;
+use Pfe\Bundle\FreeGeoIpBundle\FreeGeoIp\FreeGeoIpApi;
 
 /**
  * Description of ParticipantBuilder
@@ -27,12 +28,19 @@ class LocalisationBuilder extends AbstractMoocBuilder
      */
     private $gplaceapi;
 
-    public function __construct(\Doctrine\ORM\EntityManager $doctrine, GeonamesApi $geonameapi, GPlaceApi $gplaceapi)
+    /**
+     *
+     * @var FreeGeoIpApi
+     */
+    private $freegeoipapi;
+
+    public function __construct(\Doctrine\ORM\EntityManager $doctrine, GeonamesApi $geonameapi, GPlaceApi $gplaceapi, FreeGeoIpApi $freegeoipapi)
     {
         parent::__construct($doctrine);
 
         $this->gplaceapi = $gplaceapi;
         $this->geonameapi = $geonameapi;
+        $this->freegeoipapi = $freegeoipapi;
     }
 
     /**
@@ -44,74 +52,59 @@ class LocalisationBuilder extends AbstractMoocBuilder
      */
     public function getLocalisation(OutputInterface $output, $countryCode, $city)
     {
-        $countryInfos = (empty($countryCode)) ? null : $this->getCountryInformation($output, $countryCode);
+        $geolocation = $this->geonameapi->searchByCountryCode($countryCode);
 
-        $countryName = (empty($countryInfos)) ? null : strtolower($countryInfos->countryName);
-        $cityName = (empty($city)) ? null : strtolower($city);
-
-        if ($countryName === null) {
+        if (!$geolocation) {
             return null;
         }
 
-        $localisation = $this->getRepository()->findOneBy(array("state" => $countryName, "city" => $cityName));
+        $countryName = $geolocation->getCountry();
+        $cityName = (empty($city)) ? null : strtolower($city);
 
-        if (empty($localisation)) {
-            $localisation = new Localisation($countryName, $cityName);
-        }
+        $place = $this->gplaceapi->search($cityName, $countryName);
 
-        if ($localisation->getG_place_id() === null) {
-            $place = $this->gplaceapi->search($cityName, $countryName);
+        $localisation = $this->getRepository()->findOneBy(array("g_place_id" => $place->getPlaceId()));
 
-            $localisation->setLatitude($place->getLatitude());
-            $localisation->setLongitude($place->getLongitude());
-            $localisation->setG_place_id($place->getPlaceId());
-
-            $loc = $this->getRepository()->findOneBy(array("g_place_id" => $localisation->getG_place_id()));
-
-            if ($loc !== null) {
-                return $loc; // Already in Database
-            }
-
-            if (!empty($countryInfos->fipsCode)) {
-                $localisation->setFips($countryInfos->fipsCode);
-            }
-            if (!empty($countryInfos->countryCode)) {
-                $localisation->setIsoAlpha2($countryInfos->countryCode);
-            }
-            if (!empty($countryInfos->isoAlpha3)) {
-                $localisation->setIsoAlpha3($countryInfos->isoAlpha3);
-            }
-
-            $this->doctrine->persist($localisation);
-            $this->doctrine->flush();
-            $this->stats++;
-
+        if ($localisation) {
             return $localisation;
         }
+        $localisation = new Localisation($countryName, $cityName);
+
+        $localisation->setFips($geolocation->getFips());
+        $localisation->setIsoAlpha2($geolocation->getIsoAlpha2());
+        $localisation->setIsoAlpha3($geolocation->getIsoAlpha3());
+        $localisation->setLatitude($place->getLatitude());
+        $localisation->setLongitude($place->getLongitude());
+        $localisation->setG_place_id($place->getPlaceId());
+
+        $this->stats++;
+        $this->doctrine->persist($localisation);
+        $this->doctrine->flush();
+//        $this->doctrine->detach($localisation);
 
         return $localisation;
+    }
+
+    /**
+     *
+     * @param OutputInterface $output
+     * @param string $ip
+     * @return Localisation
+     */
+    public function getLocalisationFromIp(OutputInterface $output, $ip)
+    {
+        $iplocation = $this->freegeoipapi->find($ip);
+
+        if (!$iplocation) {
+            return null;
+        }
+
+        return $this->getLocalisation($output, $iplocation->getIsoAlpha2(), $iplocation->getCity());
     }
 
     public function getStats()
     {
         return $this->stats;
-    }
-
-    private function getCountryInformation(OutputInterface $output, $countryCode)
-    {
-        $results = $this->geonameapi->searchByCountryCode($countryCode);
-
-        if (!is_array($results) || count($results) === 0) {
-            $output->writeln("<error>No country found for code " . $countryCode . "</error>");
-
-            return null;
-        }
-
-        if (count($results) > 1) {
-            $output->writeln("<error>" . count($results) . " country found for code " . $countryCode . "</error>");
-        }
-
-        return $results[0];
     }
 
     protected function getRepository()

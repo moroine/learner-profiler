@@ -36,7 +36,7 @@ abstract class AbstractCollectorComposant
      * Threshold to launch automatic doctrine flush
      * @var type
      */
-    protected static $FLUSH_THRESHOLD = 50;
+    protected static $FLUSH_THRESHOLD = 100;
 
     /**
      *
@@ -100,7 +100,7 @@ abstract class AbstractCollectorComposant
         if (!$this->isConnected()) {
             $output->writeln("<error>Unable to use the collector connection, please ensure configuration</error>");
 
-            return 0;
+            return 1;
         }
         if ($mooc_theme_id !== null) {
             $query = $this->getQuery('theme_mooc_id');
@@ -119,11 +119,11 @@ abstract class AbstractCollectorComposant
         $progress = new ProgressBar($output, $max);
         $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:3s%/%estimated:-3s% %memory:6s%');
         $progress->start();
-        $data = $this->nextRow();
         while ($data = $this->nextRow()) {
             $entity = $this->hydrateEntity($data);
 
             $this->doctrine->persist($entity);
+            $this->n_managed++;
             $progress->advance();
 
             if ($this->n_managed > self::$FLUSH_THRESHOLD) {
@@ -134,7 +134,7 @@ abstract class AbstractCollectorComposant
         $this->flushEntities();
         $progress->finish();
 
-        return 1;
+        return 0;
     }
 
     /**
@@ -149,13 +149,13 @@ abstract class AbstractCollectorComposant
         if (!$this->isConnected()) {
             $output->writeln("<error>Unable to use the collector connection, please ensure configuration</error>");
 
-            return 0;
+            return 1;
         }
 
         if ($mooc_id < 0) {
             $output->writeln('<error>Wrong mooc_id</error>');
 
-            return 0;
+            return 1;
         }
 
         $query = $this->getOneQuery($mooc_id);
@@ -170,7 +170,7 @@ abstract class AbstractCollectorComposant
         if (!$data) {
             $output->writeln("<error>Unable to find to selected entity:\n\t" . $query);
 
-            return 0;
+            return 1;
         }
 
         $entity = $this->hydrateEntity($data);
@@ -179,7 +179,7 @@ abstract class AbstractCollectorComposant
 
         $this->flushEntities();
 
-        return 1;
+        return 0;
     }
 
     /**

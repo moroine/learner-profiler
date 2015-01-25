@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Action
  *
- * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"hour", "day", "ip", "mooc_id"})})
+ * @ORM\Table(indexes={@ORM\Index(name="search_idx", columns={"hour", "day", "ip", "category","mooc_id"})})
  * @ORM\Entity(repositoryClass="Pfe\Bundle\CoreBundle\Entity\ActionRepository")
  *
  * @UniqueEntity(fields={"datetime", "city"}, message="message")
@@ -64,14 +64,14 @@ class Action
     /**
      * @var string
      *
-     * @ORM\Column(name="action_type", type="string", length=255, nullable=true)
+     * @ORM\Column(name="category", type="string", length=255, nullable=true)
      */
-    private $type;
+    private $category;
 
     /**
      * @var Participant
      *
-     * @ORM\ManyToOne(targetEntity="Participant")
+     * @ORM\ManyToOne(targetEntity="Participant", cascade={"persist","merge", "detach"})
      * @Assert\Valid
      */
     private $participant;
@@ -79,7 +79,7 @@ class Action
     /**
      * @var Localisation
      *
-     * @ORM\ManyToOne(targetEntity="Localisation")
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist","merge", "detach"})
      * @Assert\Valid
      */
     private $localisation;
@@ -108,7 +108,7 @@ class Action
     /**
      * @var Module
      *
-     * @ORM\ManyToOne(targetEntity="Module")
+     * @ORM\ManyToOne(targetEntity="Module", cascade={"persist","merge", "detach"})
      * @Assert\Valid
      */
     private $module;
@@ -171,14 +171,14 @@ class Action
         return $this->ip;
     }
 
-    function getType()
+    function getCategory()
     {
-        return $this->type;
+        return $this->category;
     }
 
-    function setType($type)
+    function setCategory($category)
     {
-        $this->type = $type;
+        $this->category = $category;
         return $this;
     }
 

@@ -27,72 +27,65 @@ class ParticipantBuilder extends AbstractMoocBuilder
 
     /**
      *
-     * @var GeonamesApi
-     */
-    private $geonameapi;
-
-    /**
-     *
-     * @var GPlaceApi
-     */
-    private $gplaceapi;
-
-    /**
-     *
      * @param EntityManager $doctrine
      */
-    public function __construct(EntityManager $doctrine, GeonamesApi $geonameapi, GPlaceApi $gplaceapi)
+    public function __construct(EntityManager $doctrine, LocalisationBuilder $localisationBuilder)
     {
         parent::__construct($doctrine);
 
-        $this->geonameapi = $geonameapi;
-        $this->gplaceapi = $gplaceapi;
+        $this->localisationBuilder = $localisationBuilder;
     }
 
     public function build(OutputInterface $output)
     {
-        $this->localisationBuilder = new LocalisationBuilder($this->doctrine, $this->geonameapi, $this->gplaceapi);
-
         $this->buildLocalisations($output);
     }
 
     public function buildLocalisations(OutputInterface $output)
     {
-        $offset = 0;
+        $this->stats['complete'] = 0;
+        $this->stats['uncomplete'] = 0;
         $criteria = array('home' => null);
         $max = $this->countEntityBatches($criteria);
-        if ($max === 0) {
-            $output->writeln("<info>All Localisations are built</info>");
+        if (!$max) {
+            $output->writeln("<info>>>>Participants<<< All Localisations are built</info>");
             return;
         }
-        $output->writeln("<info>Building Localisations</info>");
+        $output->writeln("<info>>>>Participants<<< Building Localisations</info>");
         $progress = new ProgressBar($output, $max);
         $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:3s%/%estimated:-3s% %memory:6s%');
         $progress->start();
 
         /* @var $participants Participant[] */
-        while ($participants = $this->getEntityBatch($criteria, $offset)) {
-            foreach ($participants as $key => $participant) {
-                $countryCode = $participant->getCountryCode();
-                $city = $participant->getCity();
-                $localisation = $this->localisationBuilder->getLocalisation($output, $countryCode, $city);
-                if ($localisation) {
-                    $participant->setHome($localisation);
-                    $this->stats['complete'] ++;
-                } else {
-                    $this->stats['uncomplete'] ++;
-                }
+        while ($participants = $this->getEntityBatch($criteria, $this->stats['uncomplete'])) {
+            foreach ($participants as $participant) {
+                $this->buildLocalisation($output, $participant);
                 $progress->advance();
             }
-            $offset += static::$BATCH_SIZE;
             $this->flushEntities();
         }
 
-        $this->outputStats($output);
         $progress->finish();
+        $this->outputStats($output);
+    }
 
-        $this->stats['complete'] = 0;
-        $this->stats['uncomplete'] = 0;
+    protected function buildLocalisation(OutputInterface $output, Participant $participant)
+    {
+        $countryCode = $participant->getCountryCode();
+        $city = $participant->getCity();
+        $localisation = $this->localisationBuilder->getLocalisation($output, $countryCode, $city);
+
+        if ($localisation) {
+            $localisation = $this->doctrine->merge($localisation);
+            if (!$this->doctrine->contains($localisation)) {
+                $output->writeln("<error>Localisation Not managed </error>");
+            }
+            $participant->setHome($localisation);
+            $this->doctrine->merge($participant);
+            $this->stats['complete'] ++;
+        } else {
+            $this->stats['uncomplete'] ++;
+        }
     }
 
     protected function getRepository()

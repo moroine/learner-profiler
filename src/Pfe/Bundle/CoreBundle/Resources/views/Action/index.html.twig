@@ -1,0 +1,45 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Action list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Datetime</th>
+                <th>Hour</th>
+                <th>Day</th>
+                <th>Ip</th>
+                <th>Category</th>
+                <th>Mooc_id</th>
+                <th>Mooc_user_id</th>
+                <th>Mooc_module_id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('action_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{% if entity.datetime %}{{ entity.datetime|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.hour }}</td>
+                <td>{{ entity.day }}</td>
+                <td>{{ entity.ip }}</td>
+                <td>{{ entity.category }}</td>
+                <td>{{ entity.moocid }}</td>
+                <td>{{ entity.moocuserid }}</td>
+                <td>{{ entity.moocmoduleid }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('action_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}

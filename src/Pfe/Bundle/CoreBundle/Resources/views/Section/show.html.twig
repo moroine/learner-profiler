@@ -1,0 +1,42 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Section</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ entity.name }}</td>
+            </tr>
+            <tr>
+                <th>Order</th>
+                <td>{{ entity.order }}</td>
+            </tr>
+            <tr>
+                <th>Mooc_id</th>
+                <td>{{ entity.moocid }}</td>
+            </tr>
+            <tr>
+                <th>Mooc_theme_id</th>
+                <td>{{ entity.moocthemeid }}</td>
+            </tr>
+            <tr>
+                <th>Mooc_module_ids</th>
+                <td>{{ entity.moocmoduleids }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('section') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

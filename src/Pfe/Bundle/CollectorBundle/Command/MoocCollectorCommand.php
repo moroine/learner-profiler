@@ -39,7 +39,7 @@ class MoocCollectorCommand extends ContainerAwareCommand
         $mooc_collector = $this->getContainer()->get('pfe.collector.moodle');
 
         if ($sqlDump !== null) {
-            if ($mooc_collector->importSqlDb($output, $sqlDump) == 1) {
+            if ($mooc_collector->importSqlDb($output, $sqlDump)) {
                 return 1;
             }
         }
@@ -49,6 +49,8 @@ class MoocCollectorCommand extends ContainerAwareCommand
         } else {
             $mooc_collector->collect($output, $course_id);
         }
+
+        return 0;
     }
 
 }

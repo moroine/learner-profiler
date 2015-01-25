@@ -65,7 +65,7 @@ class MoocCollector
             while (!$cmp_processes[$cmp]->isTerminated()) {
                 $output->write($cmp_processes[$cmp]->getIncrementalOutput());
                 $output->write("<error>" . $cmp_processes[$cmp]->getIncrementalErrorOutput() . "</error>");
-                usleep(500000);
+                usleep(50000);
             }
             $output->write("<error>" . $cmp_processes[$cmp]->getIncrementalErrorOutput() . "</error>");
             $output->write($cmp_processes[$cmp]->getIncrementalOutput());
@@ -111,7 +111,7 @@ class MoocCollector
             $cmp->collectBySql($output, $mooc_theme_id);
         }
 
-        $output->writeln(" \n<info>\n" . $cmp->getStats() . "</info>\n\n\n", \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
+        $output->writeln(" \n\n<info>" . $cmp->getStats() . "</info>\n\n\n", \Symfony\Component\Console\Output\Output::OUTPUT_RAW);
 
         return 1;
     }

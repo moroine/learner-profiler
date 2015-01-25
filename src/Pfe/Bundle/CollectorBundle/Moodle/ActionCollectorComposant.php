@@ -55,10 +55,11 @@ class ActionCollectorComposant extends AbstractCollectorComposant
         $query = <<<EOT
             SELECT l.id, l.time, l.userid, l.ip, l.cmid, l.action
             FROM mdl_log l
+            WHERE l.cmid <> 0
 EOT;
 
         if ($theme_label_id) {
-            $query .= " WHERE l.course=:" . $theme_label_id;
+            $query .= " AND l.course=:" . $theme_label_id;
         }
 
         return $query;
@@ -75,7 +76,7 @@ EOT;
         $query = <<<EOT
             SELECT l.id, l.time, l.userid, l.ip, l.cmid, l.action
             FROM mdl_log l
-            WHERE l.id=:mooc_id
+            WHERE l.id=:mooc_id AND l.cmid <> 0
 EOT;
 
         if ($theme_label_id) {

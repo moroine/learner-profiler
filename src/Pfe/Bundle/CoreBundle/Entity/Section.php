@@ -62,7 +62,7 @@ class Section
     /**
      * @var Theme
      *
-     * @ORM\ManyToOne(targetEntity="Theme")
+     * @ORM\ManyToOne(targetEntity="Theme", cascade={"persist","merge", "detach"})
      * @Assert\Valid()
      */
     private $theme;

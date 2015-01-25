@@ -23,39 +23,37 @@ class SectionBuilder extends AbstractMoocBuilder
 
     public function buildTheme(OutputInterface $output)
     {
-        $offset = 0;
+        $this->stats['complete'] = 0;
+        $this->stats['uncomplete'] = 0;
         $criteria = array('theme' => null);
         $max = $this->countEntityBatches($criteria);
-        if ($max === 0) {
-            $output->writeln("<info>All Themes are built</info>");
+        if (!$max) {
+            $output->writeln("<info>>>>Sections<<< All Themes are built</info>");
             return;
         }
-        $output->writeln("<info>Building Themes</info>");
+        $output->writeln("<info>>>>Sections<<< Building Themes</info>");
         $progress = new ProgressBar($output, $max);
         $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %elapsed:3s%/%estimated:-3s% %memory:6s%');
         $progress->start();
 
         /* @var $sections Section[] */
-        while ($sections = $this->getEntityBatch($criteria, $offset)) {
+        while ($sections = $this->getEntityBatch($criteria, $this->stats['uncomplete'])) {
             foreach ($sections as $key => $section) {
                 $theme = $this->doctrine->getRepository("PfeCoreBundle:Theme")->findOneBy(array("mooc_id" => $section->getMoocThemeId()));
                 if ($theme) {
                     $section->setTheme($theme);
-                    $this->doctrine->persist($theme);
+                    $this->doctrine->merge($section);
                     $this->stats['complete'] ++;
                 } else {
                     $this->stats['uncomplete'] ++;
                 }
                 $progress->advance();
             }
-            $offset += static::$BATCH_SIZE;
             $this->flushEntities();
         }
 
-        $this->outputStats($output);
         $progress->finish();
-        $this->stats['complete'] = 0;
-        $this->stats['uncomplete'] = 0;
+        $this->outputStats($output);
     }
 
     protected function getRepository()

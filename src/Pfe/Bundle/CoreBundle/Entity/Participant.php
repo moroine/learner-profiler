@@ -82,7 +82,7 @@ class Participant implements \JsonSerializable
      *
      * @var Localisation
      *
-     * @ORM\ManyToOne(targetEntity="Localisation")
+     * @ORM\ManyToOne(targetEntity="Localisation", cascade={"persist", "merge"})
      * @Assert\Valid
      */
     private $home;
