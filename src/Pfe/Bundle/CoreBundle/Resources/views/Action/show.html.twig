@@ -1,0 +1,54 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Action</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+            <tr>
+                <th>Datetime</th>
+                <td>{{ entity.datetime|date('Y-m-d H:i:s') }}</td>
+            </tr>
+            <tr>
+                <th>Hour</th>
+                <td>{{ entity.hour }}</td>
+            </tr>
+            <tr>
+                <th>Day</th>
+                <td>{{ entity.day }}</td>
+            </tr>
+            <tr>
+                <th>Ip</th>
+                <td>{{ entity.ip }}</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>{{ entity.category }}</td>
+            </tr>
+            <tr>
+                <th>Mooc_id</th>
+                <td>{{ entity.moocid }}</td>
+            </tr>
+            <tr>
+                <th>Mooc_user_id</th>
+                <td>{{ entity.moocuserid }}</td>
+            </tr>
+            <tr>
+                <th>Mooc_module_id</th>
+                <td>{{ entity.moocmoduleid }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('action') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Localisation list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>State</th>
+                <th>City</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Isoalpha3</th>
+                <th>Isoalpha2</th>
+                <th>Fips</th>
+                <th>G_place_id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('localisation_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.state }}</td>
+                <td>{{ entity.city }}</td>
+                <td>{{ entity.latitude }}</td>
+                <td>{{ entity.longitude }}</td>
+                <td>{{ entity.isoAlpha3 }}</td>
+                <td>{{ entity.isoAlpha2 }}</td>
+                <td>{{ entity.fips }}</td>
+                <td>{{ entity.gplaceid }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('localisation_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% endblock %}

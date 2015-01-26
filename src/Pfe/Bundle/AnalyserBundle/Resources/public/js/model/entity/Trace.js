@@ -146,8 +146,21 @@ Entity.Trace.prototype.isActive = function () {
 };
 
 Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
-    $.getJSON(Learner, function (data) {
-        this._data = data;
-        callback(visualisation, this, this._data);
-    });
+    var trace = this;
+    if (this.getType() === "choropleth") {
+        $.getJSON(Learner, function (data) {
+            trace._data = data;
+            callback(visualisation, trace, trace._data);
+        });
+    } else if (this.getType() === "histogram") {
+        $.getJSON(Learner, function (data) {
+            trace._data = data;
+            callback(visualisation, trace, trace._data);
+        });
+    } else if (this.getType() === "bubble") {
+        $.getJSON("/bundles/pfeanalyser/js/test/bubbles.json", function (data) {
+            trace._data = data;
+            callback(visualisation, trace, trace._data);
+        });
+    }
 };

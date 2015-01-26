@@ -9,6 +9,9 @@
             <call method="setBuzz">
                 <argument  type="service" id="buzz"/>
             </call>
+            <call method="setDoctrine">
+                <argument  type="service" id="doctrine.orm.entity_manager"/>
+            </call>
             <argument>code</argument>
         </service>
     </services>

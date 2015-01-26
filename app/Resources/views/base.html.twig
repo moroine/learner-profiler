@@ -13,6 +13,9 @@
             {% stylesheets '@bootstrap_css' '@bootstrap_theme' debug=false %}
             <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
             {% endstylesheets %}
+            {% stylesheets '@PfeAnalyserBundle/Resources/public/css/histogram.css' debug=false %}
+            <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+            {% endstylesheets %}
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
