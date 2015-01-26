@@ -24,7 +24,7 @@ pfe_geonames:
     resource: "@PfeGeonamesApiBundle/Controller"
     prefix:   /geonames
 
-pfe_data:
+pfe_provider:
     resource: "@PfeProviderBundle/Controller"
     prefix:   /provider
 
