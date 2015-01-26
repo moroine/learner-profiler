@@ -20,15 +20,15 @@ View.NavigationView = function (ui) {
 };
 
 View.NavigationView.prototype.init = function () {
-    this.bindEvents();
-};
-
-View.NavigationView.prototype.bindEvents = function () {
     var scope = this;
 
     this._$self.on('click', 'li a', function (e) {
         scope.onNavigationTypeEvent(e.target);
         e.preventDefault();
+    });
+
+    this._ui._traceModal._$self.on('hide.bs.modal', function (e) {
+        scope.onTraceModalHide();
     });
 };
 
@@ -72,4 +72,15 @@ View.NavigationView.prototype.setType = function (type) {
  */
 View.NavigationView.prototype.setDataType = function (datatype) {
     this._datatype = datatype;
+};
+
+View.NavigationView.prototype.onTraceModalHide = function () {
+    var trace = this._ui._traceModal._current;
+
+    if (trace) {
+        alert('YES: Trop puissant');
+        console.log(trace);
+    } else {
+        alert('FUCK IT');
+    }
 };

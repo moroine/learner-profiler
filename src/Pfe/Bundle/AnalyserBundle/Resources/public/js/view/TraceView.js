@@ -17,6 +17,15 @@ View.TraceView = function (ui) {
     this._increment = 0;
 
     this._$self = $("#trace-modal");
+    this._$form = this._$self.find('form');
+    this._$name = this._$self.find('[name="trace-name"]');
+    this._$operation = this._$self.find('[name="trace-operation"]');
+    this._$type = this._$self.find('[name="trace-type"]');
+
+    this._$group = $('#group_form');
+    this._$group_type = this._$group.find('[name="group-type"]');
+    this._$group_field = this._$group.find('[name="group-field"]');
+
     this._$filterTable = this._$self.find('#filter-table');
 };
 
@@ -32,6 +41,10 @@ View.TraceView.prototype.init = function ()
     this._ui._filterModal._$self.on("hide.bs.modal", function (e) {
         scope.onFilterModalHide(e);
     });
+    this._$self.find('#trace-confirm').on("click", function (e) {
+        scope.onConfirm();
+        e.preventDefault();
+    });
 };
 
 View.TraceView.prototype.onModalShow = function () {
@@ -41,9 +54,11 @@ View.TraceView.prototype.onModalShow = function () {
     switch (type) {
         case "graph":
             this._$self.find(".map-type-option").addClass('hidden');
+            this._$self.find(".graph-type-option").aremoveClass('hidden');
             break;
         case "map":
             this._$self.find(".map-type-option").removeClass('hidden');
+            this._$self.find(".graph-type-option").addClass('hidden');
             break;
     }
 
@@ -84,4 +99,32 @@ View.TraceView.prototype.removeFilter = function ($elmt) {
             $elmt.remove();
         }
     }
+};
+
+View.TraceView.prototype.onConfirm = function () {
+    var trace = new Entity.Trace();
+
+    var name = this._$name.val() || null;
+    var operation = this._$operation.val() || null;
+    var type = this._$type.val() || null;
+    var group_type = this._$group_type.val() || null;
+    var group_field = this._$group_field.val() || null;
+
+    if (name === null || operation === null || type === null || group_type === null || group_field === null) {
+        alert("Invalid Filter: Please fill all inputs");
+
+        return;
+    }
+
+    trace.setId(this._increment);
+    trace.setOperation(operation);
+    trace.setType(type);
+    trace.setGroup({type: group_type, field: group_field});
+    trace.setFilters(this._filters);
+
+    this._increment++;
+
+    this._current = trace;
+
+    this._$self.modal('hide');
 };

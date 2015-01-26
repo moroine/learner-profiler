@@ -41,7 +41,7 @@ Entity.Trace = function (operation, type) {
     /**
      * @type String
      */
-    this._denominateur = null;
+    this._group = null;
 
     /**
      * @type boolean
@@ -123,17 +123,17 @@ Entity.Trace.prototype.setFilters = function (filters) {
  *
  * @returns {String}
  */
-Entity.Trace.prototype.getDenominateur = function () {
-    return this._denominateur;
+Entity.Trace.prototype.getGroup = function () {
+    return this._group;
 };
 
 /**
  *
- * @param {String} denominateur
+ * @param {String} group
  * @returns {undefined}
  */
-Entity.Trace.prototype.setDenominateur = function (denominateur) {
-    this._denominateur = denominateur;
+Entity.Trace.prototype.setGroup = function (group) {
+    this._group = group;
 };
 
 /**
