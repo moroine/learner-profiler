@@ -84,7 +84,7 @@ class ModuleBuilder extends AbstractMoocBuilder
                     case "page";
                     case "resource";
                     case "url";
-                        $category = "theroy";
+                        $category = "theory";
                         break;
                     case "quiz";
                         $category = "examination";
