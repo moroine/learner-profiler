@@ -17,6 +17,11 @@ View.NavigationView = function (ui) {
     this._$self = $("#navigation");
     this._type = this._$self.find("#navigation-type .active a").data('navigation-type');
     this._datatype = this._$self.find("#navigation-datatype .active a").data('navigation-datatype');
+
+    this._visualisations = {
+        "map": {"participant": new Entity.Visualisation("map", "participant"), "action": new Entity.Visualisation("map", "action")},
+        "graph": {"participant": new Entity.Visualisation("graph", "participant"), "action": new Entity.Visualisation("graph", "action")},
+    };
 };
 
 View.NavigationView.prototype.init = function () {
@@ -30,6 +35,12 @@ View.NavigationView.prototype.init = function () {
     this._ui._traceModal._$self.on('hide.bs.modal', function (e) {
         scope.onTraceModalHide();
     });
+
+    this.update();
+};
+
+View.NavigationView.prototype.update = function () {
+    this._ui.getMapView().setVisualisation(this._visualisations[this._type][this._datatype]);
 };
 
 /**
@@ -57,14 +68,7 @@ View.NavigationView.prototype.onNavigationTypeEvent = function (target) {
  */
 View.NavigationView.prototype.setType = function (type) {
     this._type = type;
-    switch (type) {
-        case "graph":
-            this._ui.getMapView().setVisualisation(visuGraph);
-            break;
-        case "map":
-            this._ui.getMapView().setVisualisation(visuMap);
-            break;
-    }
+    this.update();
 };
 
 /**
@@ -72,6 +76,7 @@ View.NavigationView.prototype.setType = function (type) {
  */
 View.NavigationView.prototype.setDataType = function (datatype) {
     this._datatype = datatype;
+    this.update();
 };
 
 View.NavigationView.prototype.onTraceModalHide = function () {
@@ -81,10 +86,7 @@ View.NavigationView.prototype.onTraceModalHide = function () {
         return;
     }
 
-    console.log(trace);
+    this._visualisations[this._type][this._datatype].addTrace(trace);
 
-    Provider.getData(this._datatype, trace, [], function () {
-    });
-
-
+    this.update();
 };

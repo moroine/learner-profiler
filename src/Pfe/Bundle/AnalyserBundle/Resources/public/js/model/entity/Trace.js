@@ -55,7 +55,7 @@ Entity.Trace.prototype.toJSON = function () {
     return {
         operation: this._operation,
         type: this._type,
-        filters: JSON.stringify(this._filters),
+        filters: this._filters,
         group: this._group
     };
 };
@@ -149,9 +149,12 @@ Entity.Trace.prototype.setGroup = function (group) {
  *
  * @returns {Boolean}
  */
-
 Entity.Trace.prototype.isActive = function () {
     return this._active;
+};
+
+Entity.Trace.prototype.setActive = function (active) {
+    this._active = !!active;
 };
 
 Entity.Trace.prototype.getData = function (datatype, callback) {

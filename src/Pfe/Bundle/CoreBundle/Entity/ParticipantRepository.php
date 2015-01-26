@@ -31,6 +31,15 @@ class ParticipantRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    private function getFieldIdentifier($type, $field = null)
+    {
+        if ($field) {
+            return substr($type, 0, 1) . "." . $field;
+        }
+
+        return substr($type, 0, 1);
+    }
+
     private function setSelect(QueryBuilder $qb, $operation)
     {
         switch ($operation) {
@@ -54,10 +63,10 @@ class ParticipantRepository extends EntityRepository
         foreach ($entities as $entity) {
             switch ($entity) {
                 case 'localisation':
-                    $qb->leftJoin('p.home', 'l');
+                    $qb->leftJoin($this->getFieldIdentifier('participant', 'home'), $this->getFieldIdentifier('localisation'));
                     break;
                 case 'action':
-                    $qb->leftJoin('PfeCoreBundle:Action', 'a', 'WITH', 'a.participant = p.id');
+                    $qb->leftJoin('PfeCoreBundle:Action', $this->getFieldIdentifier('action'), 'WITH', $this->getFieldIdentifier('action', 'participant') . ' = ' . $this->getFieldIdentifier('participant', 'id'));
                     break;
             }
         }
@@ -72,22 +81,22 @@ class ParticipantRepository extends EntityRepository
 
     private function setGroup(QueryBuilder $qb, $group)
     {
-        $identifier = substr($group->type, 0, 1) . "." . $group->field;
+        $identifier = $this->getFieldIdentifier($group->type, $group->field);
         $qb->groupBy($identifier);
         $qb->addSelect($identifier);
         $qb->addOrderBy($identifier);
 
         // Special case for city
-        if ($identifier === 'l.city') {
-            $qb->addGroupBy('l.isoAlpha3');
-            $qb->addSelect('l.latitude');
-            $qb->addSelect('l.longitude');
+        if ($identifier === $this->getFieldIdentifier('localisation', 'city')) {
+            $qb->addGroupBy($this->getFieldIdentifier('localisation', 'isoAlpha3'));
+            $qb->addSelect($this->getFieldIdentifier('localisation', 'latitude'));
+            $qb->addSelect($this->getFieldIdentifier('localisation', 'longitude'));
         }
     }
 
     private function getExpression($filter)
     {
-        $identifier = substr($filter->type, 0, 1) . "." . $filter->field;
+        $identifier = $this->getFieldIdentifier($filter->type, $filter->field);
 
         if ($filter->value === NULL) {
             $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
@@ -114,6 +123,7 @@ class ParticipantRepository extends EntityRepository
         return $identifier . $rule . $value;
     }
 
+    /** FOLLOW DUST * */
     public function findAllLocalisations()
     {
         $dql = 'SELECT DISTINCT p.state, p.city, COUNT(p) as n FROM PfeCoreBundle:Participant as p GROUP BY p.state, p.city ORDER BY n, p.state, p.city';

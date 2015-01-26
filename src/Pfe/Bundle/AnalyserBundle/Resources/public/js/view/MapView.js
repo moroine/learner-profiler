@@ -12,6 +12,7 @@ View.MapView = function (ui) {
      * @type {View.UiView}
      */
     this._ui = ui;
+    this._currentVisualisation = null;
     this._datamaps = null;
     this._currentBubbleData = null;
     this._regions = {
@@ -51,16 +52,19 @@ View.MapView = function (ui) {
             scale: 159.5
         }
     };
+
     /**
      *
      * @param {Entity.Visualisation} visualisation
      * @returns {undefined}
      */
     this.setVisualisation = function (visualisation) { // visualisation from "VisualisationRepository"
-        if (this._datamaps !== null) {
-            document.getElementById("visualisation_container").innerHTML = "";
-            this._datamaps = null;
-        }
+        document.getElementById("visualisation_container").innerHTML = "";
+        this._datamaps = null;
+        this._currentBubbleData = null;
+
+        this._currentVisualisation = visualisation;
+
         if (visualisation.getType() === "map") {
             this.setMap(visualisation);
         } else {
@@ -73,36 +77,25 @@ View.MapView = function (ui) {
      * @returns {undefined}
      */
     this.setMap = function (visualisation) {
-        /*
-         Place pour insérer les boutons de zooms (Monde, Afrique, Europe, ...)
+        // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
+        var choroplethTrace = visualisation.getActiveChoropleth();
+        var bubbleTrace = visualisation.getActiveBubble();
+        var scope = this;
 
-         Paramètres pour méthode "zoom" :
-         - Afrique : 23, -3, 400
-         - Amérique du Nord : -105, 54, 320
-         - Amérique du Sud : -55, -15, 400
-         - Europe : 11, 54, 600
-         - Asie : 100, 44, 350
-         - Océanie : 133, -30, 400
-         - Monde : 0, 12, 159.5
+        if (choroplethTrace && bubbleTrace) {
+            var callback = function (d) {
+                scope.displayChoroplethTrace(d);
+                var bubbleDataCallback = scope.displayBubbleTrace.bind(scope);
+                Provider.getData(visualisation.getDatatype(), bubbleTrace, visualisation.getLegends(), bubbleDataCallback);
+            };
 
-         */
-        if (visualisation.getDatatype() === "apprenants") {
-            // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
-            var choroplethTrace = visualisation.getActiveChoropleth();
-            var bubbleTrace = visualisation.getActiveBubble();
-            if (choroplethTrace !== null) {
-                var scope = this;
-                var callback = function (v, t, d) {
-                    scope.displayTrace(v, t, d);
-                    var bubbleDataCallback = scope.displayTrace.bind(scope);
-                    bubbleTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), bubbleDataCallback);
-                };
-                var choroplethData = choroplethTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), callback);
-            }
-
-        } else { // Datatype === "actions"
-
+            Provider.getData(visualisation.getDatatype(), choroplethTrace, visualisation.getLegends(), callback);
+        } else if (choroplethTrace) {
+            Provider.getData(visualisation.getDatatype(), choroplethTrace, visualisation.getLegends(), scope.displayChoroplethTrace.bind(scope));
+        } else if (bubbleTrace) {
+            Provider.getData(visualisation.getDatatype(), bubbleTrace, visualisation.getLegends(), scope.displayChoroplethTrace.bind(scope));
         }
+
     };
     /**
      *
@@ -110,7 +103,7 @@ View.MapView = function (ui) {
      * @returns {undefined}
      */
     this.setGraph = function (visualisation) {
-        if (visualisation.getDatatype() === "apprenants") {
+        if (visualisation.getDatatype() === "participant") {
             // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
             var histogramTrace = visualisation.getActiveHistogram();
             //var bubbleTrace = visualisation.getActiveBubble();
@@ -195,71 +188,79 @@ View.MapView = function (ui) {
             svg.call(tip);
         });
     };
-    var scope = this;
 };
-var scope = this;
+
 /**
  *
- * @param {Visualisation} visualisation
- * @param {Trace} trace
- * @param {type} data
+ * @param {Array} data
  * @returns {undefined}
  */
-View.MapView.prototype.displayTrace = function (visualisation, trace, data) {
-    if (trace.getType() === "choropleth") {
-        var legends = visualisation.getLegends();
-        var i;
-        var fillKeys = {
-            defaultFill: '#CCCCCC'
-        };
-        for (i = 0; i < legends.length; i++) {
-            fillKeys[legends[i].getName()] = legends[i].getColor();
-            for (country in data) {
+View.MapView.prototype.displayChoroplethTrace = function (data) {
+    var legends = this._currentVisualisation.getLegends();
+    var container = document.getElementById("visualisation_container");
+    var fillKeys = {defaultFill: '#CCCCCC'};
+    var formattedDatas = [];
 
-                if (legends[i].getMin() === null) {
-                    if (data[country].number < legends[i].getMax()) {
-                        data[country].fillKey = legends[i].getName();
-                    }
-                } else if (legends[i].getMax() === null) {
-                    if (data[country].number >= legends[i].getMin()) {
-                        data[country].fillKey = legends[i].getName();
-                    }
+    container.innerHTML = "";
+
+    for (var i = 0; i < legends.length; i++)
+    {
+        fillKeys[legends[i].getName()] = legends[i].getColor();
+    }
+
+    for (var i = 0; i < data.length; i++)
+    {
+        var f;
+        var number = data[i].entry;
+        for (var j = 0; j < legends.length; j++)
+        {
+            if (legends[j].getMin() === null) {
+                if (number < legends[j].getMax()) {
+                    f = legends[j].getName();
                 }
-                else if (data[country].number >= legends[i].getMin() && data[country].number < legends[i].getMax()) {
-                    data[country].fillKey = legends[i].getName();
+            } else if (legends[j].getMax() === null) {
+                if (number >= legends[j].getMin()) {
+                    f = legends[j].getName();
+                }
+            } else if (number >= legends[j].getMin() && number < legends[j].getMax()) {
+                f = legends[j].getName();
+            }
+        }
+        formattedDatas[data[i].isoAlpha3] = {
+            number: number,
+            fillKey: f
+        };
+    }
+
+    this._datamaps = new Datamap({
+        element: container,
+        fills: fillKeys,
+        data: formattedDatas,
+        geographyConfig: {
+            popupTemplate: function (geo, data) {
+                if (data === null) {
+                    return '<div class="hoverinfo">' + geo.properties.name + '<br />None</div>';
+                } else {
+                    var number = data.number;
+                    return '<div class="hoverinfo">' + geo.properties.name + ' : ' + number + '<br />Size : ' + data.fillKey + '</div>';
                 }
             }
         }
+    });
 
-        var container = document.getElementById("visualisation_container");
-        document.getElementById("visualisation_container").innerHTML = "";
-        this._datamaps = new Datamap({
-            element: document.getElementById('visualisation_container'),
-            fills: fillKeys,
-            data: data,
-            geographyConfig: {
-                popupTemplate: function (geo, data) {
-                    if (data === null) {
-                        return '<div class="hoverinfo">' + geo.properties.name + '<br />None</div>';
-                    } else {
-                        var number = data.number;
-                        return '<div class="hoverinfo">' + geo.properties.name + ' : ' + number + '<br />Size : ' + data.fillKey + '</div>';
-                    }
-                }
+    this._datamaps.legend();
+};
+
+View.MapView.prototype.displayBubbleTrace = function (data) {
+    var bubbleData = [];
+    bubbleData = this.createBubble(data);
+    this._currentBubbleData = bubbleData;
+    if (this._datamaps instanceof Datamap) {
+        this._datamaps.bubbles(bubbleData, {
+            popupTemplate: function (geo, data) {
+                return '<div class="hoverinfo">Size : ' + data.nombre + '</div>';
             }
         });
-        this._datamaps.legend();
-    } else {
-        var bubbleData = [];
-        bubbleData = this.createBubble(data);
-        this._currentBubbleData = bubbleData;
-        if (this._datamaps instanceof Datamap) {
-            this._datamaps.bubbles(bubbleData, {
-                popupTemplate: function (geo, data) {
-                    return '<div class="hoverinfo">Size : ' + data.nombre + '</div>';
-                }
-            });
-        }
     }
 };
 /**
@@ -317,6 +318,11 @@ View.MapView.prototype.createBubble = function (data) {
     return bubbleData;
 };
 
+/**
+ *
+ * @param {string} region
+ * @returns {undefined}
+ */
 View.MapView.prototype.setProjection = function (region) {
     region = region.toLowerCase() || "monde";
     if (this._regions[region]) {
