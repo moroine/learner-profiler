@@ -105,8 +105,6 @@ class GPlaceApi
         $place->setCountry($country_name);
 
         $this->em->persist($place);
-        $this->em->flush();
-        $this->em->detach($place);
 
         return $place;
     }
@@ -149,8 +147,6 @@ class GPlaceApi
         $place->setCountry($country_name);
 
         $this->em->persist($place);
-        $this->em->flush();
-        $this->em->detach($place);
 
         return $place;
     }

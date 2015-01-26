@@ -56,8 +56,6 @@ class GeonamesApi
             $location->setIsoAlpha3($geoname->isoAlpha3);
 
             $this->doctrine->persist($location);
-            $this->doctrine->flush();
-            $this->doctrine->clear();
         }
 
         return $location;

@@ -26,7 +26,7 @@ class FreeGeoIpApi
         /** @var \Pfe\Bundle\FreeGeoIpBundle\Entity\IpLocation $location */
         $location = $repo->findOneBy(array("ip" => $ip));
 
-        if ($location === null) {
+        if (!$location) {
             $request = $this->endpoint . 'json/' . $ip;
             $this->buzz->get($request, array('Content-type: application/json'));
             $response = json_decode($this->buzz->getLastResponse()->getContent());
@@ -41,8 +41,6 @@ class FreeGeoIpApi
             $location->setCity($response->city);
 
             $this->em->persist($location);
-            $this->em->flush($location);
-            $this->em->detach($location);
         }
 
         return $location;
