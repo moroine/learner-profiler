@@ -30,11 +30,15 @@ View.UiView = function () {
      */
     this._details = new View.DetailsView(this);
 
+    this._traceModal = new View.TraceView(this);
+    this._filterModal = new View.FilterView(this);
+
     this._$self = $("#main-container");
 };
 
 View.UiView.prototype.init = function () {
     this._navigation.init();
+    this._traceModal.init();
 };
 
 /**

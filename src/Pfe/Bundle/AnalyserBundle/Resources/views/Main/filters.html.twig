@@ -1,0 +1,86 @@
+{% block filters %}
+    {# Filters Modal #}
+    <div class="modal fade" id="filters-modal" role="dialog" aria-labelledby="add-filter" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Create a Filter</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <label for="filter-name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="filter-name" placeholder="Name" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-rule" class="col-sm-2 control-label" required>Rule</label>
+                            <div class="col-sm-10">
+                                <select name="filter-rule" class="form-control">
+                                    <option value="" selected disabled>Select a Rule</option>
+                                    <option value="is">is</option>
+                                    <option value="not">not</option>
+                                    <option value="lower">lower</option>
+                                    <option value="higher">higher</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-type" class="col-sm-2 control-label">Entity Type</label>
+                            <div class="col-sm-10">
+                                <select name="filter-type" class="form-control">
+                                    <option value="" selected disabled>Select a Type</option>
+                                    <option value="action">Action</option>
+                                    <option value="localisation">Localisation</option>
+                                    <option value="module">Module</option>
+                                    <option value="participant">Participant</option>
+                                    <option value="section">Section</option>
+                                    <option value="theme">Theme</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-field" class="col-sm-2 control-label">Field</label>
+                            <div class="col-sm-10">
+                                <select name="filter-field" class="form-control">
+                                    <option value="" class="field-all" selected disabled>Select a Field</option>
+                                    <option value="id" class="field-action field-localisation field-module field-participant field-section field-theme">ID</option>
+                                    <option value="localisation" class="field-action field-participant" >Localisation ID</option>
+                                    <option value="role" class="field-participant" >Role</option>
+                                    <option value="module" class="field-action">Module ID</option>
+                                    <option value="participant" class="field-action">Participant ID</option>
+                                    <option value="section" class="field-module">Section ID</option>
+                                    <option value="theme">Theme ID</option>
+                                    <option value="isoAlpha2" class="field-localisation">IsoAlpha2</option>
+                                    <option value="isoAlpha3" class="field-localisation">IsoAlpha3</option>
+                                    <option value="state" class="field-localisation">Country</option>
+                                    <option value="city" class="field-localisation">City</option>
+                                    <option value="date" class="field-action">Date</option>
+                                    <option value="day" class="field-action">Day</option>
+                                    <option value="hour" class="field-action">Hour</option>
+                                    <option value="category" class="field-action field-module">Activity</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filter-name" class="col-sm-2 control-label">Value</label>
+                            <div class="col-sm-2">
+                                <input type="checkbox" name="filter-value-null" checked> NULL
+                            </div>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" name="filter-value" placeholder="Value">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="filter-confirm">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

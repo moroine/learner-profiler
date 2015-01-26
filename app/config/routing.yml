@@ -11,11 +11,6 @@ NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /provider/doc
 
-pfe_analyser:
-    resource: "@PfeAnalyserBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
 pfe_g_api:
     resource: "@PfeGPlaceApiBundle/Controller"
     prefix:   /gplace
@@ -24,7 +19,11 @@ pfe_geonames:
     resource: "@PfeGeonamesApiBundle/Controller"
     prefix:   /geonames
 
-pfe_data:
+pfe_provider:
     resource: "@PfeProviderBundle/Controller"
     prefix:   /provider
 
+pfe_analyser:
+    resource: "@PfeAnalyserBundle/Controller/"
+    type:     annotation
+    prefix:   /
