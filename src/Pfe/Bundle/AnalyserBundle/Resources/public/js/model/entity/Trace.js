@@ -51,6 +51,15 @@ Entity.Trace = function (operation, type) {
     this._data = {};
 };
 
+Entity.Trace.prototype.toJSON = function () {
+    return {
+        operation: this._operation,
+        type: this._type,
+        filters: JSON.stringify(this._filters),
+        group: this._group
+    };
+};
+
 /**
  *
  * @returns {int}
@@ -145,22 +154,22 @@ Entity.Trace.prototype.isActive = function () {
     return this._active;
 };
 
-Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
-    var trace = this;
-    if (this.getType() === "choropleth") {
-        $.getJSON(Learner, function (data) {
-            trace._data = data;
-            callback(visualisation, trace, trace._data);
-        });
-    } else if (this.getType() === "histogram") {
-        $.getJSON(Learner, function (data) {
-            trace._data = data;
-            callback(visualisation, trace, trace._data);
-        });
-    } else if (this.getType() === "bubble") {
-        $.getJSON("/bundles/pfeanalyser/js/test/bubbles.json", function (data) {
-            trace._data = data;
-            callback(visualisation, trace, trace._data);
-        });
-    }
+Entity.Trace.prototype.getData = function (datatype, callback) {
+    /*var trace = this;
+     if (this.getType() === "choropleth") {
+     $.getJSON(Learner, function (data) {
+     trace._data = data;
+     callback(visualisation, trace, trace._data);
+     });
+     } else if (this.getType() === "histogram") {
+     $.getJSON(Learner, function (data) {
+     trace._data = data;
+     callback(visualisation, trace, trace._data);
+     });
+     } else if (this.getType() === "bubble") {
+     $.getJSON("/bundles/pfeanalyser/js/test/bubbles.json", function (data) {
+     trace._data = data;
+     callback(visualisation, trace, trace._data);
+     });
+     }*/
 };

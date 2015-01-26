@@ -57,6 +57,17 @@ Entity.Filter = function (name, rule, type, field, value) {
     this._actif = true;
 };
 
+Entity.Filter.prototype.toJSON = function () {
+    return {
+        name: this._name,
+        rule: this._rule,
+        type: this._type,
+        field: this._field,
+        value: this._value,
+        actif: this._actif
+    };
+};
+
 /**
  *
  * @returns {int}

@@ -3,6 +3,7 @@
 namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * ParticipantRepository
@@ -15,11 +16,102 @@ class ParticipantRepository extends EntityRepository
 
     private $labels;
 
-    public function __construct($em, \Doctrine\ORM\Mapping\ClassMetadata $class)
+    public function getTraceData($trace)
     {
-        parent::__construct($em, $class);
+        $qb = $this->createQueryBuilder('p');
 
-        $labels = array();
+        $this->setSelect($qb, $trace->operation);
+
+        $this->setJoins($qb, $trace->group, $trace->filters);
+
+        $this->setWhere($qb, $trace->filters);
+
+        $this->setGroup($qb, $trace->group);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    private function setSelect(QueryBuilder $qb, $operation)
+    {
+        switch ($operation) {
+            case 'count':
+                $qb->select("COUNT(p) as entry");
+                break;
+        }
+    }
+
+    private function setJoins(QueryBuilder $qb, $group, $filters)
+    {
+        $entities = array();
+        $entities[] = $group->type;
+
+        foreach ($filters as $filter) {
+            if (!in_array($filter->type, $entities)) {
+                $entities[] = $filter->type;
+            }
+        }
+
+        foreach ($entities as $entity) {
+            switch ($entity) {
+                case 'localisation':
+                    $qb->leftJoin('p.home', 'l');
+                    break;
+                case 'action':
+                    $qb->leftJoin('PfeCoreBundle:Action', 'a', 'WITH', 'a.participant = p.id');
+                    break;
+            }
+        }
+    }
+
+    private function setWhere(QueryBuilder $qb, $filters)
+    {
+        foreach ($filters as $filter) {
+            $qb->andWhere($this->getExpression($filter));
+        }
+    }
+
+    private function setGroup(QueryBuilder $qb, $group)
+    {
+        $identifier = substr($group->type, 0, 1) . "." . $group->field;
+        $qb->groupBy($identifier);
+        $qb->addSelect($identifier);
+        $qb->addOrderBy($identifier);
+
+        // Special case for city
+        if ($identifier === 'l.city') {
+            $qb->addGroupBy('l.isoAlpha3');
+            $qb->addSelect('l.latitude');
+            $qb->addSelect('l.longitude');
+        }
+    }
+
+    private function getExpression($filter)
+    {
+        $identifier = substr($filter->type, 0, 1) . "." . $filter->field;
+
+        if ($filter->value === NULL) {
+            $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
+            return $identifier . $rule . 'NULL';
+        }
+
+        $value = "'" . strtolower($filter->value) . "'";
+
+        switch ($filter->rule) {
+            case 'is':
+                $rule = ' = ';
+                break;
+            case 'not':
+                $rule = ' <> ';
+                break;
+            case 'lower':
+                $rule = ' < ';
+                break;
+            case 'higher':
+                $rule = ' > ';
+                break;
+        }
+
+        return $identifier . $rule . $value;
     }
 
     public function findAllLocalisations()

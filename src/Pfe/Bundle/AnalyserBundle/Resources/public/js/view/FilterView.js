@@ -63,7 +63,7 @@ View.FilterView.prototype.onConfirm = function () {
     var name = this._$name.val() || null;
     var rule = this._$rule.val() || null;
     var type = this._$type.val() || null;
-    var field = this._$name.val() || null;
+    var field = this._$field.val() || null;
     var checked = this._$null_value.is(":checked");
     var value = this._$value.val() || null;
 

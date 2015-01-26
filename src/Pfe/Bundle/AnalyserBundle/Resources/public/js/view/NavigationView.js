@@ -77,10 +77,14 @@ View.NavigationView.prototype.setDataType = function (datatype) {
 View.NavigationView.prototype.onTraceModalHide = function () {
     var trace = this._ui._traceModal._current;
 
-    if (trace) {
-        alert('YES: Trop puissant');
-        console.log(trace);
-    } else {
-        alert('FUCK IT');
+    if (!trace) {
+        return;
     }
+
+    console.log(trace);
+
+    Provider.getData(this._datatype, trace, [], function () {
+    });
+
+
 };

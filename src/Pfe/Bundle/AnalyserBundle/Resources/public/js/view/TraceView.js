@@ -69,9 +69,11 @@ View.TraceView.prototype.onModalShow = function () {
 View.TraceView.prototype.onFilterModalHide = function (e) {
     var filter = this._ui._filterModal._current;
 
-    this._filters.push(filter);
+    if (filter) {
+        this._filters.push(filter);
 
-    this._$filterTable.append(this.generateFilterHtml(filter));
+        this._$filterTable.append(this.generateFilterHtml(filter));
+    }
 };
 
 View.TraceView.prototype.generateFilterHtml = function (filter) {
