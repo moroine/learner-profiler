@@ -21,12 +21,12 @@ View.MapView = function (ui) {
             longitude: -3,
             scale: 400
         },
-        ameriqueDuNord: {
+        ameriquedunord: {
             latitude: -105,
             longitude: 54,
             scale: 320
         },
-        ameriqueDuSud: {
+        ameriquedusud: {
             latitude: -55,
             longitude: -15,
             scale: 400
@@ -361,15 +361,17 @@ View.MapView.prototype.zoom = function (latitude, longitude, scaleValue) {
             }
         }
     });
-    var newBubbles = [];
-    for (var i = 0; i < this._currentBubbleData.length; i++) {
-        newBubbles[i] = {};
-        $.extend(newBubbles[i], this._currentBubbleData[i]);
-    }
-
-    this._datamaps.bubbles(newBubbles, {
-        popupTemplate: function (geo, data) {
-            return '<div class="hoverinfo">Size : ' + data.nombre + '</div>';
+    if (this._currentBubbleData) {
+        var newBubbles = [];
+        for (var i = 0; i < this._currentBubbleData.length; i++) {
+            newBubbles[i] = {};
+            $.extend(newBubbles[i], this._currentBubbleData[i]);
         }
-    });
+
+        this._datamaps.bubbles(newBubbles, {
+            popupTemplate: function (geo, data) {
+                return '<div class="hoverinfo">Size : ' + data.nombre + '</div>';
+            }
+        });
+    }
 };

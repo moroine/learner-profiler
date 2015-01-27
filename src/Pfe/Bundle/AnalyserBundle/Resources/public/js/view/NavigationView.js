@@ -46,6 +46,8 @@ View.NavigationView.prototype.update = function () {
     var visualisation = this._visualisations[this._type][this._datatype];
     this._ui.getMapView().setVisualisation(visualisation);
     $("#recap").html(this.getHtmlRecap(visualisation.getTraces()));
+    this._$self.find('[role="presentation"].active [data-navigation="zoom"]').parent().removeClass('active');
+    this._$self.find('[data-navigation="zoom"][data-navigation-zoom="monde"]').parent().addClass('active');
 };
 
 View.NavigationView.prototype.enableTrace = function ($target) {
@@ -127,6 +129,9 @@ View.NavigationView.prototype.onNavigationTypeEvent = function (target) {
         case 'datatype':
             this.setDataType(value);
             break;
+        case 'zoom':
+            this.setZoom(value);
+            break;
     }
 };
 /**
@@ -134,8 +139,21 @@ View.NavigationView.prototype.onNavigationTypeEvent = function (target) {
  */
 View.NavigationView.prototype.setType = function (type) {
     this._type = type;
+    if (type === 'map') {
+        $("#navigation-zoom").removeClass('hidden');
+    } else {
+        $("#navigation-zoom").addClass('hidden');
+    }
     this.update();
 };
+
+/**
+ * @param {string} type
+ */
+View.NavigationView.prototype.setZoom = function (value) {
+    this._ui.getMapView().setProjection(value);
+};
+
 /**
  * @param {string} datatype
  */
