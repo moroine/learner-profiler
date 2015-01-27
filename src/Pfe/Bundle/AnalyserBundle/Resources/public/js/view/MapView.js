@@ -103,90 +103,93 @@ View.MapView = function (ui) {
      * @returns {undefined}
      */
     this.setGraph = function (visualisation) {
-        if (visualisation.getDatatype() === "participant") {
-            // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
-            var histogramTrace = visualisation.getActiveHistogram();
-            //var bubbleTrace = visualisation.getActiveBubble();
+        // For active trace in visualisation, get d3js data for datatype (trace.getData(datatype, legend))
+        var scope = this;
+        var histogramTrace = visualisation.getActiveHistogram();
 
-            if (histogramTrace !== null) {
-                var histogramData = histogramTrace.getData(visualisation, visualisation.getDatatype(), visualisation.getLegends(), this.displayGraph);
-                //var bubbleData = bubbleTrace.getData(visualisation.getDatatype(), visualisation.getLegends(), this.displayTrace);
-            }
-
-        } else { // Datatype === "actions"
-
+        if (histogramTrace !== null) {
+            Provider.getData(visualisation.getDatatype(), histogramTrace, visualisation.getLegends(), scope.displayGraph.bind(scope));
         }
     };
-    this.displayGraph = function (visualisation, trace, histogramData) {
-        var tip = d3.tip()
-                .attr('class', 'd3-tip')
-                .offset([-10, 0])
-                .html(function (d) {
-                    return "<strong>Count :</strong> <span style='color:red'>" + d.nombre + "</span>";
-                });
+
+    this.displayGraph = function (data) {
+        var abscisse = [];
+        var ordonnee = [];
+        var formattedDatas = [];
+
+        for (var i = 0; i < data.length; i++)
+        {
+            // field group by
+            var field = this._currentVisualisation.getActiveHistogram()._group.field;
+            var label = data[i][field] || 'none';
+
+            abscisse.push(label); // Ave Label Value
+            ordonnee.push(data[i].entry); // Axe Label Value
+            formattedDatas.push({// The Bar data
+                label: label,
+                entry: data[i].entry,
+            });
+        }
+
+        // Adapt Canvas Properties
         var svg = d3.select("#visualisation_container").append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        var abscisse = [];
-        var ordonnee = [];
-        for (var item in histogramData) {
-            abscisse.push(item);
-            ordonnee.push(histogramData[item].number);
+
+        /** Axis **/
+        x.domain(abscisse);
+        y.domain(ordonnee);
+
+        svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+        var ticks = document.getElementsByClassName("x axis")[0].children;
+        for (var i = 0; i < ticks.length - 1; i++) {
+            ticks[i].setAttribute("transform", "translate(" + (20 * i + 6) + ", 17) rotate(-90)");
+            ticks[i].firstChild.style.visibility = "hidden";
         }
 
-        d3.json(Learner, function (error, data) {
-            x.domain(abscisse);
-            y.domain(ordonnee);
-            var dataArray = [];
-            for (item in data) {
-                var nom = item;
-                dataArray.push({
-                    "name": nom,
-                    "nombre": data[item].number
+        svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                .text("Count result");
+
+        /** PopOver **/
+        var tip = d3.tip() // The pop Over
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function (d) {
+                    return "<strong>" + d.label + " :</strong> <span style='color:red'>" + d.entry + "</span>"; // Template
                 });
-            }
 
-            svg.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
-            var ticks = document.getElementsByClassName("x axis")[0].children;
-            for (var i = 0; i < ticks.length - 1; i++) {
-                ticks[i].setAttribute("transform", "translate(" + (20 * i + 6) + ", 17) rotate(-90)");
-                ticks[i].firstChild.style.visibility = "hidden";
-            }
-
-
-
-            svg.append("g")
-                    .attr("class", "y axis")
-                    .call(yAxis)
-                    .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 0)
-                    .attr("dy", ".71em")
-                    .style("text-anchor", "end")
-                    .text("Number of participants");
-            svg.selectAll(".bar")
-                    .data(dataArray)
-                    .enter().append("rect")
-                    .attr("class", "bar")
-                    .attr("x", function (d) {
-                        return x(d.name);
-                    })
-                    .attr("width", x.rangeBand())
-                    .attr("y", function (d) {
-                        return y(d.nombre);
-                    })
-                    .attr("height", function (d) {
-                        return height - y(d.nombre);
-                    })
-                    .on('mouseover', tip.show)
-                    .on('mouseout', tip.hide);
-            svg.call(tip);
-        });
+        /** Bars **/
+        svg.selectAll(".bar")
+                .data(formattedDatas)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", function (d) {  // Set x bar coordonnate in function of datas
+                    return x(d.label);
+                })
+                .attr("width", function (d) {
+                    return x.rangeBand();
+                })
+                .attr("y", function (d) {  // Set y bar coordonnate in function of datas
+                    return y(d.entry);
+                })
+                .attr("height", function (d) {  // Set height bar coordonnate in function of datas
+                    return height - y(d.entry);
+                })
+                .on('mouseover', tip.show)
+                .on('mouseout', tip.hide);
+        svg.call(tip);
     };
 };
 

@@ -51,10 +51,12 @@ View.TraceView.prototype.onModalShow = function () {
     var datatype = this._ui._navigation._datatype;
     var type = this._ui._navigation._type;
 
+    this._$form[0].reset();
+
     switch (type) {
         case "graph":
             this._$self.find(".map-type-option").addClass('hidden');
-            this._$self.find(".graph-type-option").aremoveClass('hidden');
+            this._$self.find(".graph-type-option").removeClass('hidden');
             break;
         case "map":
             this._$self.find(".map-type-option").removeClass('hidden');
@@ -62,8 +64,34 @@ View.TraceView.prototype.onModalShow = function () {
             break;
     }
 
+    this._$filterTable.html('<tr><th>#</th><th>Name</th><th>Rule</th><th>Type</th><th>Field</th><th>Value</th></tr>');
+
+    var scope = this;
+
+    if (type === 'map') {
+        this._$group.closest('fieldset').prop('disabled', true);
+        this._$type.on('change', function (e) {
+            scope.updateGroup();
+        });
+    } else {
+        this._$group.closest('fieldset').prop('disabled', false);
+        this._$type.off('change');
+    }
+
     this._current = null;
     this._filters = [];
+};
+
+View.TraceView.prototype.updateGroup = function ()
+{
+    if (this._$type.filter(':checked').val() === 'choropleth')
+    {
+        this._$group_type.val('localisation');
+        this._$group_field.val('isoAlpha3');
+    } else {
+        this._$group_type.val('localisation');
+        this._$group_field.val('city');
+    }
 };
 
 View.TraceView.prototype.onFilterModalHide = function (e) {
@@ -108,7 +136,7 @@ View.TraceView.prototype.onConfirm = function () {
 
     var name = this._$name.val() || null;
     var operation = this._$operation.val() || null;
-    var type = this._$type.val() || null;
+    var type = this._$type.filter(':checked').val() || null;
     var group_type = this._$group_type.val() || null;
     var group_field = this._$group_field.val() || null;
 
