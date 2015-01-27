@@ -3,6 +3,7 @@
 namespace Pfe\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * ParticipantRepository
@@ -15,13 +16,114 @@ class ParticipantRepository extends EntityRepository
 
     private $labels;
 
-    public function __construct($em, \Doctrine\ORM\Mapping\ClassMetadata $class)
+    public function getTraceData($trace)
     {
-        parent::__construct($em, $class);
+        $qb = $this->createQueryBuilder('p');
 
-        $labels = array();
+        $this->setSelect($qb, $trace->operation);
+
+        $this->setJoins($qb, $trace->group, $trace->filters);
+
+        $this->setWhere($qb, $trace->filters);
+
+        $this->setGroup($qb, $trace->group);
+
+        return $qb->getQuery()->getResult();
     }
 
+    private function getFieldIdentifier($type, $field = null)
+    {
+        if ($field) {
+            return substr($type, 0, 1) . "." . $field;
+        }
+
+        return substr($type, 0, 1);
+    }
+
+    private function setSelect(QueryBuilder $qb, $operation)
+    {
+        switch ($operation) {
+            case 'count':
+                $qb->select("COUNT(p) as entry");
+                break;
+        }
+    }
+
+    private function setJoins(QueryBuilder $qb, $group, $filters)
+    {
+        $entities = array();
+        $entities[] = $group->type;
+
+        foreach ($filters as $filter) {
+            if (!in_array($filter->type, $entities)) {
+                $entities[] = $filter->type;
+            }
+        }
+
+        foreach ($entities as $entity) {
+            switch ($entity) {
+                case 'localisation':
+                    $qb->leftJoin($this->getFieldIdentifier('participant', 'home'), $this->getFieldIdentifier('localisation'));
+                    break;
+                case 'action':
+                    $qb->leftJoin('PfeCoreBundle:Action', $this->getFieldIdentifier('action'), 'WITH', $this->getFieldIdentifier('action', 'participant') . ' = ' . $this->getFieldIdentifier('participant', 'id'));
+                    break;
+            }
+        }
+    }
+
+    private function setWhere(QueryBuilder $qb, $filters)
+    {
+        foreach ($filters as $filter) {
+            $qb->andWhere($this->getExpression($filter));
+        }
+    }
+
+    private function setGroup(QueryBuilder $qb, $group)
+    {
+        $identifier = $this->getFieldIdentifier($group->type, $group->field);
+        $qb->groupBy($identifier);
+        $qb->addSelect($identifier);
+        $qb->addOrderBy($identifier);
+
+        // Special case for city
+        if ($identifier === $this->getFieldIdentifier('localisation', 'city')) {
+            $qb->addGroupBy($this->getFieldIdentifier('localisation', 'isoAlpha3'));
+            $qb->addSelect($this->getFieldIdentifier('localisation', 'latitude'));
+            $qb->addSelect($this->getFieldIdentifier('localisation', 'longitude'));
+        }
+    }
+
+    private function getExpression($filter)
+    {
+        $identifier = $this->getFieldIdentifier($filter->type, $filter->field);
+
+        if ($filter->value === NULL) {
+            $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
+            return $identifier . $rule . 'NULL';
+        }
+
+        $value = "'" . strtolower($filter->value) . "'";
+
+        switch ($filter->rule) {
+            case 'is':
+                $rule = ' = ';
+                break;
+            case 'not':
+                $rule = ' <> ';
+                break;
+            case 'lower':
+                $rule = ' < ';
+                break;
+            case 'higher':
+                $rule = ' > ';
+                break;
+        }
+
+        return $identifier . $rule . $value;
+    }
+
+    /** FOLLOW DUST * */
     public function findAllLocalisations()
     {
         $dql = 'SELECT DISTINCT p.state, p.city, COUNT(p) as n FROM PfeCoreBundle:Participant as p GROUP BY p.state, p.city ORDER BY n, p.state, p.city';

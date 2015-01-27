@@ -15,16 +15,30 @@
                 {% include 'PfeAnalyserBundle:Main:visualisation.html.twig' %}
             </div>
         </div>
+        <!--div class="col-md-12">
+        {# include 'PfeAnalyserBundle:Main:legend.html.twig' #}
+        </div-->
         <hr />
-        <div class="col-md-12">
-            {% include 'PfeAnalyserBundle:Main:legend.html.twig' %}
+        <div class="col-md-12" style="margin-top: 30px;">
+            <h3>Traces</h3>
+            <table id="recap" class="table table-hover">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Group Type</th>
+                    <th>Group Field</th>
+                </tr>
+            </table>
         </div>
-        <hr />
-        <div class="col-md-12">
-            {% include 'PfeAnalyserBundle:Main:details.html.twig' %}
-        </div>
+        <!--div class="col-md-12">
+        {# include 'PfeAnalyserBundle:Main:details.html.twig' #}
+        </div-->
         <div class="">
             {% include 'PfeAnalyserBundle:Main:modals.html.twig' %}
+        </div>
+        <div class="">
+            {% include 'PfeAnalyserBundle:Main:filters.html.twig' %}
         </div>
     </div>
 {% endblock %}
@@ -35,8 +49,8 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
     <script type="text/javascript">
-        var Learner
-        ={{ config|json_encode()|raw }}
+        var routing
+        ={{ routing|json_encode()|raw }}
     </script>
     {% javascripts
         '@PfeAnalyserBundle/Resources/public/js/lib/d3.min.js'

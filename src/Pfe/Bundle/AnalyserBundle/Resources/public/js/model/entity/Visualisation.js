@@ -42,7 +42,14 @@ Entity.Visualisation = function (type, datatype) {
     /**
      * @type {Legend[]}
      */
-    this._legends = [];
+    this._legends = [
+        new Entity.Legend("VeryFew", null, 5, "#f1c40f"),
+        new Entity.Legend("Few", 5, 10, "#f39c12"),
+        new Entity.Legend("Correct", 10, 25, "#e67e22"),
+        new Entity.Legend("big", 25, 50, "#d35400"),
+        new Entity.Legend("veryBig", 50, 100, "#e74c3c"),
+        new Entity.Legend("soMuch", 100, null, "#c0392b")
+    ];
 };
 
 /**
@@ -111,6 +118,20 @@ Entity.Visualisation.prototype.getTraces = function () {
  */
 Entity.Visualisation.prototype.setTraces = function (traces) {
     this._traces = traces;
+};
+
+
+Entity.Visualisation.prototype.addTrace = function (trace) {
+    for (var i = 0; i < this._traces.length; i++)
+    {
+        if (this._traces[i].isActive() && this._traces[i].getType() === trace.getType())
+        {
+            this._traces[i].setActive(false);
+        }
+    }
+
+    trace.setActive(true);
+    this._traces.push(trace);
 };
 
 /**

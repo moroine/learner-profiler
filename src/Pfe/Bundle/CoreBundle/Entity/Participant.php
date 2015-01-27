@@ -230,7 +230,7 @@ class Participant implements \JsonSerializable
         $obj->email = $this->getEmail();
         $obj->last_access = $this->getLast_access();
         $obj->home_id = $this->getHome();
-        $obj->country = $this->getCountry();
+        $obj->country = $this->getCountryCode();
         $obj->city = $this->getCity();
         return (array) $obj;
     }

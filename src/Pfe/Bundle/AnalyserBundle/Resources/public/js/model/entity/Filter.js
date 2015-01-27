@@ -20,7 +20,7 @@ if (typeof Entity === 'undefined') {
  * @param {int} value
  * @returns {undefined}
  */
-Entity.Filter = function (rule, type, field, value) {
+Entity.Filter = function (name, rule, type, field, value) {
     /**
      * @type int
      */
@@ -29,33 +29,43 @@ Entity.Filter = function (rule, type, field, value) {
     /**
      * @type String
      */
-    this._rule = rule;
+    this._name = name || null;
 
     /**
      * @type String
      */
-    this._type = type;
+    this._rule = rule || null;
 
     /**
      * @type String
      */
-    this._field = field;
+    this._type = type || null;
 
     /**
      * @type String
      */
-    this._value = value;
+    this._field = field || null;
+
+    /**
+     * @type String
+     */
+    this._value = value || null;
 
     /**
      * @type boolean
      */
     this._actif = true;
+};
 
-    /**
-     *
-     * @type String
-     */
-    this._groupBy = groupBy;
+Entity.Filter.prototype.toJSON = function () {
+    return {
+        name: this._name,
+        rule: this._rule,
+        type: this._type,
+        field: this._field,
+        value: this._value,
+        actif: this._actif
+    };
 };
 
 /**
@@ -63,7 +73,7 @@ Entity.Filter = function (rule, type, field, value) {
  * @returns {int}
  */
 Entity.Filter.prototype.getId = function () {
-    return Entity.Filter.prototype._id;
+    return this._id;
 };
 
 /**
@@ -73,6 +83,23 @@ Entity.Filter.prototype.getId = function () {
  */
 Entity.Filter.prototype.setId = function (id) {
     this._id = id;
+};
+
+/**
+ *
+ * @returns {String}
+ */
+Entity.Filter.prototype.getName = function () {
+    return this._name;
+};
+
+/**
+ *
+ * @param {String} name
+ * @returns {undefined}
+ */
+Entity.Filter.prototype.setName = function (name) {
+    this._name = name;
 };
 
 /**
@@ -141,21 +168,4 @@ Entity.Filter.prototype.getValue = function () {
  */
 Entity.Filter.prototype.setValue = function (value) {
     this._value = value;
-};
-
-/**
- *
- * @returns {String|groupBy}
- */
-Entity.Filter.prototype.getGroupBy = function () {
-    return this._groupBy;
-};
-
-/**
- *
- * @param {String} groupBy
- * @returns {undefined}
- */
-Entity.Filter.prototype.setGroupBy = function (groupBy) {
-    this._groupBy = groupBy;
 };

@@ -16,7 +16,7 @@ class MainController extends Controller
     public function indexAction()
     {
         return array(
-            "config" => $this->get('router')->generate('pfe_provider_participant_participantscustom', array("_format" => 'json'))
+            "routing" => array("provider" => $this->get('router')->generate('pfe_provider_endpoint', array("_format" => 'json')))
         );
     }
 

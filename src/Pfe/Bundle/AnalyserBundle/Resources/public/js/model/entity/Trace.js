@@ -23,6 +23,13 @@ Entity.Trace = function (operation, type) {
      */
     this._id = null;
 
+
+    /**
+     * @type String
+     */
+    this._name = name;
+
+
     /**
      * @type String
      */
@@ -41,7 +48,7 @@ Entity.Trace = function (operation, type) {
     /**
      * @type String
      */
-    this._denominateur = null;
+    this._group = null;
 
     /**
      * @type boolean
@@ -49,6 +56,15 @@ Entity.Trace = function (operation, type) {
     this._active = true;
 
     this._data = {};
+};
+
+Entity.Trace.prototype.toJSON = function () {
+    return {
+        operation: this._operation,
+        type: this._type,
+        filters: this._filters,
+        group: this._group
+    };
 };
 
 /**
@@ -66,6 +82,23 @@ Entity.Trace.prototype.getId = function () {
  */
 Entity.Trace.prototype.setId = function (id) {
     this._id = id;
+};
+
+/**
+ *
+ * @returns {String}
+ */
+Entity.Trace.prototype.getName = function () {
+    return this._name;
+};
+
+/**
+ *
+ * @param {String} name
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setName = function (name) {
+    this._name = name;
 };
 
 /**
@@ -123,44 +156,47 @@ Entity.Trace.prototype.setFilters = function (filters) {
  *
  * @returns {String}
  */
-Entity.Trace.prototype.getDenominateur = function () {
-    return this._denominateur;
+Entity.Trace.prototype.getGroup = function () {
+    return this._group;
 };
 
 /**
  *
- * @param {String} denominateur
+ * @param {String} group
  * @returns {undefined}
  */
-Entity.Trace.prototype.setDenominateur = function (denominateur) {
-    this._denominateur = denominateur;
+Entity.Trace.prototype.setGroup = function (group) {
+    this._group = group;
 };
 
 /**
  *
  * @returns {Boolean}
  */
-
 Entity.Trace.prototype.isActive = function () {
     return this._active;
 };
 
-Entity.Trace.prototype.getData = function (visualisation, datatype, legends, callback) {
-    var trace = this;
-    if (this.getType() === "choropleth") {
-        $.getJSON(Learner, function (data) {
-            trace._data = data;
-            callback(visualisation, trace, trace._data);
-        });
-    } else if (this.getType() === "histogram") {
-        $.getJSON(Learner, function (data) {
-            trace._data = data;
-            callback(visualisation, trace, trace._data);
-        });
-    } else if (this.getType() === "bubble") {
-        $.getJSON("/bundles/pfeanalyser/js/test/bubbles.json", function (data) {
-            trace._data = data;
-            callback(visualisation, trace, trace._data);
-        });
-    }
+Entity.Trace.prototype.setActive = function (active) {
+    this._active = !!active;
+};
+
+Entity.Trace.prototype.getData = function (datatype, callback) {
+    /*var trace = this;
+     if (this.getType() === "choropleth") {
+     $.getJSON(Learner, function (data) {
+     trace._data = data;
+     callback(visualisation, trace, trace._data);
+     });
+     } else if (this.getType() === "histogram") {
+     $.getJSON(Learner, function (data) {
+     trace._data = data;
+     callback(visualisation, trace, trace._data);
+     });
+     } else if (this.getType() === "bubble") {
+     $.getJSON("/bundles/pfeanalyser/js/test/bubbles.json", function (data) {
+     trace._data = data;
+     callback(visualisation, trace, trace._data);
+     });
+     }*/
 };
