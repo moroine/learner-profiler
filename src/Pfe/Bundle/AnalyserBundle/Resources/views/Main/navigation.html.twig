@@ -1,12 +1,25 @@
 {% block navigation %}
+    <h3>Map Type</h3>
     <ul class="nav nav-pills nav-stacked" id="navigation-type">
         <li role="presentation" class="active"><a href="#" data-navigation="type" data-navigation-type="map">Map</a></li>
         <li role="presentation"><a href="#" data-navigation="type" data-navigation-type="graph">Graph</a></li>
     </ul>
     <hr />
+    <h3>Datatype</h3>
     <ul class="nav nav-pills nav-stacked" id="navigation-datatype">
         <li role="presentation" class="active"><a data-navigation="datatype" href="#" data-navigation-datatype="participant">Participant</a></li>
         <li role="presentation"><a  href="#" data-navigation="datatype" data-navigation-datatype="action">Action</a></li>
+    </ul>
+    <hr />
+    <h3>Zoom</h3>
+    <ul class="nav nav-pills nav-stacked" id="navigation-zoom">
+        <li role="presentation" class="active"><a data-navigation="zoom" href="#" data-navigation-zoom="monde">World</a></li>
+        <li role="presentation"><a  href="#" data-navigation="zoom" data-navigation-zoom="europe">Europe</a></li>
+        <li role="presentation"><a  href="#" data-navigation="zoom" data-navigation-zoom="afrique">Afrique</a></li>
+        <li role="presentation"><a  href="#" data-navigation="zoom" data-navigation-zoom="ameriqueDuNord">Amérique du Nord</a></li>
+        <li role="presentation"><a  href="#" data-navigation="zoom" data-navigation-zoom="ameriqueDuSud">Amérique du Sud</a></li>
+        <li role="presentation"><a  href="#" data-navigation="zoom" data-navigation-zoom="asie">Asie</a></li>
+        <li role="presentation"><a  href="#" data-navigation="zoom" data-navigation-zoom="oceanie">Oceanie</a></li>
     </ul>
     <hr />
     <button type="button" id="add-trace" class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#trace-modal">Add Trace</button>
