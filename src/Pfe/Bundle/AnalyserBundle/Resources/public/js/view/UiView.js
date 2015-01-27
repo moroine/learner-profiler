@@ -23,12 +23,12 @@ View.UiView = function () {
     /**
      * @type {View.LegendView}
      */
-    this._legend = new View.LegendView(this);
+//    this._legend = new View.LegendView(this);
 
     /**
      * @type {View.DetailsView}
      */
-    this._details = new View.DetailsView(this);
+//    this._details = new View.DetailsView(this);
 
     this._traceModal = new View.TraceView(this);
     this._filterModal = new View.FilterView(this);

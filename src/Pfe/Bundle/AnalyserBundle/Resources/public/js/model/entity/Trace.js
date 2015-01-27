@@ -23,6 +23,13 @@ Entity.Trace = function (operation, type) {
      */
     this._id = null;
 
+
+    /**
+     * @type String
+     */
+    this._name = name;
+
+
     /**
      * @type String
      */
@@ -75,6 +82,23 @@ Entity.Trace.prototype.getId = function () {
  */
 Entity.Trace.prototype.setId = function (id) {
     this._id = id;
+};
+
+/**
+ *
+ * @returns {String}
+ */
+Entity.Trace.prototype.getName = function () {
+    return this._name;
+};
+
+/**
+ *
+ * @param {String} name
+ * @returns {undefined}
+ */
+Entity.Trace.prototype.setName = function (name) {
+    this._name = name;
 };
 
 /**

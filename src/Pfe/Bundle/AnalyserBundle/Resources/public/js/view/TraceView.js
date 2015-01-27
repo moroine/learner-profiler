@@ -94,6 +94,22 @@ View.TraceView.prototype.updateGroup = function ()
     }
 };
 
+View.TraceView.prototype.fill = function (trace)
+{
+    this._$name.val(trace.getName());
+    this._$operation.val(trace.getOperation());
+    this._$type.val(trace.getType());
+    this._$group_type.val(trace.getGroup().type);
+    this._$group_field.val(trace.getGroup().field);
+
+    var filters = trace.getFilters();
+    for (var i = 0; i < filters.length; i++)
+    {
+        this._filters.push(filters[i]);
+        this._$filterTable.append(this.generateFilterHtml(filters[i]));
+    }
+};
+
 View.TraceView.prototype.onFilterModalHide = function (e) {
     var filter = this._ui._filterModal._current;
 
@@ -147,6 +163,7 @@ View.TraceView.prototype.onConfirm = function () {
     }
 
     trace.setId(this._increment);
+    trace.setName(name);
     trace.setOperation(operation);
     trace.setType(type);
     trace.setGroup({type: group_type, field: group_field});
