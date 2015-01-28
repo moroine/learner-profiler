@@ -52,15 +52,15 @@ class MoocCollector
         foreach ($cmps as $key => $cmp) {
             $output->writeln("<info>Fork: Collect " . $cmp . "</info>");
             if ($mooc_theme_id) {
-                $cmp_processes[$cmp] = new Process("php app/console pfe:collector:moodle --component " . $cmp . " --course-id " . $mooc_theme_id);
+                $cmp_processes[$cmp] = new Process("php app/console pfe:collector:moodle --env=prod --component " . $cmp . " --course-id " . $mooc_theme_id);
             } else {
-                $cmp_processes[$cmp] = new Process("php app/console pfe:collector:moodle --component " . $cmp);
+                $cmp_processes[$cmp] = new Process("php app/console pfe:collector:moodle --env=prod --component " . $cmp);
             }
             $cmp_processes[$cmp]->start();
         }
         foreach ($cmps as $key => $cmp) {
             $output->writeln("<info>Waiting on " . $cmp . "</info>");
-            $output->writeln("<info>This could take a while...</info>");
+            $output->writeln("<info>This could take a while... (updated every 10% - average 1 min for 10 000 elements)</info>");
 
             while (!$cmp_processes[$cmp]->isTerminated()) {
                 $output->write($cmp_processes[$cmp]->getIncrementalOutput());
