@@ -12,6 +12,7 @@
 /app/cache/**
 /app/logs/**
 /vendor/
+/.vagrant/
 /app/config/parameters.yml
 /app/Resources/dump/**
 /app/Resources/public/assets/**
