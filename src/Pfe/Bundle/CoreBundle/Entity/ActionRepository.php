@@ -90,28 +90,57 @@ class ActionRepository extends EntityRepository
 
     private function getExpression($filter)
     {
-        $identifier = $this->getFieldIdentifier($filter->type, $filter->field);
+        if (!($filter->type === "Participant" && $filter->field === 'role')) {
+            $identifier = $this->getFieldIdentifier($filter->type, $filter->field);
 
-        if ($filter->value === NULL) {
-            $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
-            return $identifier . $rule . 'NULL';
+            if ($filter->value === NULL) {
+                $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
+                return $identifier . $rule . 'NULL';
+            }
+
+            $value = "'" . strtolower($filter->value) . "'";
+
+            switch ($filter->rule) {
+                case 'is':
+                    $rule = ' = ';
+                    break;
+                case 'not':
+                    $rule = ' <> ';
+                    break;
+                case 'lower':
+                    $rule = ' < ';
+                    break;
+                case 'higher':
+                    $rule = ' > ';
+                    break;
+            }
+
+            return $identifier . $rule . $value;
         }
 
-        $value = "'" . strtolower($filter->value) . "'";
+        $identifier = $this->getFieldIdentifier($filter->type);
 
+        // Special case inheritance Participant
+        switch (strtolower($filter->value)) {
+            case 'apprenant':
+                $value = 'PfeCoreBundle:Apprenant';
+                break;
+            case 'staff':
+                $value = 'PfeCoreBundle:Staff';
+                break;
+            case 'etudiant':
+                $value = 'PfeCoreBundle:Etudiant';
+                break;
+        }
         switch ($filter->rule) {
             case 'is':
-                $rule = ' = ';
+                $rule = ' INSTANCE OF ';
                 break;
             case 'not':
-                $rule = ' <> ';
+                $rule = ' NOT INSTANCE OF ';
                 break;
-            case 'lower':
-                $rule = ' < ';
-                break;
-            case 'higher':
-                $rule = ' > ';
-                break;
+            default:
+                $rule = ' INSTANCE OF ';
         }
 
         return $identifier . $rule . $value;

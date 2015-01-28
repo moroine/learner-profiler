@@ -96,34 +96,64 @@ class ParticipantRepository extends EntityRepository
 
     private function getExpression($filter)
     {
-        $identifier = $this->getFieldIdentifier($filter->type, $filter->field);
+        if (!($filter->type === "participant" && $filter->field === 'role')) {
+            $identifier = $this->getFieldIdentifier($filter->type, $filter->field);
 
-        if ($filter->value === NULL) {
-            $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
-            return $identifier . $rule . 'NULL';
+            if ($filter->value === NULL) {
+                $rule = ($filter->rule !== 'is') ? ' IS NOT ' : ' IS ';
+                return $identifier . $rule . 'NULL';
+            }
+
+            $value = "'" . strtolower($filter->value) . "'";
+
+            switch ($filter->rule) {
+                case 'is':
+                    $rule = ' = ';
+                    break;
+                case 'not':
+                    $rule = ' <> ';
+                    break;
+                case 'lower':
+                    $rule = ' < ';
+                    break;
+                case 'higher':
+                    $rule = ' > ';
+                    break;
+            }
+
+            return $identifier . $rule . $value;
         }
 
-        $value = "'" . strtolower($filter->value) . "'";
+        $identifier = $this->getFieldIdentifier($filter->type);
 
+        // Special case inheritance Participant
+        switch (strtolower($filter->value)) {
+            case 'apprenant':
+                $value = 'PfeCoreBundle:Apprenant';
+                break;
+            case 'staff':
+                $value = 'PfeCoreBundle:Staff';
+                break;
+            case 'etudiant':
+                $value = 'PfeCoreBundle:Etudiant';
+                break;
+        }
         switch ($filter->rule) {
             case 'is':
-                $rule = ' = ';
+                $rule = ' INSTANCE OF ';
                 break;
             case 'not':
-                $rule = ' <> ';
+                $rule = ' NOT INSTANCE OF ';
                 break;
-            case 'lower':
-                $rule = ' < ';
-                break;
-            case 'higher':
-                $rule = ' > ';
-                break;
+            default:
+                $rule = ' INSTANCE OF ';
         }
 
         return $identifier . $rule . $value;
     }
 
-    /** FOLLOW DUST * */
+    /*     * ***************************** FOLLOW DUST *************************************** */
+
     public function findAllLocalisations()
     {
         $dql = 'SELECT DISTINCT p.state, p.city, COUNT(p) as n FROM PfeCoreBundle:Participant as p GROUP BY p.state, p.city ORDER BY n, p.state, p.city';

@@ -132,7 +132,7 @@ class Action
     public function setDatetime(\DateTime $datetime)
     {
         $this->datetime = $datetime;
-        $this->day = $datetime->format("L");
+        $this->day = strtolower($datetime->format("l"));
         $this->hour = (int) $datetime->format("G");
 
         return $this;
