@@ -116,20 +116,33 @@ View.MapView = function (ui) {
         var abscisse = [];
         var ordonnee = [];
         var formattedDatas = [];
+        var max = 0;
 
         for (var i = 0; i < data.length; i++)
         {
             // field group by
             var field = this._currentVisualisation.getActiveHistogram()._group.field;
             var label = data[i][field] || 'none';
+            var value = parseFloat(data[i].entry);
 
             abscisse.push(label); // Ave Label Value
-            ordonnee.push(data[i].entry); // Axe Label Value
+            // ordonnee.push(); // Axe Label Value
+            max = (value > max) ? value : max;
             formattedDatas.push({// The Bar data
                 label: label,
-                entry: data[i].entry,
+                entry: value,
             });
         }
+
+        max *= 1.1;
+
+        /** PopOver **/
+        var tip = d3.tip() // The pop Over
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function (d) {
+                    return "<strong>" + d.label + " :</strong> <span style='color:red'>" + d.entry + "</span>"; // Template
+                });
 
         // Adapt Canvas Properties
         var svg = d3.select("#visualisation_container").append("svg")
@@ -138,17 +151,23 @@ View.MapView = function (ui) {
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+        /** Apply popover **/
+        svg.call(tip);
+
+
         /** Axis **/
         x.domain(abscisse);
-        y.domain(ordonnee);
+        y.domain([0, max]);
 
         svg.append("g")
                 .attr("class", "x axis")
                 .attr("transform", "translate(0," + height + ")")
-                .call(xAxis);
+                .call(xAxis)
+                .style("text-anchor", "start");
+
         var ticks = document.getElementsByClassName("x axis")[0].children;
         for (var i = 0; i < ticks.length - 1; i++) {
-            ticks[i].setAttribute("transform", "translate(" + (20 * i + 6) + ", 17) rotate(-90)");
+            ticks[i].setAttribute("transform", "translate(" + (x(abscisse[i]) + 10) + ", " + ((i % 2) * 15) + ")");
             ticks[i].firstChild.style.visibility = "hidden";
         }
 
@@ -161,14 +180,6 @@ View.MapView = function (ui) {
                 .attr("dy", ".71em")
                 .style("text-anchor", "end")
                 .text("Count result");
-
-        /** PopOver **/
-        var tip = d3.tip() // The pop Over
-                .attr('class', 'd3-tip')
-                .offset([-10, 0])
-                .html(function (d) {
-                    return "<strong>" + d.label + " :</strong> <span style='color:red'>" + d.entry + "</span>"; // Template
-                });
 
         /** Bars **/
         svg.selectAll(".bar")
@@ -189,7 +200,6 @@ View.MapView = function (ui) {
                 })
                 .on('mouseover', tip.show)
                 .on('mouseout', tip.hide);
-        svg.call(tip);
     };
 };
 

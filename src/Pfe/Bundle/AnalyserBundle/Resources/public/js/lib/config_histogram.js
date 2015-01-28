@@ -14,7 +14,7 @@ var x = d3.scale.ordinal()
         .rangeRoundBands([0, width], .1);
 
 var y = d3.scale.linear()
-        .range([0, height]);
+        .range([height, 0]);
 
 var xAxis = d3.svg.axis()
         .scale(x)
@@ -22,10 +22,4 @@ var xAxis = d3.svg.axis()
 
 var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left")
-//.tickFormat(formatPercent);
-
-function type(d) {
-    d.number = +d.number;
-    return d;
-}
+        .orient("left");
